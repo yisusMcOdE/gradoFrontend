@@ -1,0 +1,211 @@
+[{
+    "id": 1,
+    "nombre": "Pork - Kidney",
+    "marca": "Jabbersphere",
+    "unidad": "Yellow",
+    "asignado":50,
+    "sobrante": 3
+  }, {
+    "id": 2,
+    "nombre": "Red Currant Jelly",
+    "marca": "Fivespan",
+    "unidad": "Maroon",
+    "asignado":50,
+    "sobrante": 17
+  }, {
+    "id": 3,
+    "nombre": "Table Cloth 54x72 White",
+    "marca": "Yozio",
+    "unidad": "Yellow",
+    "asignado":50,
+    "sobrante": 6
+  }, {
+    "id": 4,
+    "nombre": "Pernod",
+    "marca": "Oloo",
+    "unidad": "Blue",
+    "asignado":50,
+    "sobrante": 14
+  }, {
+    "id": 5,
+    "nombre": "V8 Splash Strawberry Banana",
+    "marca": "Twimm",
+    "unidad": "Blue",
+    "asignado":50,
+    "sobrante": 2
+  }, {
+    "id": 6,
+    "nombre": "Lettuce - Sea / Sea Asparagus",
+    "marca": "Latz",
+    "unidad": "Violet",
+    "asignado":50,
+    "sobrante": 1
+  }, {
+    "id": 7,
+    "nombre": "Shrimp - Prawn",
+    "marca": "Muxo",
+    "unidad": "Aquamarine",
+    "asignado":50,
+    "sobrante": 12
+  }, {
+    "id": 8,
+    "nombre": "Flour - So Mix Cake White",
+    "marca": "Skalith",
+    "unidad": "Teal",
+    "asignado":50,
+    "sobrante": 3
+  }, {
+    "id": 9,
+    "nombre": "Soup Campbells Mexicali Tortilla",
+    "marca": "Twitterwire",
+    "unidad": "Violet",
+    "asignado":50,
+    "sobrante": 15
+  }, {
+    "id": 10,
+    "nombre": "Bread - Corn Muffaletta",
+    "marca": "Jabbersphere",
+    "unidad": "Puce",
+    "asignado":50,
+    "sobrante": 8
+  }, {
+    "id": 11,
+    "nombre": "Artichoke - Bottom, Canned",
+    "marca": "Eimbee",
+    "unidad": "Maroon",
+    "asignado":50,
+    "sobrante": 9
+  }, {
+    "id": 12,
+    "nombre": "Filter - Coffee",
+    "marca": "Voolia",
+    "unidad": "Red",
+    "asignado":50,
+    "sobrante": 14
+  }, {
+    "id": 13,
+    "nombre": "Pepper - White, Whole",
+    "marca": "Flipstorm",
+    "unidad": "Turquoise",
+    "asignado":50,
+    "sobrante": 11
+  }, {
+    "id": 14,
+    "nombre": "Icecream - Dstk Cml And Fdg",
+    "marca": "Skidoo",
+    "unidad": "Green",
+    "asignado":50,
+    "sobrante": 1
+  }, {
+    "id": 15,
+    "nombre": "Oil - Shortening - All - Purpose",
+    "marca": "Rhybox",
+    "unidad": "Aquamarine",
+    "asignado":50,
+    "sobrante": 15
+  }, {
+    "id": 16,
+    "nombre": "V8 Splash Strawberry Kiwi",
+    "marca": "Zoomcast",
+    "unidad": "Mauv",
+    "asignado":50,
+    "sobrante": 5
+  }, {
+    "id": 17,
+    "nombre": "Icecream Bar - Del Monte",
+    "marca": "Wordtune",
+    "unidad": "Red",
+    "asignado":50,
+    "sobrante": 18
+  }, {
+    "id": 18,
+    "nombre": "Pasta - Lasagne, Fresh",
+    "marca": "Fivechat",
+    "unidad": "Violet",
+    "asignado":50,
+    "sobrante": 19
+  }, {
+    "id": 19,
+    "nombre": "Wine - Red, Gallo, Merlot",
+    "marca": "Twitterlist",
+    "unidad": "Goldenrod",
+    "asignado":50,
+    "sobrante": 7
+  }, {
+    "id": 20,
+    "nombre": "Eggplant - Asian",
+    "marca": "Viva",
+    "unidad": "Violet",
+    "asignado":50,
+    "sobrante": 17
+  }, {
+    "id": 21,
+    "nombre": "Pepper - Black, Whole",
+    "marca": "Gabcube",
+    "unidad": "Puce",
+    "asignado":50,
+    "sobrante": 13
+  }, {
+    "id": 22,
+    "nombre": "Soup - Clam Chowder, Dry Mix",
+    "marca": "Kwilith",
+    "unidad": "Maroon",
+    "asignado":50,
+    "sobrante": 3
+  }, {
+    "id": 23,
+    "nombre": "Fond - Neutral",
+    "marca": "Agimba",
+    "unidad": "Red",
+    "asignado":50,
+    "sobrante": 20
+  }, {
+    "id": 24,
+    "nombre": "Bok Choy - Baby",
+    "marca": "Eabox",
+    "unidad": "Yellow",
+    "asignado":50,
+    "sobrante": 5
+  }, {
+    "id": 25,
+    "nombre": "Wine - Casablanca Valley",
+    "marca": "JumpXS",
+    "unidad": "Crimson",
+    "asignado":50,
+    "sobrante": 4
+  }, {
+    "id": 26,
+    "nombre": "C - Plus, Orange",
+    "marca": "Meedoo",
+    "unidad": "Pink",
+    "asignado":50,
+    "sobrante": 13
+  }, {
+    "id": 27,
+    "nombre": "Vinegar - Sherry",
+    "marca": "Yodel",
+    "unidad": "Turquoise",
+    "asignado":50,
+    "sobrante": 13
+  }, {
+    "id": 28,
+    "nombre": "Chinese Lemon Pork",
+    "marca": "Voonix",
+    "unidad": "Aquamarine",
+    "asignado":50,
+    "sobrante": 3
+  }, {
+    "id": 29,
+    "nombre": "Lamb - Whole Head Off",
+    "marca": "Abata",
+    "unidad": "Pink",
+    "asignado":50,
+    "sobrante": 18
+  }, {
+    "id": 30,
+    "nombre": "Sauce - Sesame Thai Dressing",
+    "marca": "Youfeed",
+    "unidad": "Maroon",
+    "asignado":50,
+    "sobrante": 17
+  }]

@@ -1,0 +1,52 @@
+[{
+    "cliente": "Daugherty Inc",
+    "fecha_entrega": "6/10/2022",
+    "detalle":[{
+        "id": "1",
+        "trabajo": "Pinescrub Bluestem",
+        "cantidad_solicitada": 1,
+        "etapas": [
+          {
+            "id":"1",
+            "nombre":"recepcionado",
+            "fecha_inicio":"01-01-2023",
+            "estado":"finalizado"
+          },
+          {
+            "id":"2",
+            "nombre":"en cola",
+            "fecha_inicio":"01-01-2023",
+            "estado":"finalizado"
+          },
+          {
+            "id":"3",
+            "nombre":"en proceso",
+            "fecha_inicio":"01-01-2023",
+            "estado":"finalizado"
+          },
+          {
+            "id":"4",
+            "nombre":"finalizado",
+            "fecha_inicio":"01-01-2023",
+            "estado":"finalizado"
+          }
+        ]
+      }, {
+        "id": "2",
+          "trabajo": "Crested Coralroot",
+        "cantidad_solicitada": 2
+      }, {
+        "id": "3",
+          "trabajo": "Pomegranate",
+        "cantidad_solicitada": 3
+      }, {
+        "id": "4",
+          "trabajo": "Pacific Silverweed",
+        "cantidad_solicitada": 4
+      }, {
+        "id": "5",
+          "trabajo": "Arctic Catchfly",
+        "cantidad_solicitada": 5
+      }]
+  }
+]

@@ -1,24 +1,15 @@
-import logo from './logo.svg';
-import './App.css';
+import { theme } from './theme/theme';
+import { ThemeProvider, Button } from '@mui/material';
+import { BrowserRouter, Routes, Route, RouterProvider } from 'react-router-dom';
+import { Login } from './pages/login';
+import { Recepcion } from './pages/Recepcion';
+import { routes } from './routes';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <RouterProvider router={routes}/>
+    </ThemeProvider>
   );
 }
 
