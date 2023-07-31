@@ -12,32 +12,51 @@ import 'chart.js/auto';
 import { formatCharBar } from "../../../utilities/formatCharBar";
 import { useNavigate } from "react-router-dom";
 import { useStyles } from "../admin.styles";
-import { allClients, allEmployees, allMaterials } from "../../../utilities/allGetFetch";
+import { allClients, allEmployees, allMaterials, getBackupFiles } from "../../../utilities/allGetFetch";
+import { restoreBackup } from "../../../utilities/allPostFetch";
 
 export const Backup = () => {
 
     const [modal, setModal] = useState(false);
     const [item, setItem] = useState({});
     const [confirmation, setConfirmation] = useState(false);
+    const [data, setData] = useState();
 
     const navigator = useNavigate();
 
     const classes = useStyles(); 
 
-    const data = require ('../../../__mock__/backupList.json');
-
     const columns = [
         {field: 'id', headerName: 'N°', flex: 0.5},
         {field: 'name', headerName: 'Nombre', flex: 1.5},
         {field: 'date', headerName: 'Fecha', flex: 1},
+        {field: 'time', headerName: 'Hora', flex: 1},
+        {field: 'size', headerName: 'Tamaño', flex: 1},
     ]
 
-    
+    const loadData = async() => {
+        let response = await getBackupFiles();
+        console.log(response);
+        setData(response);
+    }
+
+    useEffect(()=>{
+        loadData();
+    },[])
+
+    const restoreDataBase = async(archive) => {
+        console.log(archive);
+        const body = {
+            "archive" : archive
+        };
+        restoreBackup(body);
+    }
 
     return (
+        data&&
         <Main>
-            <Grid container direction='column' rowGap={3}>
-                <Grid item style={{width:'50rem'}}>
+            <Grid container direction='column' rowGap={3} alignItems='center'>
+                <Grid item style={{width:'80%'}}>
                     <Card raised>
                         <h1 className={classes.titlePage}>Copias De Respaldo</h1>
                         <Box>
@@ -49,11 +68,12 @@ export const Backup = () => {
                         </Box>
                     </Card>
                 </Grid>
-                <Grid container style={{width:'50rem'}}>
-                    <Card raised style={{width:'50rem'}}>
+                <Grid item style={{width:'80%'}}>
+                    <Card raised >
                         <Grid container direction='column' rowSpacing={2}>
                             <Grid item>
                                 <DataGrid
+                                    style={{width:'99%'}}
                                     onRowClick={(e)=>{setItem(e.row); setModal(true)}}
                                     rows={data}
                                     columns={columns}
@@ -89,7 +109,7 @@ export const Backup = () => {
                                                         <label>Hora de creacion:</label>
                                                     </Grid>
                                                     <Grid item xs>
-                                                        <TextField disabled size='small' value='00:00:00'/>
+                                                        <TextField disabled size='small' value={item.time}/>
                                                     </Grid>
                                                 </Grid>
                                                 <Grid item container alignItems='center'>
@@ -97,12 +117,13 @@ export const Backup = () => {
                                                         <label>Tamaño de archivo:</label>
                                                     </Grid>
                                                     <Grid item xs>
-                                                        <TextField disabled size='small' value='14 Kb'/>
+                                                        <TextField disabled size='small' value={item.size}/>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
                                             <Grid item justifyContent='center' display='grid'>
-                                                <Button 
+                                                <Button
+                                                    variant="contained"
                                                     onClick={()=>{setConfirmation(prev=>!prev)}}
                                                 >
                                                     {
@@ -121,7 +142,7 @@ export const Backup = () => {
                                                     </Grid>
                                                 </Grid>
                                                 <Grid item justifyContent='center' display='grid'>
-                                                    <Button>Confirmar Restauracion</Button>
+                                                    <Button variant="contained" onClick={()=>{restoreDataBase(item.name)}}>Confirmar Restauracion</Button>
                                                 </Grid>
                                                 </>
                                             }

@@ -5,6 +5,7 @@ import WidgetsIcon from '@mui/icons-material/Widgets';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import { Grid } from "@mui/material";
 import { Outlet } from "react-router-dom";
+import { BackgroundPage } from "../../components/background";
 
 
 export const Area = () => {
@@ -15,8 +16,7 @@ export const Area = () => {
     const subMenu= {
         Trabajos: [
             {name: 'Ver Trabajos', to:'trabajos'}, 
-            {name: 'Ver Cronograma', to:'trabajos/cronograma'}, 
-            {name: 'Finalizar', to:'trabajos/finalizar'}, 
+            {name: 'Ver Cronograma', to:'trabajos/cronograma'} 
         ],
         Materiales: [
             {name: 'Ver Materiales', to: 'material'}, 
@@ -30,8 +30,9 @@ export const Area = () => {
 
     return (
         <Grid container >
+            <BackgroundPage/>
             <Grid item xs='auto'>
-                <SideBar role='Recepcion' menu={menu} icons={icons} subMenu={subMenu}/>
+                <SideBar role='Area' menu={menu} icons={icons} subMenu={subMenu}/>
             </Grid>
             <Grid item xs className={classes.containerPage}>
                 <Outlet/>

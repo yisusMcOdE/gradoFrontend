@@ -23,6 +23,7 @@ export const ClientesRecepcion = () => {
     const [dataClientInternal, setDataClientInternal] = useState();
     const [dataClientExternal, setDataClientExternal] = useState();
     const [dataType, setDataType] = useState(false);
+    const [search, setSearch] = useState('');
 
     
 
@@ -50,9 +51,10 @@ export const ClientesRecepcion = () => {
     },[])
 
     return (
-        dataClientExternal&&<Main>
-            <Grid container direction='column' rowGap={3}>
-                <Grid item style={{width:'50rem'}}>
+        dataClientExternal&&
+        <Main>
+            <Grid container direction='column' rowGap={3} alignItems='center'>
+                <Grid item style={{width:'80%'}}>
                     <Card raised>
                         <h1 className={classes.titlePage}>Clientes</h1>
                         <Box>
@@ -60,12 +62,18 @@ export const ClientesRecepcion = () => {
                         </Box>
                         <Box display='flex' justifyContent= 'flex-end' >
                             <SearchIcon sx={{ color: 'white', mr: 1, my: 0.5 }} />
-                            <TextField label="Buscar ...." variant="filled" size='small'/>
+                            <TextField 
+                                label= "Buscar ...."
+                                variant= "filled"
+                                size= 'small'
+                                value= {search}
+                                onChange={e=>{setSearch(e.target.value)}}
+                            />
                         </Box>
                     </Card>
                 </Grid>
-                <Grid container style={{width:'50rem'}}>
-                    <Card raised style={{width:'50rem'}}>
+                <Grid item style={{width:'80%'}}>
+                    <Card raised >
                         <Grid container direction='column' rowSpacing={2}>
                             <Grid item>
                                 <Box display='flex' justifyContent= 'center' >
@@ -85,8 +93,11 @@ export const ClientesRecepcion = () => {
                                 {
                                 dataType?
                                     <DataGrid
+                                    style={{width:'99%'}}
                                     onRowClick={(e)=>{navigator(`${e.row._id}`)}}
-                                    rows={dataClientInternal} 
+                                    rows={dataClientInternal.filter(item=>{
+                                        return item.institution.toLowerCase().includes(search.toLowerCase());
+                                    })} 
                                     columns={columnsA}
                                     getRowClassName={(params) =>
                                         params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
@@ -94,7 +105,9 @@ export const ClientesRecepcion = () => {
                                     /> :
                                     <DataGrid
                                     onRowClick={(e)=>{navigator(`${e.row._id}`)}}
-                                    rows={dataClientExternal} 
+                                    rows={dataClientExternal.filter(item=>{
+                                        return item.name.toLowerCase().includes(search.toLowerCase());
+                                    })} 
                                     columns={columnsB}
                                     getRowClassName={(params) =>
                                         params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'

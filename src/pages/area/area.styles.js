@@ -3,7 +3,9 @@ import { theme } from "../../theme/theme";
 
 export const useStyles = makeStyles({
     containerPage:{
-        background:theme.palette.primary.main,
+        backgroundColor:'transparent',
+        backdropFilter: 'blur(5px)',
+
     },
     areaContainer:{
         placeContent: 'center',
@@ -21,7 +23,7 @@ export const useStyles = makeStyles({
         width: '50rem'
     },
     ganttContainer:{
-        width:'90%',
+        width:'100%',
         margin:'auto !important'
     },
     tableHeader:{

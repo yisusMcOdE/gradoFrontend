@@ -24,7 +24,7 @@ export const Bitacora = () => {
 
     const columns = [
         {field: 'id', headerName: 'N°', flex: 0.5},
-        {field: 'action', headerName: 'Nombre', flex: 1},
+        {field: 'action', headerName: 'Accion', flex: 1},
         {field: 'result', headerName: 'Resultado', flex: 1},
         {field: 'document', headerName: 'Documento', flex: 1},
         {field: 'newValue', headerName: 'Nuevo Valor', flex: 1},
@@ -49,8 +49,8 @@ export const Bitacora = () => {
 
     return (
         <Main>
-            <Grid container direction='column' rowGap={3}>
-                <Card raised style={{width:'50rem'}}>
+            <Grid container direction='column' rowGap={3} alignItems='center'>
+                <Card raised style={{width:'80%'}}>
                     <Grid container direction='column' rowSpacing={2}>
                         <Grid container direction='column'>
                             <Grid item>

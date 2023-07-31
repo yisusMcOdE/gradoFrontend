@@ -1,13 +1,30 @@
 import { makeStyles } from "@mui/styles";
+import { height, padding } from "@mui/system";
 import {theme} from '../../theme/theme';
 
 export const useStyles = makeStyles({
+    titlePage:{
+        textAlign:'center',
+        display:'block',
+        fontWeight:'bolder',
+        fontSize:'1.1rem'
+    },
+    treeContainer:{
+        backgroundColor:'#CFCFCF',
+        border:'2px solid gray',
+        borderRadius : '4px',
+        padding : '2px',
+        height: '100%'
+    },
     container:{
+        '& svg':{
+            
+        },
         '& .rd3t-label__title':{
-            fill: theme.palette.neutro1.main
+            fill: 'black'
         },
         '& .rd3t-link':{
-            stroke:'white'
+            stroke:'black'
         },
         height:'100%',
         /*
@@ -21,16 +38,32 @@ export const useStyles = makeStyles({
             stroke: 'none'
         }*/
     },
+    circle:{
+        transition:'all .5s ease',
+        '&:hover':{
+            r:'17',
+            transition:'all .5s ease'
+        }
+        
+    },
     finalizado:{
         fill:'green',
-        stroke: 'none'
+        stroke: 'none',
+        
     },
     ejecucion:{
         fill:'yellow',
         stroke: 'none'
     },
-    espera:{
-        fill:'yellow',
+    retraso:{
+        fill:'red',
         stroke: 'none'
     },
+    popOver:{
+        color:'black',
+        padding:'0.5rem',
+        '& .input':{
+            width:'11rem'
+        }
+    }
 })

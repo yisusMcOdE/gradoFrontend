@@ -11,7 +11,13 @@ export const formatCharPie = (data=[]) => {
     const format = {
         labels: keys,
         datasets: [{
-            data:values
+            data:values,
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                
+                'rgb(255, 205, 86)',
+                'rgb(54, 162, 235)'
+              ],
         }]
     }
     return format

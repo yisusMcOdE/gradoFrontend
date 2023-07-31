@@ -116,406 +116,411 @@ export const DetailsJobAdmin = () => {
 
 
     return(
-        (data&&materials)&&<Main>
-        <Card>
-            <Grid container direction='column' rowSpacing={3}>
-                {
-                    ///------TITLE------///
-                }
-                <Grid item>
-                    <h1 className={classes.titlePage}>
-                        Detalles de trabajo
-                    </h1>
-                </Grid>
-
-                <Grid item container alignItems='center' justifyContent='flex-end'>
-                    <Grid item >
-                        <label>Modo Edicion</label>
-                    </Grid>
-                    <Grid item >
-                        <Switch 
-                            checked = {!editionMode}
-                            onChange={()=>{
-                                setEditionMode(prev => !prev);
-                                setDataEdition({...data});
-                            }}
-                        />
-                    </Grid>
-                </Grid>
-                
-                {editionMode?<>
-                <Grid item container direction='column' rowSpacing={1}>
-                    <Grid item container alignItems='center'>
-                        <Grid item xs={4}>
-                            <label>Nombre del Trabajo:</label>
-                        </Grid>
-                        <Grid item >
-                            <TextField 
-                                value={dataEdition.name} 
-                                id="nameForm" 
-                                size='small'
-                                onChange={({target})=>{setDataEdition({...dataEdition, name:target.value})}} 
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid item container alignItems='center'>
-                        <Grid item xs={4}>
-                            <label>Descripcion:</label>
-                        </Grid>
-                        <Grid item >
-                            <TextField 
-                                value={dataEdition.description} 
-                                multiline 
-                                id="descriptionForm" 
-                                size='small'
-                                onChange={({target})=>{setDataEdition({...dataEdition, description:target.value})}} 
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid item container alignItems='center'>
-                        <Grid item xs={4}>
-                            <label>Estado de trabajo:</label>
-                        </Grid>
-                        <Grid item >
-                            <Button
-                                fullWidth 
-                                className={dataEdition.status?'activo':'inactivo'}
-                                onClick={()=>{setDataEdition({...dataEdition, status:!dataEdition.status})}}
-                            >
-                                {dataEdition.status?'Habilitado':'Inhabilitado'}
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </Grid>
-
-                <Grid item>
-                    <Grid container>
-                        <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'10px 10px 0 0'}}>
-                            <h3 style={{textAlign:'center'}}>DETALLE DE COSTOS</h3>
-                        </Grid>
-
-                        <Box display='flex' className={classes.addRemoveBox} columnGap={2}>
-                            <IconButton size="small" onClick={addCost}>
-                                <AddIcon fontSize="inherit"/>
-                            </IconButton>
-                            <IconButton size="small" onClick={removeCost}>
-                                <RemoveIcon fontSize="inherit"/>
-                            </IconButton>
-                        </Box>
-
-                        <Grid item xs={12} className={classes.tableHeader} container>
-                            <Grid item xs={1}>
-                                <h3>N°</h3>
+        (data&&materials)&&
+        <Main>
+            <Grid container direction={'column'} alignItems={'center'}>
+                <Grid item style={{width:'90%'}}>
+                    <Card>
+                        <Grid container direction='column' rowSpacing={3}>
+                            {
+                                ///------TITLE------///
+                            }
+                            <Grid item>
+                                <h1 className={classes.titlePage}>
+                                    Detalles de trabajo
+                                </h1>
                             </Grid>
-                            <Grid item xs={3}>
-                                <h3>Cantidad:</h3>
-                            </Grid>
-                            <Grid item xs={5}>
-                                <h3>Costo:</h3>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <h3>Estado:</h3>
-                            </Grid>
-                        </Grid>
 
-                        {dataEdition.cost.map((item,index)=>{
-                            return (
-                            <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
-                                <Grid item xs={1}>
-                                    {index+1}
+                            <Grid item container alignItems='center' justifyContent='flex-end'>
+                                <Grid item >
+                                    <label>Modo Edicion</label>
                                 </Grid>
-                                <Grid item xs={3}>
-                                    <TextField 
-                                        fullWidth  
-                                        variant="filled" 
-                                        size='small'
-                                        value={item.lot} 
-                                        onChange={(e)=>{handleChange(e,'cost','lot',index)}}
+                                <Grid item >
+                                    <Switch 
+                                        checked = {!editionMode}
+                                        onChange={()=>{
+                                            setEditionMode(prev => !prev);
+                                            setDataEdition({...data});
+                                        }}
                                     />
                                 </Grid>
-                                <Grid item xs={5}>
-                                    <TextField 
-                                        fullWidth 
-                                        variant="filled" 
-                                        size='small' 
-                                        value={item.price} 
-                                        onChange={(e)=>{handleChange(e,'cost','price',index)}}
-                                    />
+                            </Grid>
+                            
+                            {editionMode?<>
+                            <Grid item container direction='column' rowSpacing={1}>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Nombre del Trabajo:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        <TextField 
+                                            value={dataEdition.name} 
+                                            id="nameForm" 
+                                            size='small'
+                                            onChange={({target})=>{setDataEdition({...dataEdition, name:target.value})}} 
+                                        />
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={3} style={{padding:'0.5rem'}}>
-                                    <Button 
-                                        size='small' 
-                                        fullWidth 
-                                        className={item.status?'activo':'inactivo'}
-                                        onClick={()=>{handleChange('status','cost','status',index)}}
-                                    >
-                                        {item.status?'Habilitado':'Inhabilitado'}
-                                    </Button>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Descripcion:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        <TextField 
+                                            value={dataEdition.description} 
+                                            multiline 
+                                            id="descriptionForm" 
+                                            size='small'
+                                            onChange={({target})=>{setDataEdition({...dataEdition, description:target.value})}} 
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Estado de trabajo:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        <Button
+                                            fullWidth 
+                                            className={dataEdition.status?'activo':'inactivo'}
+                                            onClick={()=>{setDataEdition({...dataEdition, status:!dataEdition.status})}}
+                                        >
+                                            {dataEdition.status?'Habilitado':'Inhabilitado'}
+                                        </Button>
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                            )
-                        })}
-                    </Grid>
+
+                            <Grid item>
+                                <Grid container>
+                                    <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'5px 5px 0 0'}}>
+                                        <h3 style={{textAlign:'center'}}>DETALLE DE COSTOS</h3>
+                                    </Grid>
+
+                                    <Box display='flex' className={classes.addRemoveBox} columnGap={2}>
+                                        <IconButton size="small" onClick={addCost}>
+                                            <AddIcon fontSize="inherit"/>
+                                        </IconButton>
+                                        <IconButton size="small" onClick={removeCost}>
+                                            <RemoveIcon fontSize="inherit"/>
+                                        </IconButton>
+                                    </Box>
+
+                                    <Grid item xs={12} className={classes.tableHeader} container>
+                                        <Grid item xs={1}>
+                                            <h3>N°</h3>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <h3>Cantidad:</h3>
+                                        </Grid>
+                                        <Grid item xs={5}>
+                                            <h3>Costo:</h3>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <h3>Estado:</h3>
+                                        </Grid>
+                                    </Grid>
+
+                                    {dataEdition.cost.map((item,index)=>{
+                                        return (
+                                        <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
+                                            <Grid item xs={1}>
+                                                {index+1}
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                <TextField 
+                                                    fullWidth  
+                                                    variant="filled" 
+                                                    size='small'
+                                                    value={item.lot} 
+                                                    onChange={(e)=>{handleChange(e,'cost','lot',index)}}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={5}>
+                                                <TextField 
+                                                    fullWidth 
+                                                    variant="filled" 
+                                                    size='small' 
+                                                    value={item.price} 
+                                                    onChange={(e)=>{handleChange(e,'cost','price',index)}}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={3} style={{padding:'0.5rem'}}>
+                                                <Button 
+                                                    size='small' 
+                                                    fullWidth 
+                                                    className={item.status?'activo':'inactivo'}
+                                                    onClick={()=>{handleChange('status','cost','status',index)}}
+                                                >
+                                                    {item.status?'Habilitado':'Inhabilitado'}
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                        )
+                                    })}
+                                </Grid>
+                            </Grid>
+
+                            <Grid item>
+                                <Grid container>
+                                    <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'5px 5px 0 0'}}>
+                                        <h3 style={{textAlign:'center'}}>DETALLE DE USO DE MATERIALES</h3>
+                                    </Grid>
+
+                                    <Box display='flex' className={classes.addRemoveBox} columnGap={2}>
+                                        <IconButton size="small" onClick={addMaterial}>
+                                            <AddIcon fontSize="inherit"/>
+                                        </IconButton>
+                                        <IconButton size="small" onClick={removeMaterial}>
+                                            <RemoveIcon fontSize="inherit"/>
+                                        </IconButton>
+                                    </Box>
+
+                                    <Grid item xs={12} className={classes.tableHeader} container>
+                                        <Grid item xs={1}>
+                                            <h3>N°</h3>
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <h3>Material:</h3>
+                                        </Grid>
+                                        <Grid item xs={2.5}>
+                                            <h3>Cantidad requerida:</h3>
+                                        </Grid>
+                                        <Grid item xs={2.5}>
+                                            <h3>Cantidad producida:</h3>
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <h3>Estado:</h3>
+                                        </Grid>
+                                    </Grid>
+
+                                    {dataEdition.materials.map((item,index)=>{
+                                        return (
+                                        <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
+                                            <Grid item xs={1}>
+                                                {index+1}
+                                            </Grid>
+                                            <Grid item xs={4}> 
+                                                <Autocomplete
+                                                size='small'
+                                                fullWidth
+                                                options={materials.map(item=>item.name).concat([""])}
+                                                renderInput={(params) =><TextField 
+                                                                            variant="filled"
+                                                                            {...params}
+                                                                        />}
+                                                value={item.name}
+                                                onChange={(e)=>{handleChange(e, 'material', 'name', index)}}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={2.5}>
+                                                <FilledInput
+                                                    startAdornment={
+                                                        <InputAdornment position="start">
+                                                            {((materials.find(element=>element.name===item.name))?.unit)||""}
+                                                        </InputAdornment>}
+                                                    fullWidth 
+                                                    size='small'
+                                                    value={item.required}
+                                                    onChange={(e)=>{handleChange(e,'material','required',index)}}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={2.5}>
+                                                <TextField 
+                                                    fullWidth 
+                                                    variant="filled" 
+                                                    size='small'
+                                                    onChange={(e)=>{handleChange(e,'material','produced',index)}}
+                                                    value={item.produced}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={2} style={{padding:'0.5rem'}}>
+                                                <Button 
+                                                    size='small' 
+                                                    fullWidth 
+                                                    className={item.status?'activo':'inactivo'}
+                                                    onClick={()=>{handleChange('status','materials','status',index)}}
+                                                >
+                                                    {item.status?'Habilitado':'Inhabilitado'}
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                        )
+                                    })}
+                                </Grid>
+                            </Grid>
+
+                            <Grid item container justifyContent='center'>
+                                <Button variant="contained" onClick={()=>{handleUpdateJob()}}>Editar</Button>
+                            </Grid>
+                            </>
+                            
+                            :
+
+                            ///-----EDITION MODE-----///
+
+                            <>
+                            <Grid item container direction='column' rowSpacing={1}>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Nombre del Trabajo:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        <TextField value={data.name} disabled size='small' />
+                                    </Grid>
+                                </Grid>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Descripcion:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        <TextField value={data.description} disabled multiline size='small' />
+                                    </Grid>
+                                </Grid>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Estado de trabajo:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        <Button
+                                            fullWidth 
+                                            disabled
+                                            className={data.status?'activo':'inactivo'}
+                                        >
+                                            {data.status?'Habilitado':'Inhabilitado'}
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item>
+                                <Grid container>
+                                    <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'5px 5px 0 0'}}>
+                                        <h3 style={{textAlign:'center'}}>DETALLE DE COSTOS</h3>
+                                    </Grid>
+
+                                    <Grid item xs={12} className={classes.tableHeader} container>
+                                        <Grid item xs={1}>
+                                            <h3>N°</h3>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <h3>Cantidad:</h3>
+                                        </Grid>
+                                        <Grid item xs={5}>
+                                            <h3>Costo:</h3>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <h3>Estado:</h3>
+                                        </Grid>
+                                    </Grid>
+
+                                    {data.cost.map((item,index)=>{
+                                        return (
+                                        <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
+                                            <Grid item xs={1}>
+                                                {index+1}
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                <TextField
+                                                    disabled
+                                                    fullWidth  
+                                                    variant="filled" 
+                                                    size='small'
+                                                    value={item.lot} 
+                                                />
+                                            </Grid>
+                                            <Grid item xs={5}>
+                                                <TextField 
+                                                    disabled
+                                                    fullWidth 
+                                                    variant="filled" 
+                                                    size='small' 
+                                                    value={item.price} 
+                                                />
+                                            </Grid>
+                                            <Grid item xs={3} style={{padding:'0.5rem'}}>
+                                                <Button disabled size='small' fullWidth className={item.status?'activo':'inactivo'}>
+                                                    {item.status?'Habilitado':'Inhabilitado'}
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                        )
+                                    })}
+                                </Grid>
+                            </Grid>
+
+                            <Grid item>
+                                <Grid container>
+                                    <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'5px 5px 0 0'}}>
+                                        <h3 style={{textAlign:'center'}}>DETALLE DE USO DE MATERIALES</h3>
+                                    </Grid>
+
+                                    <Grid item xs={12} className={classes.tableHeader} container>
+                                        <Grid item xs={1}>
+                                            <h3>N°</h3>
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <h3>Material:</h3>
+                                        </Grid>
+                                        <Grid item xs={2.5}>
+                                            <h3>Cantidad requerida:</h3>
+                                        </Grid>
+                                        <Grid item xs={2.5}>
+                                            <h3>Cantidad producida:</h3>
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <h3>Estado:</h3>
+                                        </Grid>
+                                    </Grid>
+
+                                    {data.materials.map((item,index)=>{
+                                        return (
+                                        <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
+                                            <Grid item xs={1}>
+                                                {index+1}
+                                            </Grid>
+                                            <Grid item xs={4}> 
+                                                <TextField disabled value={item.name} variant='filled' fullWidth size='small' />
+                                            </Grid>
+                                            <Grid item xs={2.5}>
+                                                <FilledInput
+                                                    disabled
+                                                    startAdornment={
+                                                        <InputAdornment position="start">
+                                                            {((materials.find(element=>element.name===item.name))?.unit)||""}
+                                                        </InputAdornment>}
+                                                    fullWidth 
+                                                    size='small'
+                                                    value={item.required}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={2.5}>
+                                                <TextField 
+                                                    disabled
+                                                    fullWidth 
+                                                    id="filled-basic" 
+                                                    variant="filled" 
+                                                    size='small'
+                                                    value={item.produced}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={2} style={{padding:'0.5rem'}}>
+                                                <Button disabled size='small' fullWidth className={item.status?'activo':'inactivo'}>
+                                                    {item.status?'Habilitado':'Inhabilitado'}
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                        )
+                                    })}
+                                </Grid>
+                            </Grid>
+
+                            </>
+                        }
+                        </Grid>
+                    </Card>
                 </Grid>
-
-                <Grid item>
-                    <Grid container>
-                        <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'10px 10px 0 0'}}>
-                            <h3 style={{textAlign:'center'}}>DETALLE DE USO DE MATERIALES</h3>
-                        </Grid>
-
-                        <Box display='flex' className={classes.addRemoveBox} columnGap={2}>
-                            <IconButton size="small" onClick={addMaterial}>
-                                <AddIcon fontSize="inherit"/>
-                            </IconButton>
-                            <IconButton size="small" onClick={removeMaterial}>
-                                <RemoveIcon fontSize="inherit"/>
-                            </IconButton>
-                        </Box>
-
-                        <Grid item xs={12} className={classes.tableHeader} container>
-                            <Grid item xs={1}>
-                                <h3>N°</h3>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <h3>Material:</h3>
-                            </Grid>
-                            <Grid item xs={2.5}>
-                                <h3>Cantidad requerida:</h3>
-                            </Grid>
-                            <Grid item xs={2.5}>
-                                <h3>Cantidad producida:</h3>
-                            </Grid>
-                            <Grid item xs={2}>
-                                <h3>Estado:</h3>
-                            </Grid>
-                        </Grid>
-
-                        {dataEdition.materials.map((item,index)=>{
-                            return (
-                            <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
-                                <Grid item xs={1}>
-                                    {index+1}
-                                </Grid>
-                                <Grid item xs={4}> 
-                                    <Autocomplete
-                                    size='small'
-                                    fullWidth
-                                    options={materials.map(item=>item.name).concat([""])}
-                                    renderInput={(params) =><TextField 
-                                                                variant="filled"
-                                                                {...params}
-                                                            />}
-                                    value={item.name}
-                                    onChange={(e)=>{handleChange(e, 'material', 'name', index)}}
-                                    />
-                                </Grid>
-                                <Grid item xs={2.5}>
-                                    <FilledInput
-                                        startAdornment={
-                                            <InputAdornment position="start">
-                                                {((materials.find(element=>element.name===item.name))?.unit)||""}
-                                            </InputAdornment>}
-                                        fullWidth 
-                                        size='small'
-                                        value={item.required}
-                                        onChange={(e)=>{handleChange(e,'material','required',index)}}
-                                    />
-                                </Grid>
-                                <Grid item xs={2.5}>
-                                    <TextField 
-                                        fullWidth 
-                                        variant="filled" 
-                                        size='small'
-                                        onChange={(e)=>{handleChange(e,'material','produced',index)}}
-                                        value={item.produced}
-                                    />
-                                </Grid>
-                                <Grid item xs={2} style={{padding:'0.5rem'}}>
-                                    <Button 
-                                        size='small' 
-                                        fullWidth 
-                                        className={item.status?'activo':'inactivo'}
-                                        onClick={()=>{handleChange('status','materials','status',index)}}
-                                    >
-                                        {item.status?'Habilitado':'Inhabilitado'}
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                            )
-                        })}
-                    </Grid>
-                </Grid>
-
-                <Grid item container justifyContent='center'>
-                    <Button onClick={()=>{handleUpdateJob()}}>Editar</Button>
-                </Grid>
-                </>
-                
-                :
-
-                ///-----EDITION MODE-----///
-
-                <>
-                <Grid item container direction='column' rowSpacing={1}>
-                    <Grid item container alignItems='center'>
-                        <Grid item xs={4}>
-                            <label>Nombre del Trabajo:</label>
-                        </Grid>
-                        <Grid item >
-                            <TextField value={data.name} disabled size='small' />
-                        </Grid>
-                    </Grid>
-                    <Grid item container alignItems='center'>
-                        <Grid item xs={4}>
-                            <label>Descripcion:</label>
-                        </Grid>
-                        <Grid item >
-                            <TextField value={data.description} disabled multiline size='small' />
-                        </Grid>
-                    </Grid>
-                    <Grid item container alignItems='center'>
-                        <Grid item xs={4}>
-                            <label>Estado de trabajo:</label>
-                        </Grid>
-                        <Grid item >
-                            <Button
-                                fullWidth 
-                                disabled
-                                className={data.status?'activo':'inactivo'}
-                            >
-                                {data.status?'Habilitado':'Inhabilitado'}
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </Grid>
-
-                <Grid item>
-                    <Grid container>
-                        <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'10px 10px 0 0'}}>
-                            <h3 style={{textAlign:'center'}}>DETALLE DE COSTOS</h3>
-                        </Grid>
-
-                        <Grid item xs={12} className={classes.tableHeader} container>
-                            <Grid item xs={1}>
-                                <h3>N°</h3>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <h3>Cantidad:</h3>
-                            </Grid>
-                            <Grid item xs={5}>
-                                <h3>Costo:</h3>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <h3>Estado:</h3>
-                            </Grid>
-                        </Grid>
-
-                        {data.cost.map((item,index)=>{
-                            return (
-                            <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
-                                <Grid item xs={1}>
-                                    {index+1}
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <TextField
-                                        disabled
-                                        fullWidth  
-                                        variant="filled" 
-                                        size='small'
-                                        value={item.lot} 
-                                    />
-                                </Grid>
-                                <Grid item xs={5}>
-                                    <TextField 
-                                        disabled
-                                        fullWidth 
-                                        variant="filled" 
-                                        size='small' 
-                                        value={item.price} 
-                                    />
-                                </Grid>
-                                <Grid item xs={3} style={{padding:'0.5rem'}}>
-                                    <Button disabled size='small' fullWidth className={item.status?'activo':'inactivo'}>
-                                        {item.status?'Habilitado':'Inhabilitado'}
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                            )
-                        })}
-                    </Grid>
-                </Grid>
-
-                <Grid item>
-                    <Grid container>
-                        <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'10px 10px 0 0'}}>
-                            <h3 style={{textAlign:'center'}}>DETALLE DE USO DE MATERIALES</h3>
-                        </Grid>
-
-                        <Grid item xs={12} className={classes.tableHeader} container>
-                            <Grid item xs={1}>
-                                <h3>N°</h3>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <h3>Material:</h3>
-                            </Grid>
-                            <Grid item xs={2.5}>
-                                <h3>Cantidad requerida:</h3>
-                            </Grid>
-                            <Grid item xs={2.5}>
-                                <h3>Cantidad producida:</h3>
-                            </Grid>
-                            <Grid item xs={2}>
-                                <h3>Estado:</h3>
-                            </Grid>
-                        </Grid>
-
-                        {data.materials.map((item,index)=>{
-                            return (
-                            <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
-                                <Grid item xs={1}>
-                                    {index+1}
-                                </Grid>
-                                <Grid item xs={4}> 
-                                    <TextField disabled value={item.name} variant='filled' fullWidth size='small' />
-                                </Grid>
-                                <Grid item xs={2.5}>
-                                    <FilledInput
-                                        disabled
-                                        startAdornment={
-                                            <InputAdornment position="start">
-                                                {((materials.find(element=>element.name===item.name))?.unit)||""}
-                                            </InputAdornment>}
-                                        fullWidth 
-                                        size='small'
-                                        value={item.required}
-                                    />
-                                </Grid>
-                                <Grid item xs={2.5}>
-                                    <TextField 
-                                        disabled
-                                        fullWidth 
-                                        id="filled-basic" 
-                                        variant="filled" 
-                                        size='small'
-                                        value={item.produced}
-                                    />
-                                </Grid>
-                                <Grid item xs={2} style={{padding:'0.5rem'}}>
-                                    <Button disabled size='small' fullWidth className={item.status?'activo':'inactivo'}>
-                                        {item.status?'Habilitado':'Inhabilitado'}
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                            )
-                        })}
-                    </Grid>
-                </Grid>
-
-                </>
-            }
             </Grid>
-        </Card>
     </Main>
     )
 }

@@ -1,14 +1,16 @@
 import { createTheme, merge } from '@mui/material';
+import kanit_Regular from '../assets/fonts/Kanit/Kanit-Regular.ttf';
+
 
 const paleta={
-  primary:    '#1A1A1B',
+  primary:    '#FFFFFF',
 
-  secondary:  '#263859',
+  secondary:  '#E8E8E8',
 
-  third:      '#6B778D',
+  third:      '#DBC8AC',
   thirdHover: '#1A1A1B',
 
-  fourth:     '#EEEEEE',
+  fourth:     '#000000',
 
   neutro1:    '#ffffff',
   neutro2:    '#000000',
@@ -36,14 +38,14 @@ const LatoRegular = {
   src: `url(${Lato})`
 }
 */
+const kanitRegular = {
+  fontFamily : 'Kanit',
+  src: `url(${kanit_Regular})`
+}
+
 export const theme = createTheme({
   typography: {
-    /*fontFamily: [
-      `"${MontserratRegular.fontFamily}"`,
-      //`"${RobotoRegular.fontFamily}"`,
-      `"${LatoRegular.fontFamily}"`,
-      ].join(','),*/
-
+    fontFamily: 'Kanit'
   },
   palette: {
     text: {
@@ -77,14 +79,10 @@ export const theme = createTheme({
   overrides: {
     MuiCssBaseline: {
       '@global': {
-        /*
-        '@font-face': [RobotoRegular, 
-                      MontserratRegular, 
-                      LatoRegular],
-        */
+        '@font-face': [kanitRegular],
       },
       body: {
-        fontFamily: ['Roboto-Regular'],
+        fontFamily: ['Kanit','Roboto-Regular'],
       },
       'h1, h2, h3, h4, h5, h6': {
         margin: 0,
@@ -99,10 +97,10 @@ export const theme = createTheme({
         // Name of the slot
         root: {
           // Some CSS
-          color: paleta.fourth,
-          background: paleta.third,
+          //color: paleta.fourth,
+          //background: paleta.third,
           '&:hover': {
-            background: paleta.thirdHover
+            //background: paleta.thirdHover
           },
           '&.activo':{
             background:'green',
@@ -127,7 +125,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           background: paleta.secondary,
-          padding: '4rem'
+          padding: '2rem'
         },
       },
     },
@@ -135,8 +133,8 @@ export const theme = createTheme({
       styleOverrides: {
         columnHeaderRow: {
           background: paleta.tableHeader,
-          fontSize:'1rem',
-          fontWeight:'bolder',
+          color:'white',
+          fontSize:'1.1rem',
           '& button':{
             color:'white'
           }
@@ -154,7 +152,7 @@ export const theme = createTheme({
           }
         },
         panelWrapper:{
-          background: paleta.primary,
+          background: 'paleta.primary',
           border:'1px solid white',
           '& hr':{
             backgroundColor: 'white'
@@ -193,8 +191,8 @@ export const theme = createTheme({
     MuiInputBase: {
       styleOverrides: {
         root: {
-          background: paleta.neutro1,
-          color: paleta.neutro2,
+          ///background: paleta.neutro1,
+          ///color: paleta.neutro2,
         },
       },
     },
@@ -208,9 +206,8 @@ export const theme = createTheme({
     MuiList:{
       styleOverrides: {
         root: {
-          background: '#1B2942',
           '& svg':{
-            color: paleta.fourth
+            color: 'paleta.fourth'
           }
         },
       },
@@ -219,6 +216,15 @@ export const theme = createTheme({
       styleOverrides: {
         option:{
           color:'black'
+        }
+      }
+    },
+    MuiSnackbar: {
+      styleOverrides:{
+        root:{
+          position:'sticky',
+          top:'20px',
+          justifyContent:'flex-end'
         }
       }
     }

@@ -20,7 +20,8 @@ export const TrabajosAdmin = () => {
 
     const classes = useStyles();
 
-    const [trabajos, setTrabajos] = useState();    
+    const [trabajos, setTrabajos] = useState();
+    const [search, setSearch] = useState('');
 
     const columns = [
         {field: 'index', headerName: 'N°', flex: 0.5},
@@ -39,8 +40,8 @@ export const TrabajosAdmin = () => {
 
     return (
         trabajos&&<Main>
-            <Grid container direction='column' rowGap={3}>
-                <Grid item style={{width:'50rem'}}>
+            <Grid container direction='column' rowGap={3} alignItems={'center'}>
+                <Grid item style={{width:'80%'}}>
                     <Card raised>
                         <h1 className={classes.titlePage}>Trabajos</h1>
                         <Box>
@@ -48,17 +49,26 @@ export const TrabajosAdmin = () => {
                         </Box>
                         <Box display='flex' justifyContent= 'flex-end' >
                             <SearchIcon sx={{ color: 'white', mr: 1, my: 0.5 }} />
-                            <TextField label="Buscar ...." variant="filled" size='small'/>
+                            <TextField 
+                                label= "Buscar ...." 
+                                variant= "filled" 
+                                size= 'small'
+                                value= {search}
+                                onChange = {e=>{setSearch(e.target.value)}}
+                            />
                         </Box>
                     </Card>
                 </Grid>
-                <Grid container style={{width:'50rem'}}>
-                    <Card raised style={{width:'50rem'}}>
+                <Grid item style={{width:'80%'}}>
+                    <Card raised>
                         <Grid container direction='column' rowSpacing={2}>
                             <Grid item>
                                 <DataGrid
+                                style={{width:'99%'}}
                                 onRowClick={(e)=>{navigator(`${e.row._id}`)}}
-                                rows={trabajos} 
+                                rows={trabajos.filter(item=>{
+                                    return item.name.toLowerCase().includes(search.toLowerCase());
+                                })} 
                                 columns={columns}
                                 getRowClassName={(params) =>
                                     params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'

@@ -1,16 +1,15 @@
 import { makeStyles } from "@mui/styles";
 import { theme } from "../../theme/theme";
+import { getOrdersDelayed } from "../../utilities/allGetFetch";
 
-const tasks = require('../../__mock__/tareas.json').length;
-console.log(tasks);
-
-export const useStyles = makeStyles({
+const myStyles = {
     container:{
+        
         '& div':{
             overflow:'auto !important'
         },
         '& svg':{
-            height:`${60 + (38*tasks)}px !important`
+            ///height: (props) =>`${60 + (38*props.tasks)}px !important`
         },
         '& .gantt-container':{
             background:'gray',
@@ -46,19 +45,29 @@ export const useStyles = makeStyles({
         },
         '& .bar-progress':{
             fill: '#139300',
+            '& .delayed':{
+                fill:'#930003',
+            }
         },
         '& .bar-wrapper ':{
             '&:hover':{
                 '& .bar-progress':{
-                    fill:'#62955b !important'
+                    opacity: 0.8
                 }
-            }
+            },
         },
+        
         ///---Botones de cambio
         '& .handle':{
             fill:'#1b2942'
         }
-        
     },
-    
-})
+    titlePage:{
+        textAlign: 'center',
+        marginTop: '0'
+    },
+}
+
+
+export const useStyles = 
+    makeStyles({...myStyles})

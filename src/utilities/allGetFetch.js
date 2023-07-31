@@ -1,3 +1,6 @@
+import { isArray } from "lodash";
+import { json } from "react-router-dom";
+
 const token = localStorage.token;
 
 const getIndex = (data) => {
@@ -13,181 +16,123 @@ const getId = (data) => {
     })
     return final
 }
+const myFetch = async(url) => {
+
+    const myIpResponse = await fetch('https://api.ipify.org/?format=json');
+    const myIp = await myIpResponse.json();
+
+    console.log(myIp.ip);
+
+    const response = await fetch(url,{
+        method: 'GET',
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+        'IpAddress': myIp.ip
+    },   
+    })
+    let data = await response.json();
+
+    if(response.status!==404){
+        if(isArray(data)){
+            data = getIndex(data);
+            data = getId(data);
+        }
+        return data;
+    }else{
+        return 404
+    }
+}
 
 export const allClientsInternal = async() => {
     const url = 'http://localhost:5000/api/clientInternal';
-    const response = await fetch(url,{
-        method: 'GET',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token}
-    })
-    let dataClient = await response.json();
-    
-    return (getIndex(dataClient));
+    const data = await myFetch(url)
+    return (data);
 }
 export const allClientsExternal = async() => {
     const url = 'http://localhost:5000/api/clientExternal';
-    const response = await fetch(url,{
-        method: 'GET',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token}
-    })
-    let dataClient = await response.json();
-    
-    return (getIndex(dataClient));
+    const data = await myFetch(url)
+    return (data);
 }
 
 export const allEmployees = async () => {
     const url = 'http://localhost:5000/api/employee';
-    const response = await fetch(url,{
-        method: 'GET',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token}
-    })
-    let dataEmployee = await response.json();
-    dataEmployee = getIndex(dataEmployee);
-    dataEmployee = getId(dataEmployee);
-    return (dataEmployee);
+    const data = await myFetch(url)
+    return (data);
 }
 
 export const clientInternalById = async (id) => {
     const url = `http://localhost:5000/api/clientInternal/${id}`;
-    const response = await fetch(url,{
-        method: 'GET',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token}
-    })
-    if(response.status!==404){
-        let dataClient = await response.json();
-        return dataClient;
-    }else{
-        return 404
-    }
-    
+    return (myFetch(url));
 }
 export const clientExternalById = async (id) => {
     const url = `http://localhost:5000/api/clientExternal/${id}`;
-    const response = await fetch(url,{
-        method: 'GET',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token}
-    })
-    if(response.status!==404){
-        let dataClient = await response.json();
-        return dataClient;
-    }else{
-        return 404
-    }
-    
+    return (myFetch(url));    
 }
 export const employeeById = async (id) => {
     const url = `http://localhost:5000/api/employee/${id}`;
-    const response = await fetch(url,{
-        method: 'GET',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token}
-    })
-    if(response.status!==404){
-        let dataClient = await response.json();
-        return dataClient;
-    }else{
-        return 404
-    }
+    return (myFetch(url));
 }
 export const allMaterials = async (id) => {
     const url = 'http://localhost:5000/api/material';
-    const response = await fetch(url,{
-        method: 'GET',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token}
-    })
-    let dataMaterial = await response.json();
-    return (getIndex(dataMaterial));
-    
+    return (myFetch(url));
+
 }
 export const materialsById = async (id) => {
     const url = `http://localhost:5000/api/material/${id}`;
-    const response = await fetch(url,{
-        method: 'GET',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token}
-    })
-    if(response.status!==404){
-        let dataClient = await response.json();
-        return dataClient;
-    }else{
-        return 404
-    } 
+    return (myFetch(url));
 }
 
 export const allJobs = async (id) => {
     const url = 'http://localhost:5000/api/job';
-    const response = await fetch(url,{
-        method: 'GET',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token}
-    })
-    let dataJob = await response.json();
-    return (getIndex(dataJob));
-    
+    return (myFetch(url));
 }
 export const JobById = async (id) => {
     const url = `http://localhost:5000/api/job/${id}`;
-    const response = await fetch(url,{
-        method: 'GET',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token}
-    })
-    if(response.status!==404){
-        let dataJob = await response.json();
-        return dataJob;
-    }else{
-        return 404
-    }
+    return (myFetch(url));
 }
 
 export const orderInternalList = async (id) => {
     const url = `http://localhost:5000/api/orderInternal/list`;
-    const response = await fetch(url,{
-        method: 'GET',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token}
-    })
-    if(response.status!==404){
-        let data = await response.json();
-        data = getIndex(data);
-        data = getId(data);
-        data = data.map(item=>{return {...item, client:item.institution}})
-        
-        return data;
-    }else{
-        return 404
-    }
+    return (myFetch(url));
 }
 export const orderExternalList = async (id) => {
     const url = `http://localhost:5000/api/orderExternal/list`;
+    return (myFetch(url));
+}
+
+export const allOrderMaterial = async() => {
+    const url = 'http://localhost:5000/api/material/order';
+    return (myFetch(url));
+}
+
+export const orderInternalById = async(id) => {
+    const url = `http://localhost:5000/api/orderInternal/detail/${id}`;
+    let response = await myFetch(url);
+    if(response.length!==0){
+        response = [{...response[0], details:getIndex([...response[0].details])}]
+    }
+    return (response);
+}
+
+export const orderExternalById = async(id) => {
+    const url = `http://localhost:5000/api/orderExternal/detail/${id}`;
+    let response = await myFetch(url);
+    if(response.length!==0){
+        response = [{...response[0], details:getIndex([...response[0].details])}]
+    }
+    return (response);
+}
+
+export const getConfigBackup = async() => {
+    const url = 'http://localhost:5000/api/configBackup';
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getBackupFiles = async () => {
+    const url = 'http://localhost:5000/api/configBackup/list';
     const response = await fetch(url,{
         method: 'GET',
         headers: {
@@ -195,14 +140,68 @@ export const orderExternalList = async (id) => {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token}
     })
-    if(response.status!==404){
-        let data = await response.json();
-        data = getIndex(data);
-        data = getId(data);
-        data = data.map(item=>{return {...item, client:item.name}})
+    let data = await response.json();
+    let final = data.map((item,index)=>{
+        return {...item, id:index+1, date: item.createAt.slice(0,10), time: item.createAt.slice(11,19)}
+    });
+    return (final); 
+}
 
-        return data;
-    }else{
-        return 404
-    }
+export const getOrderNoConfirmed = async () => {
+    const url = 'http://localhost:5000/api/orders/noConfirm';
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getOrderDetailsConfirmed = async () => {
+    const url = 'http://localhost:5000/api/orderDetails';
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getSchedule = async () => {
+    const url = 'http://localhost:5000/api/schedule/generate';
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getStepById = async (id) => {
+    const url = `http://localhost:5000/api/step/next/${id}`;
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getOrderById = async (id) => {
+    const url = `http://localhost:5000/api/orders/finish/${id}`;
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getMaterialStractByid = async (id) => {
+    const url = `http://localhost:5000/api/material/extract/${id}`;
+    const response = await fetch(url,{
+        method: 'GET',
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token}
+    })
+    let data = await response.json();
+    let final = data.map((item,index)=>{
+        return {...item, id:index+1}
+    });
+    return (final);
+}
+
+export const getOrdersDelayed = async () => {
+    const url = 'http://localhost:5000/api/orderDetails/delayed';
+    const response = await fetch(url,{
+        method: 'GET',
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token}
+    })
+    let data = await response.json();
+    return data
 }

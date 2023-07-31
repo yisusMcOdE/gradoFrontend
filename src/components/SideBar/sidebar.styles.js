@@ -3,15 +3,9 @@ import { theme } from "../../theme/theme"
 export const useStyles = makeStyles(({
     close:{
         width:'2rem',
-        '& .MuiDrawer-paperAnchorDockedLeft':{
-            border:'none'
-        }
     },
     open:{
-        width:'12rem',
-        '& .MuiDrawer-paperAnchorDockedLeft':{
-            border:'none'
-        }
+        width:'15rem',
     },
     slideCloseContainer:{
         background:theme.palette.secondary.main,
@@ -29,22 +23,24 @@ export const useStyles = makeStyles(({
     },
     iconToggle:{
         position:'absolute',
-        left:'10rem',
-        fontSize:'2rem',
+        left:'13rem',
+        fontSize:'1rem',
         cursor:'pointer',
         transition:'all .5s ease',
         '&:hover':{
             color:theme.palette.third.main,
+        },
+        '& svg':{
+            fontSize:'2rem',
         }
     },
     slideOpenContainer:{
         background:theme.palette.secondary.main,
         color:theme.palette.fourth.main,
-        width:'12rem',
+        width:'15rem',
     },
     headerSideBar:{
         textAlign:'center',
-        height:'25%',
         '& svg':{
             position:'static',
             fontSize:'5rem'
@@ -54,11 +50,13 @@ export const useStyles = makeStyles(({
         }
     },
     bodySideBar:{
-        height:'65%'
+        overflowY:'auto'
     },
     footerSideBar:{
-        height:'10%',
         placeContent:'center',
-        display: 'grid'
+        display: 'grid',
+        '& button':{
+            margin:'1rem 0rem'
+        }
     }
 }))

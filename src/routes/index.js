@@ -63,7 +63,7 @@ export const routes = createBrowserRouter(createRoutesFromElements(
             <Route path='trabajos' element={<Trabajos/>}/>
             <Route path='trabajos/:id' element={<DetalleTrabajo/>}/>
             <Route path='trabajos/cronograma' element={<Cronograma/>}/>
-            <Route path='trabajos/finalizar' element={<Finalizar/>}/>
+            <Route path='trabajos/finalizar/:id' element={<Finalizar/>}/>
             <Route path='material' element={<MaterialArea/>}/>
             <Route path='material/:id' element={<DetailsMaterialArea/>}/>
         </Route>

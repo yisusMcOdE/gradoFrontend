@@ -14,10 +14,7 @@ export const CreateMaterial = () => {
     const createUser = () => {
         const data = {
             name: document.getElementById('nameForm').value,
-            brand: document.getElementById('brandForm').value,
             unit: document.getElementById('unitForm').value,
-            stock: 0,
-            over: 0,
             status: true,
         }
         createMaterial(data);
@@ -26,49 +23,45 @@ export const CreateMaterial = () => {
 
     return(
         <Main>
-        <Card>
-            <Grid container direction='column' rowSpacing={3}>
-                {
-                    ///------TITLE------///
-                }
+            <Grid container direction={'column'} rowGap={2} alignItems={'center'}>
                 <Grid item>
-                    <h1 className={classes.titlePage}>
-                        Crear Material
-                    </h1>
-                </Grid>
+                    <Card>
+                        <Grid container direction='column' rowSpacing={3}>
+                            {
+                                ///------TITLE------///
+                            }
+                            <Grid item>
+                                <h1 className={classes.titlePage}>
+                                    Crear Material
+                                </h1>
+                            </Grid>
 
-                <Grid item container direction='column' rowSpacing={1}>
-                    <Grid item container alignItems='center'>
-                        <Grid item xs={4}>
-                            <label>Nombre:</label>
-                        </Grid>
-                        <Grid item >
-                            <TextField id="nameForm" size='small' />
-                        </Grid>
-                    </Grid>
-                    <Grid item container alignItems='center'>
-                        <Grid item xs={4}>
-                            <label>Marca:</label>
-                        </Grid>
-                        <Grid item >
-                            <TextField id="brandForm" size='small' />
-                        </Grid>
-                    </Grid>
-                    <Grid item container alignItems='center'>
-                        <Grid item xs={4}>
-                            <label>Unidad de medida:</label>
-                        </Grid>
-                        <Grid item >
-                            <TextField id="unitForm" size='small' />
-                        </Grid>
-                    </Grid>
-                </Grid>
+                            <Grid item container direction='column' rowSpacing={1}>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Nombre:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        <TextField id="nameForm" size='small' />
+                                    </Grid>
+                                </Grid>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Unidad de medida:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        <TextField id="unitForm" size='small' />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
 
-                <Grid item container justifyContent='center'>
-                    <Button onClick={()=>{createUser()}}>Crear</Button>
+                            <Grid item container justifyContent='center'>
+                                <Button variant="contained" onClick={()=>{createUser()}}>Crear</Button>
+                            </Grid>
+                        </Grid>
+                    </Card>
                 </Grid>
             </Grid>
-        </Card>
-    </Main>
+        </Main>
     )
 }

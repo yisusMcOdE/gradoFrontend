@@ -20,17 +20,18 @@ export const MaterialesAdmin = () => {
 
     const classes = useStyles();
 
-    const [materials, setMaterials] = useState();    
+    const [materials, setMaterials] = useState();
+    const [search, setSearch] = useState('');
 
     const columns = [
         {field: 'index', headerName: 'N°', flex: 0.5},
-        {field: 'name', headerName: 'Nombre', flex: 1.5},
-        {field: 'brand', headerName: 'Marca', flex: 1},
+        {field: 'name', headerName: 'Nombre', flex: 1},
         {field: 'status', headerName: 'Estado', flex: 0.5},
     ]
 
     const getData = async() => {
-        setMaterials(await allMaterials());
+        const response = await allMaterials()
+        setMaterials(response);
     }
 
     useEffect(()=>{
@@ -39,8 +40,8 @@ export const MaterialesAdmin = () => {
 
     return (
         materials&&<Main>
-            <Grid container direction='column' rowGap={3}>
-                <Grid item style={{width:'50rem'}}>
+            <Grid container direction='column' rowGap={2} alignItems={'center'}>
+                <Grid item style={{width:'80%'}}>
                     <Card raised>
                         <h1 className={classes.titlePage}>Materiales</h1>
                         <Box>
@@ -48,17 +49,26 @@ export const MaterialesAdmin = () => {
                         </Box>
                         <Box display='flex' justifyContent= 'flex-end' >
                             <SearchIcon sx={{ color: 'white', mr: 1, my: 0.5 }} />
-                            <TextField label="Buscar ...." variant="filled" size='small'/>
+                            <TextField 
+                                label= "Buscar ...."
+                                variant= "filled"
+                                size= 'small'
+                                value= {search}
+                                onChange= {e=>{setSearch(e.target.value)}} 
+                            />
                         </Box>
                     </Card>
                 </Grid>
-                <Grid container style={{width:'50rem'}}>
-                    <Card raised style={{width:'50rem'}}>
+                <Grid item style={{width:'80%'}}>
+                    <Card raised >
                         <Grid container direction='column' rowSpacing={2}>
                             <Grid item>
                                 <DataGrid
+                                style={{width:'99%'}}
                                 onRowClick={(e)=>{navigator(`${e.row._id}`)}}
-                                rows={materials} 
+                                rows={materials.filter(item=>{
+                                    return item.name.toLowerCase().includes(search.toLowerCase());
+                                })}  
                                 columns={columns}
                                 getRowClassName={(params) =>
                                     params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'

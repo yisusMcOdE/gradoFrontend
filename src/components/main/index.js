@@ -6,8 +6,8 @@ export const Main = ({children}) => {
     const classes = useStyles();
 
     return (
-        <Grid container direction='column' justifyContent='center'>
-            <Grid item xs={12} className={classes.mainContainer}>
+        <Grid container>
+            <Grid item xs className={classes.mainContainer}>
                 {children}
             </Grid>
         </Grid>

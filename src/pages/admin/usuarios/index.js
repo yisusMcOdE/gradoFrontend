@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useEffect, useState } from "react";
 import SearchIcon from '@mui/icons-material/Search';
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, esES } from "@mui/x-data-grid";
 import { GridToolbar } from "@mui/x-data-grid";
 import { Chart } from 'react-chartjs-2'
 import 'chart.js/auto';
@@ -23,8 +23,7 @@ export const Usuarios = () => {
     const [dataClient, setDataClient] = useState();
     const [dataEmployee, setDataEmployee] = useState();
     const [dataType, setDataType] = useState(false);
-
-    
+    const [search,setSearch] = useState('');
 
     const columnsA = [
         {field: 'index', headerName: 'N°', flex: 0.5},
@@ -33,6 +32,8 @@ export const Usuarios = () => {
         {field: 'address', headerName: 'Direccion', flex: 1},
         {field: 'status', headerName: 'Estado', flex: 0.5},
     ];
+
+
     const columnsB = [
         {field: 'index', headerName: 'N°', flex: 0.5},
         {field: 'name', headerName: 'Nombre', flex: 1.5},
@@ -42,8 +43,14 @@ export const Usuarios = () => {
     ];
 
     const getData = async() => {
-        setDataClient(await allClientsInternal());
-        setDataEmployee( await allEmployees());
+        if (dataClient===undefined||dataEmployee===undefined){
+            const dataClient = await allClientsInternal()
+            const dataEmployee = await allEmployees()
+
+            Promise.all([dataClient, dataEmployee]).then(()=>{
+                setDataClient(dataClient);
+                setDataEmployee(dataEmployee);
+        })}
     }
 
     useEffect(()=>{
@@ -51,22 +58,29 @@ export const Usuarios = () => {
     },[])
 
     return (
-        dataEmployee&&<Main>
-            <Grid container direction='column' rowGap={3}>
-                <Grid item style={{width:'50rem'}}>
+        (dataEmployee&&dataClient)&&
+        <Main>
+            <Grid container direction='column' rowGap={2} alignItems='center'>
+                <Grid item style={{width:'80%'}}>
                     <Card raised>
                         <h1 className={classes.titlePage}>Usuarios</h1>
                         <Box>
                             <Button onClick={()=>{navigator('crear')}} startIcon={<AddIcon/>} variant='contained'>Crear Usuario</Button>
                         </Box>
-                        <Box display='flex' justifyContent= 'flex-end' >
-                            <SearchIcon sx={{ color: 'white', mr: 1, my: 0.5 }} />
-                            <TextField label="Buscar ...." variant="filled" size='small'/>
+                        <Box display='flex' justifyContent= 'flex-end' alignItems={'center'}>
+                            <SearchIcon sx={{ mr: 1, my: 0.5 }} />
+                            <TextField 
+                                label= "Buscar ...."
+                                variant= "filled"
+                                size= 'small'
+                                value= {search}
+                                onChange={e=>{setSearch(e.target.value)}}
+                            />
                         </Box>
                     </Card>
                 </Grid>
-                <Grid container style={{width:'50rem'}}>
-                    <Card raised style={{width:'50rem'}}>
+                <Grid item style={{width:'80%'}}>
+                    <Card raised >
                         <Grid container direction='column' rowSpacing={2}>
                             <Grid item>
                                 <Box display='flex' justifyContent= 'center' >
@@ -86,16 +100,24 @@ export const Usuarios = () => {
                                 {
                                 dataType?
                                     <DataGrid
+                                    localeText={esES.components.MuiDataGrid.defaultProps.localeText}
+                                    style={{width:'99%'}}
                                     onRowClick={(e)=>{navigator(`${e.row._id}`)}}
-                                    rows={dataClient} 
+                                    rows={dataClient.filter(item=>{
+                                        return item.institution.toLowerCase().includes(search.toLowerCase());
+                                    })} 
                                     columns={columnsA}
                                     getRowClassName={(params) =>
                                         params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
                                     }
                                     /> :
                                     <DataGrid
+                                    localeText={esES.components.MuiDataGrid.defaultProps.localeText}
+                                    style={{width:'99%'}}
                                     onRowClick={(e)=>{navigator(`${e.row._id}`)}}
-                                    rows={dataEmployee} 
+                                    rows={dataEmployee.filter(item=>{
+                                        return item.name.toLowerCase().includes(search.toLowerCase());
+                                    })} 
                                     columns={columnsB}
                                     getRowClassName={(params) =>
                                         params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'

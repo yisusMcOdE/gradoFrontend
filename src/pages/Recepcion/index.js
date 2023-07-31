@@ -6,6 +6,7 @@ import WidgetsIcon from '@mui/icons-material/Widgets';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import { Outlet } from "react-router-dom";
+import { BackgroundPage } from "../../components/background";
 
 export const Recepcion = () => {
     
@@ -20,7 +21,7 @@ export const Recepcion = () => {
         Pedidos: [
             {name: 'Ver', to:'pedidos'}, 
             {name: 'Crear', to:'pedidos/nuevo'}, 
-            {name: 'Confirmar', to:'pedidos/confirmar'}, 
+            {name: 'Confirmar / Cancelar', to:'pedidos/confirmar'}, 
             {name: 'Entregar', to:'pedidos/entrega'}
         ],
         Materiales: [
@@ -35,6 +36,7 @@ export const Recepcion = () => {
 
     return (
         <Grid container >
+            <BackgroundPage/>
             <Grid item xs='auto'>
                 <SideBar role='Recepcion' menu={menu} icons={icons} subMenu={subMenu}/>
             </Grid>

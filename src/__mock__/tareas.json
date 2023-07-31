@@ -1,71 +1,247 @@
-[{
-  "id": "1",
-  "name": "Juice - V8, Tomato",
-  "start": "5/23/2023",
-  "end": "6/1/2023",
-  "progress": 32,
-  "dependecies": ""
-}, {
-  "id": "2",
-  "name": "Pears - Anjou",
-  "start": "5/24/2023",
-  "end": "5/29/2023",
-  "progress": 30,
-  "dependecies": ""
-}, {
-  "id": "3",
-  "name": "Corn - Mini",
-  "start": "5/23/2023",
-  "end": "6/2/2023",
-  "progress": 51,
-  "dependecies": ""
-}, {
-  "id": "4",
-  "name": "Bandage - Fexible 1x3",
-  "start": "5/26/2023",
-  "end": "5/27/2023",
-  "progress": 80,
-  "dependecies": ""
-}, {
-  "id": "5",
-  "name": "Juice - Apple 284ml",
-  "start": "5/24/2023",
-  "end": "5/28/2023",
-  "progress": 16,
-  "dependecies": ""
-}, {
-  "id": "6",
-  "name": "Juice - Cranberry 284ml",
-  "start": "5/23/2023",
-  "end": "5/29/2023",
-  "progress": 85,
-  "dependecies": ""
-}, {
-  "id": "7",
-  "name": "Beer - Guiness",
-  "start": "5/26/2023",
-  "end": "6/2/2023",
-  "progress": 20,
-  "dependecies": ""
-}, {
-  "id": "8",
-  "name": "Cherries - Maraschino,jar",
-  "start": "5/20/2023",
-  "end": "6/2/2023",
-  "progress": 25,
-  "dependecies": ""
-}, {
-  "id": "9",
-  "name": "Flour - So Mix Cake White",
-  "start": "5/25/2023",
-  "end": "5/27/2023",
-  "progress": 24,
-  "dependecies": ""
-}, {
-  "id": "10",
-  "name": "Hot Chocolate - Individual",
-  "start": "5/20/2023",
-  "end": "5/29/2023",
-  "progress": 70,
-  "dependecies": ""
-}]
+[
+  {
+      "id": "6499ff449f2a06b9289aa48a",
+      "detail": "Detalle de protatitulos",
+      "requiredQuantity": 3,
+      "job": "Portatitulos",
+      "days": 2,
+      "area": "Offset",
+      "steps": [
+          {
+              "id": "6499ff449f2a06b9289aa49d",
+              "idOrderDetail": "6499ff449f2a06b9289aa48a",
+              "type": "registered",
+              "description": "El trabajo a sido registrado existosamente",
+              "startedAt": "2023-06-26T21:12:36.589Z",
+              "finishedAt": "2023-06-26T21:12:36.599Z",
+              "createdAt": "2023-06-26T21:12:36.600Z",
+              "updatedAt": "2023-06-26T21:12:36.600Z"
+          },
+          {
+              "id": "6499ff449f2a06b9289aa4a0",
+              "idOrderDetail": "6499ff449f2a06b9289aa48a",
+              "type": "confirmation",
+              "description": "El trabajo esta en proceso de confirmacion",
+              "startedAt": "2023-06-26T21:12:36.602Z",
+              "finishedAt": "2023-06-26T21:13:07.374Z",
+              "createdAt": "2023-06-26T21:12:36.603Z",
+              "updatedAt": "2023-06-26T21:13:07.374Z"
+          },
+          {
+              "id": "6499ff639f2a06b9289aa4d6",
+              "idOrderDetail": "6499ff449f2a06b9289aa48a",
+              "type": "scheduled",
+              "description": "El trabajo a sido agendado para su elaboracion",
+              "startedAt": "2023-06-26T21:13:07.369Z",
+              "createdAt": "2023-06-26T21:13:07.379Z",
+              "updatedAt": "2023-07-02T03:59:37.536Z",
+              "finishedAt": "2023-07-02T03:59:37.536Z"
+          },
+          {
+              "id": "64a0f629b7d0d634b35fdc9b",
+              "idOrderDetail": "6499ff449f2a06b9289aa48a",
+              "type": "develop",
+              "description": "El trabajo esta siendo procesado ",
+              "startedAt": "2023-07-01T03:59:37.535Z",
+              "createdAt": "2023-07-02T03:59:37.537Z",
+              "updatedAt": "2023-07-02T03:59:37.537Z"
+          }
+      ],
+      "name": "Portatitulos",
+      "start": "2023-07-01T03:59:37.535Z",
+      "progress": 100,
+      "end": "2023-07-03T03:59:37.535Z"
+  },
+  {
+      "id": "64a0d56c48e48d1969760228",
+      "detail": "frt",
+      "requiredQuantity": 4,
+      "job": "Libro Carta",
+      "days": 5,
+      "area": "Impresion",
+      "steps": [
+          {
+              "id": "64a0d56c48e48d1969760231",
+              "idOrderDetail": "64a0d56c48e48d1969760228",
+              "type": "registered",
+              "description": "El trabajo a sido registrado existosamente",
+              "startedAt": "2023-07-02T01:39:56.387Z",
+              "finishedAt": "2023-07-02T01:39:56.393Z",
+              "createdAt": "2023-07-02T01:39:56.393Z",
+              "updatedAt": "2023-07-02T01:39:56.393Z"
+          },
+          {
+              "id": "64a0d56c48e48d1969760233",
+              "idOrderDetail": "64a0d56c48e48d1969760228",
+              "type": "confirmation",
+              "description": "El trabajo esta en proceso de confirmacion",
+              "startedAt": "2023-07-02T01:39:56.395Z",
+              "finishedAt": "2023-07-02T01:40:12.236Z",
+              "createdAt": "2023-07-02T01:39:56.395Z",
+              "updatedAt": "2023-07-02T01:40:12.236Z"
+          },
+          {
+              "id": "64a0d57c48e48d1969760250",
+              "idOrderDetail": "64a0d56c48e48d1969760228",
+              "type": "scheduled",
+              "description": "El trabajo a sido agendado para su elaboracion",
+              "startedAt": "2023-07-02T01:40:12.220Z",
+              "createdAt": "2023-07-02T01:40:12.240Z",
+              "updatedAt": "2023-07-02T01:40:52.784Z",
+              "finishedAt": "2023-07-02T01:40:52.784Z"
+          },
+          {
+              "id": "64a0d5a448e48d1969760256",
+              "idOrderDetail": "64a0d56c48e48d1969760228",
+              "type": "develop",
+              "description": "El trabajo esta siendo procesado ",
+              "startedAt": "2023-07-02T01:40:52.783Z",
+              "createdAt": "2023-07-02T01:40:52.786Z",
+              "updatedAt": "2023-07-02T01:40:52.786Z"
+          }
+      ],
+      "name": "Libro Carta",
+      "start": "2023-07-02T01:40:52.783Z",
+      "progress": 100,
+      "end": "2023-07-07T01:40:52.783Z"
+  },
+  {
+      "id": "64a0f1842352a876d5c99354",
+      "detail": "wsxde",
+      "requiredQuantity": 5,
+      "job": "Portatitulos",
+      "days": 5,
+      "area": "Offset",
+      "steps": [
+          {
+              "id": "64a0f1852352a876d5c99367",
+              "idOrderDetail": "64a0f1842352a876d5c99354",
+              "type": "registered",
+              "description": "El trabajo a sido registrado existosamente",
+              "startedAt": "2023-07-02T03:39:48.993Z",
+              "finishedAt": "2023-07-02T03:39:49.004Z",
+              "createdAt": "2023-07-02T03:39:49.005Z",
+              "updatedAt": "2023-07-02T03:39:49.005Z"
+          },
+          {
+              "id": "64a0f1852352a876d5c9936a",
+              "idOrderDetail": "64a0f1842352a876d5c99354",
+              "type": "confirmation",
+              "description": "El trabajo esta en proceso de confirmacion",
+              "startedAt": "2023-07-02T03:39:49.008Z",
+              "finishedAt": "2023-07-02T03:40:05.605Z",
+              "createdAt": "2023-07-02T03:39:49.008Z",
+              "updatedAt": "2023-07-02T03:40:05.605Z"
+          },
+          {
+              "id": "64a0f1952352a876d5c99393",
+              "idOrderDetail": "64a0f1842352a876d5c99354",
+              "type": "scheduled",
+              "description": "El trabajo a sido agendado para su elaboracion",
+              "startedAt": "2023-07-02T03:40:05.598Z",
+              "createdAt": "2023-07-02T03:40:05.610Z",
+              "updatedAt": "2023-07-02T03:41:47.584Z",
+              "finishedAt": "2023-07-02T03:41:47.583Z"
+          },
+          {
+              "id": "64a0f1fb2352a876d5c993cf",
+              "idOrderDetail": "64a0f1842352a876d5c99354",
+              "type": "develop",
+              "description": "El trabajo esta siendo procesado ",
+              "startedAt": "2023-07-02T03:41:47.582Z",
+              "createdAt": "2023-07-02T03:41:47.585Z",
+              "updatedAt": "2023-07-02T03:41:47.585Z"
+          }
+      ],
+      "name": "Portatitulos",
+      "start": "2023-07-02T03:41:47.582Z",
+      "progress": 100,
+      "end": "2023-07-07T03:41:47.582Z"
+  },
+  {
+      "id": "64a0d1efe2731cb701a51b32",
+      "detail": "asd",
+      "requiredQuantity": 3,
+      "job": "Portatitulos",
+      "days": 3,
+      "area": "Offset",
+      "steps": [
+          {
+              "id": "64a0d1efe2731cb701a51b5d",
+              "idOrderDetail": "64a0d1efe2731cb701a51b32",
+              "type": "registered",
+              "description": "El trabajo a sido registrado existosamente",
+              "startedAt": "2023-07-02T01:25:03.100Z",
+              "finishedAt": "2023-07-02T01:25:03.125Z",
+              "createdAt": "2023-07-02T01:25:03.125Z",
+              "updatedAt": "2023-07-02T01:25:03.125Z"
+          },
+          {
+              "id": "64a0d1efe2731cb701a51b5f",
+              "idOrderDetail": "64a0d1efe2731cb701a51b32",
+              "type": "confirmation",
+              "description": "El trabajo esta en proceso de confirmacion",
+              "startedAt": "2023-07-02T01:25:03.127Z",
+              "finishedAt": "2023-07-02T01:27:10.675Z",
+              "createdAt": "2023-07-02T01:25:03.127Z",
+              "updatedAt": "2023-07-02T01:27:10.676Z"
+          },
+          {
+              "id": "64a0d26ee2731cb701a51bb9",
+              "idOrderDetail": "64a0d1efe2731cb701a51b32",
+              "type": "scheduled",
+              "description": "El trabajo a sido agendado para su elaboracion",
+              "startedAt": "2023-07-02T01:27:10.664Z",
+              "createdAt": "2023-07-02T01:27:10.682Z",
+              "updatedAt": "2023-07-02T01:27:10.682Z"
+          }
+      ],
+      "start": "2023-07-07T03:41:47.582Z",
+      "end": "2023-07-10T03:41:47.582Z",
+      "progress": 0,
+      "name": "Portatitulos"
+  },
+  {
+      "id": "6499ff0a9f2a06b9289aa448",
+      "detail": "detalle de pedido",
+      "requiredQuantity": 1,
+      "job": "Empastado",
+      "days": 10,
+      "area": "Empastado",
+      "steps": [
+          {
+              "id": "6499ff0a9f2a06b9289aa45e",
+              "idOrderDetail": "6499ff0a9f2a06b9289aa448",
+              "type": "registered",
+              "description": "El trabajo a sido registrado existosamente",
+              "startedAt": "2023-06-26T21:11:38.512Z",
+              "finishedAt": "2023-06-26T21:11:38.522Z",
+              "createdAt": "2023-06-26T21:11:38.523Z",
+              "updatedAt": "2023-06-26T21:11:38.523Z"
+          },
+          {
+              "id": "6499ff0a9f2a06b9289aa462",
+              "idOrderDetail": "6499ff0a9f2a06b9289aa448",
+              "type": "confirmation",
+              "description": "El trabajo esta en proceso de confirmacion",
+              "startedAt": "2023-06-26T21:11:38.532Z",
+              "finishedAt": "2023-07-03T00:43:52.039Z",
+              "createdAt": "2023-06-26T21:11:38.532Z",
+              "updatedAt": "2023-07-03T00:43:52.040Z"
+          },
+          {
+              "id": "64a219c89c1700a820d1d8aa",
+              "idOrderDetail": "6499ff0a9f2a06b9289aa448",
+              "type": "scheduled",
+              "description": "El trabajo a sido agendado para su elaboracion",
+              "startedAt": "2023-07-03T00:43:52.029Z",
+              "createdAt": "2023-07-03T00:43:52.048Z",
+              "updatedAt": "2023-07-03T00:43:52.048Z"
+          }
+      ],
+      "start": "2023-07-10T03:41:47.582Z",
+      "end": "2023-07-20T03:41:47.582Z",
+      "progress": 0,
+      "name": "Empastado"
+  }
+]

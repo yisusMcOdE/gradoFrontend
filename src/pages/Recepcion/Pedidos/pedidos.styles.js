@@ -16,8 +16,7 @@ export const useStyles = makeStyles(theme=>({
     ////----NUEVO PEDIDO----////
 
     nuevoPedidoContainer:{
-        margin:'5rem 0',
-        width: '50rem',
+        
     },
     tableHeader:{
         background:'#464646',
@@ -56,20 +55,16 @@ export const useStyles = makeStyles(theme=>({
     ////----CONFIRMAR PEDIDO----////
 
     confirmarPedidoContainer:{
-        margin:'5rem 0',
-        width: '30rem',
+        
     },
 
     ////----ENTREGAR PEDIDO----////
 
     entregaContainer:{
-        margin:'5rem 0',
+        
     },
 
     ////----DETALLE PEDIDO----////
 
-    detalleContainer:{
-        margin:'5rem 0',
-        width: '50rem'
-    }
+    
 }))

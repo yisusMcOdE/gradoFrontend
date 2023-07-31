@@ -24,9 +24,10 @@ export const ItemSideBar = ({icons, indexIcon, label , subItems}) => {
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                 {
-                    subItems.map(item => {
+                    subItems.map((item, index) => {
                         return (
-                            <ListItemButton 
+                            <ListItemButton
+                                key={index}
                                 sx={{ pl: 4 }} 
                                 onClick={()=>{navigator(item.to)}}>
                                 <ListItemText primary={item.name} />

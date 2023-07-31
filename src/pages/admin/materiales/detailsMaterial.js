@@ -53,121 +53,109 @@ export const DetailsMaterialAdmin = () => {
                     </Grid>
                 </Card>
             </Dialog>
-            <Card>
-                <Grid container direction='column' rowSpacing={3}>
+            <Grid container direction={'column'} alignItems={'center'}>
+                <Grid item>
+                    <Card>
+                        <Grid container direction='column' rowSpacing={3}>
 
-                    {
-                        ///------TITLE------///
-                    }
-                    <Grid item>
-                        <h1 className={classes.titlePage}>
-                            Detalles de Material
-                        </h1>
-                    </Grid>
+                            {
+                                ///------TITLE------///
+                            }
+                            <Grid item>
+                                <h1 className={classes.titlePage}>
+                                    Detalles de Material
+                                </h1>
+                            </Grid>
 
 
-                    <Grid item container alignItems='center' justifyContent='flex-end'>
-                        <Grid item >
-                            <label>Modo Edicion</label>
-                        </Grid>
-                        <Grid item >
-                            <Switch 
-                                checked = {!editionMode}
-                                onChange={()=>{
-                                    setEditionMode(prev=>!prev);
-                                    setStatus(data.status);
-                                }}
-                            />
-                        </Grid>
-                    </Grid>
+                            <Grid item container alignItems='center' justifyContent='flex-end'>
+                                <Grid item >
+                                    <label>Modo Edicion</label>
+                                </Grid>
+                                <Grid item >
+                                    <Switch 
+                                        checked = {!editionMode}
+                                        onChange={()=>{
+                                            setEditionMode(prev=>!prev);
+                                            setStatus(data.status);
+                                        }}
+                                    />
+                                </Grid>
+                            </Grid>
 
-                    {
-                        ///------FIELDS------///
-                    }
+                            {
+                                ///------FIELDS------///
+                            }
 
-                    {editionMode?
-                    
-                    <Grid item container direction='column' rowSpacing={1}>
-                        <Grid item container alignItems='center'>
-                            <Grid item xs={4}>
-                                <label>Nombre:</label>
+                            {editionMode?
+                            
+                            <Grid item container direction='column' rowSpacing={1}>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Nombre:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        <TextField id="nameForm" size='small' defaultValue={data.name}/>
+                                    </Grid>
+                                </Grid>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Unidad de Medida:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        <TextField id="unitForm" size='small' defaultValue={data.unit}/>
+                                    </Grid>
+                                </Grid>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Estado:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        <Button
+                                            className={status?'activo':'inactivo'}
+                                            onClick={()=>{setStatus(prev => !prev)}}
+                                        >
+                                                {status?'Activo':'Inhabilitado'}
+                                        </Button>
+                                    </Grid>
+                                </Grid>
                             </Grid>
-                            <Grid item >
-                                <TextField id="nameForm" size='small' defaultValue={data.name}/>
-                            </Grid>
-                        </Grid>
-                        <Grid item container alignItems='center'>
-                            <Grid item xs={4}>
-                                <label>Marca:</label>
-                            </Grid>
-                            <Grid item >
-                                <TextField id="brandForm" size='small' defaultValue={data.brand}/>
-                            </Grid>
-                        </Grid>
-                        <Grid item container alignItems='center'>
-                            <Grid item xs={4}>
-                                <label>Unida de Medida:</label>
-                            </Grid>
-                            <Grid item >
-                                <TextField id="unitForm" size='small' defaultValue={data.unit}/>
-                            </Grid>
-                        </Grid>
-                        <Grid item container alignItems='center'>
-                            <Grid item xs={4}>
-                                <label>Estado:</label>
-                            </Grid>
-                            <Grid item >
-                                <Button 
-                                    className={status?'activo':'inactivo'}
-                                    onClick={()=>{setStatus(prev => !prev)}}
-                                >
-                                        {status?'Activo':'Inhabilitado'}
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Grid>
 
-                    :
+                            :
 
-                    <Grid item container direction='column' rowSpacing={1}>
-                        <Grid item container alignItems='center'>
-                            <Grid item xs={4}>
-                                <label>Nombre:</label>
-                            </Grid>
-                            <Grid item >
-                                <TextField disabled size='small' value={data.name}/>
-                            </Grid>
+                            <Grid item container direction='column' rowSpacing={1}>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Nombre:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        <TextField disabled size='small' value={data.name}/>
+                                    </Grid>
+                                </Grid>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Unidad de Medida:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        <TextField disabled size='small' value={data.unit}/>
+                                    </Grid>
+                                </Grid>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Estado:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        <Button disabled={true} className={data.status?'activo':'inactivo'}>{data.status?'Activo':'Inhabilitado'}</Button>
+                                    </Grid>
+                                </Grid>
+                            </Grid>}
+                            {editionMode&&<Grid item container justifyContent='center'>
+                                <Button variant="contained" onClick={()=>{setDialog(true)}}>Guardar</Button>
+                            </Grid>}
                         </Grid>
-                        <Grid item container alignItems='center'>
-                            <Grid item xs={4}>
-                                <label>Marca:</label>
-                            </Grid>
-                            <Grid item >
-                                <TextField disabled size='small' value={data.brand}/>
-                            </Grid>
-                        </Grid>
-                        <Grid item container alignItems='center'>
-                            <Grid item xs={4}>
-                                <label>Unidad de Medida:</label>
-                            </Grid>
-                            <Grid item >
-                                <TextField disabled size='small' value={data.unit}/>
-                            </Grid>
-                        </Grid>
-                        <Grid item container alignItems='center'>
-                            <Grid item xs={4}>
-                                <label>Estado:</label>
-                            </Grid>
-                            <Grid item >
-                                <Button className={data.status?'activo':'inactivo'}>{data.status?'Activo':'Inhabilitado'}</Button>
-                            </Grid>
-                        </Grid>
-                    </Grid>}
-                    {editionMode&&<Grid item container justifyContent='center'>
-                        <Button onClick={()=>{setDialog(true)}}>Guardar</Button>
-                    </Grid>}
+                    </Card>
                 </Grid>
-            </Card>
+            </Grid>
         </Main>
 
         ///Employees

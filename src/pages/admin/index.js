@@ -10,6 +10,7 @@ import FindInPageIcon from '@mui/icons-material/FindInPage';
 
 import { useStyles } from "./admin.styles";
 import { useEffect } from "react";
+import { BackgroundPage } from "../../components/background";
 
 export const Admin = () => {
 
@@ -48,7 +49,8 @@ export const Admin = () => {
     const classes=useStyles();
 
     return (
-    <Grid container >
+    <Grid container direction={'row'} wrap='nowrap'>
+        <BackgroundPage/>
         <Grid item xs='auto'>
             <SideBar role='Administrador' menu={menu} icons={icons} subMenu={subMenu}/>
         </Grid>

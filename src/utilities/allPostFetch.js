@@ -1,99 +1,75 @@
 const token = localStorage.token;
 
-export const createClientExternal = async(data) => {
-    const url = `http://localhost:5000/api/clientExternal`;
+const myPost = async(url, body) => {
+    console.log(body);
     const response = await fetch(url,{
         method: 'POST',
         headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token},
-        body: JSON.stringify(data)
+        body: JSON.stringify(body)
     })
-    let dataClient = await response.json();
-    return dataClient
+    let data = await response.json();
+    return data
+}
+
+export const createClientExternal = async(data) => {
+    const url = `http://localhost:5000/api/clientExternal`;
+    return (myPost(url,data));
 }
 
 export const createClient = async(data) => {
     const url = `http://localhost:5000/api/clientInternal`;
-    const response = await fetch(url,{
-        method: 'POST',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token},
-        body: JSON.stringify(data)
-    })
-    let dataClient = await response.json();
-    return dataClient
+    return (myPost(url,data));
 }
 
 export const createEmployee = async(data) => {
     const url = `http://localhost:5000/api/employee`;
-    const response = await fetch(url,{
-        method: 'POST',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token},
-        body: JSON.stringify(data)
-    })
-    let dataEmployee = await response.json();
-    return dataEmployee
+    return (myPost(url,data));
 }
 
 export const createMaterial = async(data) => {
     const url = `http://localhost:5000/api/material`;
-    const response = await fetch(url,{
-        method: 'POST',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token},
-        body: JSON.stringify(data)
-    })
-    let dataMaterial = await response.json();
-    return dataMaterial
+    return (myPost(url,data));
 }
 
 export const createJob = async(data) => {
     const url = `http://localhost:5000/api/job`;
-    const response = await fetch(url,{
-        method: 'POST',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token},
-        body: JSON.stringify(data)
-    })
-    let dataMaterial = await response.json();
-    return dataMaterial
+    return (myPost(url,data));
 }
 
 export const createOrderExternal = async (data) => {
     const url = `http://localhost:5000/api/orderExternal`;
-    const response = await fetch(url,{
-        method: 'POST',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token},
-        body: JSON.stringify(data)
-    })
-    let orderInternal = await response.json();
-    return orderInternal
+    return (myPost(url,data));
 }
 
 export const createOrderInternal = async (data) => {
     const url = `http://localhost:5000/api/orderInternal`;
-    const response = await fetch(url,{
-        method: 'POST',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token},
-        body: JSON.stringify(data)
-    })
-    let orderExternal = await response.json();
-    return orderExternal
+    return (myPost(url,data));
+}
+
+export const createOrderMaterial = async (data) => {
+    const url = `http://localhost:5000/api/material/order`;
+    return (myPost(url,data));
+}
+
+export const updateConfigBackup = async (data) => {
+    const url = 'http://localhost:5000/api/configBackup';
+    return (myPost(url,data));
+}
+
+export const restoreBackup = async (data) => {
+    const url = 'http://localhost:5000/api/configBackup/restore';
+    return (myPost(url, data));
+}
+
+export const addDelayById = async (data) => {
+    const url = 'http://localhost:5000/api/step/delay';
+    return (myPost(url, data));
+}
+
+export const updateOver = async (data) => {
+    const url = 'http://localhost:5000/api/material/over';
+    return (myPost(url, data));
 }
