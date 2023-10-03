@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, Card, FormControlLabel, Grid, Radio, RadioGroup, TextField } from "@mui/material"
+import { Alert, Autocomplete, Backdrop, Box, Button, Card, CircularProgress, FormControlLabel, Grid, Radio, RadioGroup, Snackbar, TextField } from "@mui/material"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Main } from "../../../components/main"
@@ -8,40 +8,88 @@ import { useStyles } from "../recepcion.styles"
 export const CreateClientRecepcion = () => {
 
     const navigator = useNavigate();
+    const initialInput = {error:false, value:''}
+
+    const [loading, setLoading] = useState(false);
+    const [alert,setAlert] = useState({open:false, severity:'', message:''});
 
     const [client, setClient] = useState(true);
+    const [ciForm, setCiForm] = useState(initialInput);
+    const [nameForm, setNameForm] = useState(initialInput);
+    const [phoneForm, setPhoneForm] = useState(initialInput);
+    const [emailForm, setEmailForm] = useState(initialInput);
+
 
     const classes = useStyles();
 
-    const createUser = () => {
-        if(!client){
-            const data = {
-                name: document.getElementById('nameForm').value,
-                ci: document.getElementById('ciForm').value,
-                email: document.getElementById('emailForm').value,
-                phone:  document.getElementById('phoneForm').value,
-                status: true,
-            }
-            createClientExternal(data);
-            navigator('/recepcion/clientes');
-        }else{
-            const data = {
-                user: document.getElementById('userForm').value,
-                password: document.getElementById('passwordForm').value,
-                institution: document.getElementById('nameForm').value,
-                email: document.getElementById('emailForm').value,
-                phone: document.getElementById('phoneForm').value,
-                address: document.getElementById('addressForm').value,
-                role: 'client',
-                status: true,
-            }
-            createClient(data);
-            navigator('/recepcion/clientes');
+    const createUser = async() => {
+
+        ///Validation
+        let error=false
+        if(ciForm.value === ''){
+            setCiForm({error:true, value:''})
+            error=true
         }
+        if(ciForm.value.length < 8){
+            setCiForm({error:true, value:ciForm.value})
+            error=true
+        }
+        if(nameForm.value === ''){
+            setNameForm({error:true, value:''})
+            error=true
+        }
+
+        if(!error){
+            setLoading(true);
+            const response = await createClientExternal({
+                name: nameForm.value,
+                ci: ciForm.value,
+                email: emailForm.value,
+                phone:  phoneForm.value,
+            });
+            setLoading(false);
+            handleResponse(response);
+        }else{
+            setAlert({open:true, severity:'error', message:'Formulario Invalido * '});
+        }
+    }
+
+    const handleResponse = async(response) => {
+        if(response.status === 201){
+            setAlert({open:true, severity:'success', message:'201: Creado'});
+            clearInputs();
+        }
+        if(response.status === 501){
+            const data = await response.json();
+            setAlert({open:true, severity:'warning', message: `501: ${(data.reason || data.message)}`})
+        }
+    }
+
+    const clearInputs = () => {
+        setCiForm(initialInput);
+        setNameForm(initialInput);
+        setPhoneForm(initialInput);
+        setEmailForm(initialInput);
     }
 
     return(
         <Main>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            <Snackbar
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                open={alert.open}
+                onClose={()=>{setAlert({...alert, open:false})}}
+                autoHideDuration={3000}
+            >
+                <Alert variant='filled' severity={alert.severity}>
+                    {alert.message}
+                </Alert>
+            </Snackbar>
             <Grid container justifyContent='center'>
                 <Grid item>
                     <Card>
@@ -51,81 +99,67 @@ export const CreateClientRecepcion = () => {
                             }
                             <Grid item>
                                 <h1 className={classes.titlePage}>
-                                    Crear Cliente
+                                    Crear Cliente Externo
                                 </h1>
                             </Grid>
 
-                            <Grid item>
-                                <Box display='flex' justifyContent= 'center' >
-                                    <RadioGroup
-                                        aria-labelledby="demo-controlled-radio-buttons-group"
-                                        name="controlled-radio-buttons-group"
-                                        value={client}
-                                        onChange={()=>{setClient(prev => !prev)}}
-                                        row
-                                    >
-                                        <FormControlLabel value={true} control={<Radio />} label="Interno" />
-                                        <FormControlLabel value={false} control={<Radio />} label="Externo" />
-                                    </RadioGroup>
-                                </Box>
-                            </Grid>
-
                             <Grid item container direction='column' rowSpacing={1}>
-                                {client&&<Grid item container alignItems='center'>
-                                    <Grid item xs={4}>
-                                        <label>Usuario:</label>
-                                    </Grid>
-                                    <Grid item >
-                                        <TextField id="userForm" size='small' />
-                                    </Grid>
-                                </Grid>
-                                }
-                                {client&&<Grid item container alignItems='center'>
-                                    <Grid item xs={4}>
-                                        <label>Password:</label>
-                                    </Grid>
-                                    <Grid item >
-                                        <TextField id="passwordForm" size='small' />
-                                    </Grid>
-                                </Grid>}
+                                
                                 <Grid item container alignItems='center'>
                                     <Grid item xs={4}>
-                                        <label>{client?'Institucion':'Nombre Completo:'}</label>
+                                        <label>Nombre Completo:</label>
                                     </Grid>
                                     <Grid item >
-                                        <TextField id="nameForm" size='small' />
+                                        <TextField
+                                            value={nameForm.value}
+                                            onChange={({target})=>{setNameForm({error:false, value:target.value})}}
+                                            error={nameForm.error}
+                                            required
+                                            label='Requerido'
+                                            size='small'
+                                        />
                                     </Grid>
                                 </Grid>
-                                {!client&&<Grid item container alignItems='center'>
+                                <Grid item container alignItems='center'>
                                     <Grid item xs={4}>
                                         <label>CI:</label>
                                     </Grid>
                                     <Grid item >
-                                        <TextField id="ciForm" size='small' />
+                                        <TextField
+                                            value={ciForm.value}
+                                            onChange={({target})=>{setCiForm({error:false, value:target.value})}}
+                                            error={ciForm.error}
+                                            required
+                                            label='Requerido'
+                                            size='small'
+                                        />
                                     </Grid>
-                                </Grid>}
+                                </Grid>
                                 <Grid item container alignItems='center'>
                                     <Grid item xs={4}>
                                         <label>Correo Electronico:</label>
                                     </Grid>
                                     <Grid item >
-                                        <TextField id="emailForm" size='small' />
+                                        <TextField
+                                            type='email'
+                                            value={emailForm.value}
+                                            onChange={({target})=>{setEmailForm({error:false, value:target.value})}}
+                                            label='Opccional'
+                                            size='small'
+                                        />
                                     </Grid>
                                 </Grid>
-                                {client&&<Grid item container alignItems='center'>
-                                    <Grid item xs={4}>
-                                        <label>Direccion:</label>
-                                    </Grid>
-                                    <Grid item >
-                                        <TextField id='addressForm'  size='small' />
-                                    </Grid>
-                                </Grid>}
                                 <Grid item container alignItems='center'>
                                     <Grid item xs={4}>
                                         <label>Telefono:</label>
                                     </Grid>
                                     <Grid item >
-                                        <TextField id='phoneForm' size='small'/>
+                                        <TextField
+                                            value={phoneForm.value}
+                                            onChange={({target})=>{setPhoneForm({error:false, value:target.value})}}
+                                            label='Opccional'
+                                            size='small'
+                                        />
                                     </Grid>
                                 </Grid>
                             </Grid>

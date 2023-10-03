@@ -14,10 +14,11 @@ import { BackgroundPage } from "../../components/background";
 
 export const Admin = () => {
 
-    const menu= ['Usuarios', 'Materiales', 'Trabajos', 'Backups', 'Bitacora'];
+    const menu= ['Usuarios', 'Materiales', 'Trabajos', 'Backups', 'Bitacora', 'Reportes'];
     const subMenu= {
         Usuarios: [
-            {name: 'Ver', to:'usuarios'}, 
+            {name: 'Informacion de Usuario', to:'usuarios'},
+            {name: 'Cuentas de Usuario', to:'cuentaUsuarios'},
             {name: 'Crear', to:'usuarios/crear'},
         ],
         Materiales: [
@@ -35,6 +36,9 @@ export const Admin = () => {
         Bitacora: [
             {name: 'Ver', to: 'bitacora'}
         ],
+        Reportes:[
+            {name:'Reporte de Bitacora', to: 'reporteBitacora'}
+        ]
         
     };
 
@@ -43,7 +47,8 @@ export const Admin = () => {
         <WidgetsIcon/>,
         <AutoAwesomeMotionIcon/>,
         <StorageIcon/>,
-        <VisibilityIcon/>
+        <VisibilityIcon/>,
+        <FindInPageIcon/>
     ];
 
     const classes=useStyles();

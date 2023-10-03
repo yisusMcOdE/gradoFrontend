@@ -25,7 +25,8 @@ export const ClientesRecepcion = () => {
     const [dataType, setDataType] = useState(false);
     const [search, setSearch] = useState('');
 
-    
+    console.log('internal', dataClientInternal);
+    console.log('external', dataClientExternal);
 
     const columnsA = [
         {field: 'index', headerName: 'N°', flex: 0.5},
@@ -36,14 +37,26 @@ export const ClientesRecepcion = () => {
     ];
     const columnsB = [
         {field: 'index', headerName: 'N°', flex: 0.5},
+        {field: 'ci', headerName: 'C.I.', flex: 1.5},
         {field: 'name', headerName: 'Nombre', flex: 1.5},
         {field: 'phone', headerName: 'Telefono', flex: 1},
-        {field: 'address', headerName: 'Direccion', flex: 1.5},
+        {field: 'status', headerName: 'Estado', flex: 0.5},
     ];
 
     const getData = async() => {
-        setDataClientInternal(await allClientsInternal());
-        setDataClientExternal( await allClientsExternal());
+        let response = await allClientsInternal();
+        if(response!==204){
+            response = response.map(item=> {return{...item, status:item.status?'ACTIVO':'SUSPENDIDO'}})
+            setDataClientInternal(response);
+        }else
+        setDataClientInternal(204);
+
+        response = await allClientsExternal()
+        if(response!==204){
+            response = response.map(item=> {return{...item, status:item.status?'ACTIVO':'SUSPENDIDO'}})
+            setDataClientExternal(response);
+        }else
+        setDataClientExternal(204);
     }
 
     useEffect(()=>{
@@ -84,7 +97,7 @@ export const ClientesRecepcion = () => {
                                         onChange={()=>{setDataType(prev => !prev)}}
                                         row
                                     >
-                                        <FormControlLabel value={true} control={<Radio />} label="Internos" />
+                                        <FormControlLabel value={true} control={<Radio />} label="Instituciones" />
                                         <FormControlLabel value={false} control={<Radio />} label="Externos" />
                                     </RadioGroup>
                                 </Box>
@@ -92,27 +105,36 @@ export const ClientesRecepcion = () => {
                             <Grid item>
                                 {
                                 dataType?
-                                    <DataGrid
-                                    style={{width:'99%'}}
-                                    onRowClick={(e)=>{navigator(`${e.row._id}`)}}
-                                    rows={dataClientInternal.filter(item=>{
-                                        return item.institution.toLowerCase().includes(search.toLowerCase());
-                                    })} 
-                                    columns={columnsA}
-                                    getRowClassName={(params) =>
-                                        params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                                    }
-                                    /> :
-                                    <DataGrid
-                                    onRowClick={(e)=>{navigator(`${e.row._id}`)}}
-                                    rows={dataClientExternal.filter(item=>{
-                                        return item.name.toLowerCase().includes(search.toLowerCase());
-                                    })} 
-                                    columns={columnsB}
-                                    getRowClassName={(params) =>
-                                        params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                                    }
-                                    />
+                                    (dataClientInternal!==204)?
+                                        <DataGrid
+                                        style={{width:'95%'}}
+                                        onRowClick={(e)=>{navigator(`${e.row._id}`)}}
+                                        rows={dataClientInternal.filter(item=>{
+                                            return item.institution.toLowerCase().includes(search.toLowerCase());
+                                        })} 
+                                        columns={columnsA}
+                                        getRowClassName={(params) =>
+                                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                                        }
+                                        />
+                                        :
+                                        <h3 style={{textAlign:'center'}}>No existen instituciones registradas</h3>
+                                    
+                                    :
+                                    (dataClientExternal!==204)?
+                                        <DataGrid
+                                        style={{width:'95%'}}
+                                        onRowClick={(e)=>{navigator(`${e.row._id}`)}}
+                                        rows={dataClientExternal.filter(item=>{
+                                            return item.name.toLowerCase().includes(search.toLowerCase());
+                                        })} 
+                                        columns={columnsB}
+                                        getRowClassName={(params) =>
+                                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                                        }
+                                        />
+                                        :
+                                        <h3 style={{textAlign:'center'}}>No existen clientes Registrados</h3>
                                 }
                             </Grid>
                         </Grid>

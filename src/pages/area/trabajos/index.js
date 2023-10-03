@@ -8,7 +8,6 @@ import { DataGrid } from "@mui/x-data-grid";
 import { GridToolbar } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 import { esES } from "@mui/x-data-grid";
-import { generateReport } from "../../../utilities/pdfMake/reports";
 import { useEffect, useState } from "react";
 import { getOrderDetailsConfirmed, getStepById } from "../../../utilities/allGetFetch";
 import { StatusTree } from '../../../components/statusTree';
@@ -46,7 +45,6 @@ export const Trabajos = () => {
         let datos = apiref.current.getDataAsCsv();
         datos = datos.split('\r\n');
         datos = datos.map(item=>item.split(','));
-        generateReport(datos);
     }
 
     const loadData = async() => {

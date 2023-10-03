@@ -1,5 +1,5 @@
-import { IconButton, Autocomplete, Box, Button, Card, FormControlLabel, Grid, Radio, RadioGroup, TextField, FilledInput, InputAdornment, Switch } from "@mui/material"
-import { useEffect, useState } from "react"
+import { IconButton, Autocomplete, Box, Button, Card, FormControlLabel, Grid, Radio, RadioGroup, TextField, FilledInput, InputAdornment, Switch, Backdrop, CircularProgress, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogContentText, Slide, DialogActions, Typography } from "@mui/material"
+import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { Main } from "../../../components/main"
 import { createClient, createEmployee, createJob, createMaterial } from "../../../utilities/allPostFetch"
@@ -10,21 +10,27 @@ import { allMaterials, JobById } from "../../../utilities/allGetFetch";
 import { cloneDeep } from "lodash"
 import { updateJob } from "../../../utilities/allPutFetch"
 
+
 export const DetailsJobAdmin = () => {
+
+    const initialInput = {error:false, value:''}
 
     const {id} = useParams();
 
     const costInitial = {
-        lot : 0,
-        price : 0,
-        status: true
+        lot : initialInput,
+        price : initialInput,
+        status: {error:false, value:true}
     }
     const materialInitial = {
-        name : "",
-        required : 0,
-        produced : 0,
-        status: true
+        name : initialInput,
+        required : initialInput,
+        produced : initialInput,
+        status: {error:false, value:true}
     }
+
+    const [loading, setLoading] = useState(false);
+    const [alert, setAlert] = useState({open:false, severity:'', message:''});
 
     
     const [materials, setMaterials] = useState();
@@ -64,11 +70,122 @@ export const DetailsJobAdmin = () => {
         setDataEdition({...dataEdition, materials:newMaterial});
     }
 
+    const handleResponse = async(response) => {
+        if(response.status === 202){
+            setAlert({open:true, severity:'success', message:'202: Actualizado'});
+            await setEditionMode(false);
+            await loadData();
+        }
+        if(response.status === 404){
+            setAlert({open:true, severity:'error', message:'404: No encontrado'});
+        }
+        if(response.status === 409){
+            setAlert({open:true, severity:'warning', message:'409: Conflicto'});
+        }
+        if(response.status === 304){
+            setAlert({open:true, severity:'warning', message:'304: No Modificado'})
+        }
+    }
 
-    const handleUpdateJob = () => {
-        updateJob(id,dataEdition);
-        setEditionMode(false);
-        loadData();
+
+    const handleUpdateJob = async() => {
+        
+        ///VALIDACION
+        let error = false
+        let dataEditionAux = cloneDeep(dataEdition);
+
+        if(dataEditionAux.name.value===''){
+            dataEditionAux.name.error = true
+            error=true
+        }
+        if(dataEditionAux.area.value===''){
+            dataEditionAux.area.error = true
+            error=true
+        }
+        dataEditionAux.cost = dataEditionAux.cost.map(item=>{
+            if(item.lot.value === ''){
+                item.lot.error = true
+                error=true
+            }
+            if(item.price.value === ''){
+                item.price.error = true
+                error=true
+            }
+            return item
+        })
+        dataEditionAux.materials = dataEditionAux.materials.map(item=>{
+            if(item.name.value === ''){
+                item.name.error = true
+                error=true
+            }
+            if(item.produced.value === ''){
+                item.produced.error = true
+                error=true
+            }
+            if(item.required.value === ''){
+                item.required.error = true
+                error=true
+            }
+            return item
+        })
+        setDataEdition({...dataEditionAux})
+
+        if(!error){
+            ///Diferenciacion
+            const newData = {
+                cost:[],
+                materials:[]
+            }
+            const update = (oldValue, newValue, key, reference) =>{
+                if(newValue !== oldValue)
+                    reference[key]=newValue
+            }
+            for (const key in dataEdition) {
+                if(key==='cost'){
+                    for (let index = 0; index < dataEdition.cost.length; index++) {
+                        const item = dataEdition.cost[index];
+                        const newCost = {}
+                            for (const keyCost in dataEdition.cost[index]) {
+                                if(keyCost!=='_id')
+                                    update(data.cost[index][keyCost].value, dataEdition.cost[index][keyCost].value, keyCost, newCost)
+                            }
+                        if(Object.keys(newCost).length!==0){
+                            newCost._id = data.cost[index]._id;
+                            newData.cost.push(newCost)
+                        }
+                    }
+                }else{
+                    if(key==='materials'){
+                        for (let index = 0; index < dataEdition.materials.length; index++) {
+                            const item = dataEdition.materials[index];
+                            const newMaterial = {}
+                                for (const keyMaterial in dataEdition.materials[index]) {
+                                    if(keyMaterial!=='_id')
+                                        update(data.materials[index][keyMaterial].value, dataEdition.materials[index][keyMaterial].value, keyMaterial, newMaterial)
+                                }
+                            if(Object.keys(newMaterial).length!== 0){
+                                newMaterial._id = data.materials[index]._id;
+                                newData.materials.push(newMaterial)
+                            }
+                        }
+                    }else{
+                        update(data[key].value, dataEdition[key].value, key, newData)
+                    }
+                }
+            }
+
+            if(newData.cost.length===0)
+                delete newData.cost
+            if(newData.materials.length===0)
+                delete newData.materials
+
+            setLoading(true);
+            const response = await updateJob(id,newData);
+            setLoading(false);
+            handleResponse(response);
+        }else{
+            setAlert({open:true, severity:'error', message:'Formulario Invalido * '});
+        }
     }
 
     const handleChange = (e, typeDetail, field, index) => {
@@ -76,28 +193,28 @@ export const DetailsJobAdmin = () => {
         if(e==='status'){
             if(typeDetail==='cost'){
                 const newCost = cloneDeep(dataEdition.cost);
-                newCost[index][field] = !newCost[index][field];
+                newCost[index][field].value = !newCost[index][field].value;
                 setDataEdition({...dataEdition,cost:newCost})
             }
             else
             {
                 const newMaterial = cloneDeep(dataEdition.materials);
-                newMaterial[index][field] = !newMaterial[index][field];
+                newMaterial[index][field].value = !newMaterial[index][field].value;
                 setDataEdition({...dataEdition, materials:newMaterial});
             }
         }else{
             if(typeDetail==='cost'){
                 const newCost = cloneDeep(dataEdition.cost);
-                newCost[index][field] = e.target.value;
+                newCost[index][field].value = e.target.value;
                 setDataEdition({...dataEdition,cost:newCost})
             }
             else
             {
                 const newMaterial = cloneDeep(dataEdition.materials);
                 if(typeDetail==='material' && field==='name'){
-                    newMaterial[index][field] = e?.target?.textContent;
+                    newMaterial[index][field].value = e?.target?.textContent;
                 }else{
-                    newMaterial[index][field] = e?.target?.value;
+                    newMaterial[index][field].value = e?.target?.value;
                 }
                 setDataEdition({...dataEdition, materials:newMaterial});
             }
@@ -107,7 +224,33 @@ export const DetailsJobAdmin = () => {
     const loadData  = async() => {
         const dataMaterial = await allMaterials();
         setMaterials(dataMaterial);
-        const dataJob = await JobById(id);
+
+        let dataJob = await JobById(id);
+
+        dataJob = {
+                name:{error:false, value:dataJob.name},
+                description:{error:false, value:dataJob.description},
+                area:{error:false, value:dataJob.area},
+                status:{error:false, value:dataJob.status},
+                cost:dataJob.cost.map(dataJobCost=>{
+                    return {
+                        _id:dataJobCost._id,
+                        lot:{error:false, value:dataJobCost.lot},
+                        price:{error:false, value:dataJobCost.price},
+                        status:{error:false, value:dataJobCost.status},
+                    }
+                }),
+                materials:dataJob.materials.map(dataJobMaterial=>{
+                    return {
+                        _id:dataJobMaterial._id,
+                        name:{error:false, value:dataJobMaterial.name},
+                        required:{error:false, value:dataJobMaterial.required},
+                        produced:{error:false, value:dataJobMaterial.produced},
+                        status:{error:false, value:dataJobMaterial.status},
+                    }
+                })
+            }
+        
         setData({...dataJob});
         setDataEdition({...dataJob});
     }
@@ -118,6 +261,23 @@ export const DetailsJobAdmin = () => {
     return(
         (data&&materials)&&
         <Main>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            <Snackbar
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                open={alert.open}
+                onClose={()=>{setAlert({...alert, open:false})}}
+                autoHideDuration={3000}
+            >
+                <Alert variant='filled' severity={alert.severity}>
+                    {alert.message}
+                </Alert>
+            </Snackbar>
+
             <Grid container direction={'column'} alignItems={'center'}>
                 <Grid item style={{width:'90%'}}>
                     <Card>
@@ -153,11 +313,13 @@ export const DetailsJobAdmin = () => {
                                         <label>Nombre del Trabajo:</label>
                                     </Grid>
                                     <Grid item >
-                                        <TextField 
-                                            value={dataEdition.name} 
-                                            id="nameForm" 
+                                        <TextField
+                                            error={dataEdition.name.error}
+                                            required
+                                            label='Requerido'
+                                            value={dataEdition.name.value} 
                                             size='small'
-                                            onChange={({target})=>{setDataEdition({...dataEdition, name:target.value})}} 
+                                            onChange={({target})=>{setDataEdition({...dataEdition, name:{...dataEdition.name, value:target.value}})}} 
                                         />
                                     </Grid>
                                 </Grid>
@@ -167,11 +329,33 @@ export const DetailsJobAdmin = () => {
                                     </Grid>
                                     <Grid item >
                                         <TextField 
-                                            value={dataEdition.description} 
+                                            value={dataEdition.description.value}
+                                            label='Opccional'
                                             multiline 
-                                            id="descriptionForm" 
                                             size='small'
-                                            onChange={({target})=>{setDataEdition({...dataEdition, description:target.value})}} 
+                                            onChange={({target})=>{setDataEdition({...dataEdition, description:{error:false, value:target.value}})}} 
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Area:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        
+                                        <Autocomplete
+                                            onChange={({target})=>{setDataEdition({...dataEdition, area:{error:false, value:target.textContent}})}}
+                                            size='small'
+                                            fullWidth
+                                            options={['Impresion Digital','Empastado', 'Tipografia']}
+                                            sx={{ width: 200 }}
+                                            value={dataEdition.area.value} 
+                                            renderInput={(params) => <TextField 
+                                                label='Requerido'
+                                                required
+                                                error={dataEdition.area.error}
+                                                {...params}
+                                            />}
                                         />
                                     </Grid>
                                 </Grid>
@@ -182,10 +366,10 @@ export const DetailsJobAdmin = () => {
                                     <Grid item >
                                         <Button
                                             fullWidth 
-                                            className={dataEdition.status?'activo':'inactivo'}
-                                            onClick={()=>{setDataEdition({...dataEdition, status:!dataEdition.status})}}
+                                            className={dataEdition.status.value?'activo':'inactivo'}
+                                            onClick={()=>{setDataEdition({...dataEdition, status:{error:false, value:!dataEdition.status.value}})}}
                                         >
-                                            {dataEdition.status?'Habilitado':'Inhabilitado'}
+                                            {dataEdition.status.value?'Habilitado':'Suspendido'}
                                         </Button>
                                     </Grid>
                                 </Grid>
@@ -228,20 +412,28 @@ export const DetailsJobAdmin = () => {
                                                 {index+1}
                                             </Grid>
                                             <Grid item xs={3}>
-                                                <TextField 
+                                                <TextField
+                                                    type='number'
                                                     fullWidth  
-                                                    variant="filled" 
+                                                    variant='standard'
+                                                    error={item.lot.error}
+                                                    required
+                                                    label='Requerido'                                                    
                                                     size='small'
-                                                    value={item.lot} 
+                                                    value={item.lot.value} 
                                                     onChange={(e)=>{handleChange(e,'cost','lot',index)}}
                                                 />
                                             </Grid>
                                             <Grid item xs={5}>
-                                                <TextField 
+                                                <TextField
+                                                    type='number'
                                                     fullWidth 
-                                                    variant="filled" 
+                                                    variant='standard'
+                                                    error={item.price.error}
+                                                    required
+                                                    label='Requerido'
                                                     size='small' 
-                                                    value={item.price} 
+                                                    value={item.price.value} 
                                                     onChange={(e)=>{handleChange(e,'cost','price',index)}}
                                                 />
                                             </Grid>
@@ -249,10 +441,10 @@ export const DetailsJobAdmin = () => {
                                                 <Button 
                                                     size='small' 
                                                     fullWidth 
-                                                    className={item.status?'activo':'inactivo'}
+                                                    className={item.status.value?'activo':'inactivo'}
                                                     onClick={()=>{handleChange('status','cost','status',index)}}
                                                 >
-                                                    {item.status?'Habilitado':'Inhabilitado'}
+                                                    {item.status.value?'Habilitado':'Suspendido'}
                                                 </Button>
                                             </Grid>
                                         </Grid>
@@ -302,46 +494,59 @@ export const DetailsJobAdmin = () => {
                                             </Grid>
                                             <Grid item xs={4}> 
                                                 <Autocomplete
-                                                size='small'
-                                                fullWidth
-                                                options={materials.map(item=>item.name).concat([""])}
-                                                renderInput={(params) =><TextField 
-                                                                            variant="filled"
-                                                                            {...params}
-                                                                        />}
-                                                value={item.name}
-                                                onChange={(e)=>{handleChange(e, 'material', 'name', index)}}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={2.5}>
-                                                <FilledInput
-                                                    startAdornment={
-                                                        <InputAdornment position="start">
-                                                            {((materials.find(element=>element.name===item.name))?.unit)||""}
-                                                        </InputAdornment>}
-                                                    fullWidth 
                                                     size='small'
-                                                    value={item.required}
-                                                    onChange={(e)=>{handleChange(e,'material','required',index)}}
+                                                    fullWidth
+                                                    options={materials.map(item=>item.name).concat([""])}
+                                                    renderInput={(params) =><TextField
+                                                                                required
+                                                                                error={item.name.error}
+                                                                                label='Requerido'
+                                                                                variant="standard"
+                                                                                {...params}
+                                                                            />}
+                                                    value={item.name.value}
+                                                    onChange={(e)=>{handleChange(e, 'material', 'name', index)}}
                                                 />
                                             </Grid>
                                             <Grid item xs={2.5}>
-                                                <TextField 
+                                                <TextField
+                                                    variant="standard"
+                                                    type='number'
+                                                    min='1'
+                                                    InputProps={{
+                                                        endAdornment:
+                                                            <InputAdornment position='start'>
+                                                                {((materials.find(element=>element.name===item.name.value))?.unit?.concat('(s)'))||''}
+                                                            </InputAdornment>
+                                                      }}
+                                                    value={item.required.value}
+                                                    onChange={(e)=>{handleChange(e,'material','required',index)}}
+                                                    required
+                                                    error={item.required.error}
+                                                    label='Requerido'
+                                                />
+                                            </Grid>
+                                            <Grid item xs={2.5}>
+                                                <TextField
+                                                    type='number'
+                                                    error={item.produced.error}
+                                                    required
+                                                    label='Requerido'
+                                                    variant='standard'
                                                     fullWidth 
-                                                    variant="filled" 
                                                     size='small'
                                                     onChange={(e)=>{handleChange(e,'material','produced',index)}}
-                                                    value={item.produced}
+                                                    value={item.produced.value}
                                                 />
                                             </Grid>
                                             <Grid item xs={2} style={{padding:'0.5rem'}}>
                                                 <Button 
                                                     size='small' 
                                                     fullWidth 
-                                                    className={item.status?'activo':'inactivo'}
+                                                    className={item.status.value?'activo':'inactivo'}
                                                     onClick={()=>{handleChange('status','materials','status',index)}}
                                                 >
-                                                    {item.status?'Habilitado':'Inhabilitado'}
+                                                    {item.status.value?'Habilitado':'Suspendido'}
                                                 </Button>
                                             </Grid>
                                         </Grid>
@@ -366,7 +571,7 @@ export const DetailsJobAdmin = () => {
                                         <label>Nombre del Trabajo:</label>
                                     </Grid>
                                     <Grid item >
-                                        <TextField value={data.name} disabled size='small' />
+                                        <TextField value={data.name.value} disabled size='small' />
                                     </Grid>
                                 </Grid>
                                 <Grid item container alignItems='center'>
@@ -374,7 +579,20 @@ export const DetailsJobAdmin = () => {
                                         <label>Descripcion:</label>
                                     </Grid>
                                     <Grid item >
-                                        <TextField value={data.description} disabled multiline size='small' />
+                                        <TextField value={data.description.value} disabled multiline size='small' />
+                                    </Grid>
+                                </Grid>
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Area:</label>
+                                    </Grid>
+                                    <Grid item >
+                                        <TextField 
+                                            value={data.area.value}
+                                            disabled
+                                            multiline 
+                                            size='small'
+                                        />
                                     </Grid>
                                 </Grid>
                                 <Grid item container alignItems='center'>
@@ -385,9 +603,9 @@ export const DetailsJobAdmin = () => {
                                         <Button
                                             fullWidth 
                                             disabled
-                                            className={data.status?'activo':'inactivo'}
+                                            className={data.status.value?'activo':'inactivo'}
                                         >
-                                            {data.status?'Habilitado':'Inhabilitado'}
+                                            {data.status?'Habilitado':'Suspendido'}
                                         </Button>
                                     </Grid>
                                 </Grid>
@@ -426,7 +644,7 @@ export const DetailsJobAdmin = () => {
                                                     fullWidth  
                                                     variant="filled" 
                                                     size='small'
-                                                    value={item.lot} 
+                                                    value={item.lot.value} 
                                                 />
                                             </Grid>
                                             <Grid item xs={5}>
@@ -435,12 +653,12 @@ export const DetailsJobAdmin = () => {
                                                     fullWidth 
                                                     variant="filled" 
                                                     size='small' 
-                                                    value={item.price} 
+                                                    value={item.price.value} 
                                                 />
                                             </Grid>
                                             <Grid item xs={3} style={{padding:'0.5rem'}}>
-                                                <Button disabled size='small' fullWidth className={item.status?'activo':'inactivo'}>
-                                                    {item.status?'Habilitado':'Inhabilitado'}
+                                                <Button disabled size='small' fullWidth className={item.status.value?'activo':'inactivo'}>
+                                                    {item.status.value?'Habilitado':'Suspendido'}
                                                 </Button>
                                             </Grid>
                                         </Grid>
@@ -480,7 +698,7 @@ export const DetailsJobAdmin = () => {
                                                 {index+1}
                                             </Grid>
                                             <Grid item xs={4}> 
-                                                <TextField disabled value={item.name} variant='filled' fullWidth size='small' />
+                                                <TextField disabled value={item.name.value} variant='filled' fullWidth size='small' />
                                             </Grid>
                                             <Grid item xs={2.5}>
                                                 <FilledInput
@@ -491,7 +709,7 @@ export const DetailsJobAdmin = () => {
                                                         </InputAdornment>}
                                                     fullWidth 
                                                     size='small'
-                                                    value={item.required}
+                                                    value={item.required.value}
                                                 />
                                             </Grid>
                                             <Grid item xs={2.5}>
@@ -501,12 +719,12 @@ export const DetailsJobAdmin = () => {
                                                     id="filled-basic" 
                                                     variant="filled" 
                                                     size='small'
-                                                    value={item.produced}
+                                                    value={item.produced.value}
                                                 />
                                             </Grid>
                                             <Grid item xs={2} style={{padding:'0.5rem'}}>
-                                                <Button disabled size='small' fullWidth className={item.status?'activo':'inactivo'}>
-                                                    {item.status?'Habilitado':'Inhabilitado'}
+                                                <Button disabled size='small' fullWidth className={item.status.value?'activo':'inactivo'}>
+                                                    {item.status?'Habilitado':'Suspendido'}
                                                 </Button>
                                             </Grid>
                                         </Grid>

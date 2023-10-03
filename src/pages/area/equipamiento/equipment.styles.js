@@ -1,13 +1,14 @@
-import { makeStyles } from "@mui/styles";
-import { theme } from "../../theme/theme";
+import { makeStyles } from "@mui/styles"
 
-export const useStyles = makeStyles({
-    containerPage:{
-        backgroundColor:'transparent',
-        backdropFilter: 'blur(5px)',
-    },
+
+export const useStyles = makeStyles(theme=>({
     titlePage:{
         textAlign:'center'
+    },
+
+    ///----SOLICITAR MATERIALES
+    textField:{
+        width:'100px'
     },
     tableHeader:{
         background:'#464646',
@@ -17,11 +18,11 @@ export const useStyles = makeStyles({
             border:'1px solid gray'
         },
         '& h3':{
-            textAlign:'center',
-            margin:'0.4rem'
+            textAlign:'center'
         }
     },
     addRemoveBox:{
+        borderRadius:'10px',
         position: 'absolute',
         margin:'10px 0 0 10px',
         '& button':{
@@ -36,10 +37,14 @@ export const useStyles = makeStyles({
         '& .MuiGrid-item':{
             display:'flex',
             placeContent:'center',
-            padding:'0 15px',
+            padding:'0 5px',
             '& .MuiFormControl-root':{
                 marginBottom:'5px'
             }
         }
     },
-})
+
+    ///----SOLICITAR MATERIALES
+
+    
+}))

@@ -19,8 +19,7 @@ const myPut = async(url, body) => {
         'Authorization': 'Bearer ' + token},
         body: JSON.stringify(body)
     })
-    let data = await response.json();
-    return data
+    return response
 }
 
 
@@ -75,4 +74,26 @@ export const finishOrderById = async (id, body) => {
 export const cancelOrderById = async (id) => {
     const url = `http://localhost:5000/api/orders/cancel/${id}`;
     return (myPut(url,{}));
+}
+
+export const updateEquipment = async(id,newData,oldData) => {
+    const url = `http://localhost:5000/api/equipment/${id}`;
+    const body = diferential(newData,oldData);
+    return(myPut(url, body));
+}
+
+export const finishTotalOrderById = async (id) => {
+    const url = `http://localhost:5000/api/orders/finishTotal/${id}`;
+    return (myPut(url, {}));
+}
+
+export const updateOver = async (data) => {
+    const url = 'http://localhost:5000/api/material/over';
+    return (myPut(url, data));
+}
+
+export const updateUser = async(id,newData,oldData) => {
+    const url = `http://localhost:5000/api/users/${id}`;
+    const body = diferential(newData,oldData);
+    return(myPut(url, body));
 }

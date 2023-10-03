@@ -4,10 +4,9 @@ import { Main } from "../../../components/main"
 import { useStyles } from "../area.styles"
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { getOrderById, getStepById } from "../../../utilities/allGetFetch";
+import { getAllEquipment, getOrderById, getStepById } from "../../../utilities/allGetFetch";
 import { useParams } from "react-router-dom";
-import { updateOver } from "../../../utilities/allPostFetch";
-import { finishOrderById } from "../../../utilities/allPutFetch";
+import { finishOrderById, updateOver } from "../../../utilities/allPutFetch";
 
 
 export const Finalizar = () => {
@@ -22,14 +21,18 @@ export const Finalizar = () => {
     const [data, setData] = useState();
     const [dataMaterial, setDataMaterial] = useState();
     const [sobrantes, setSobrantes] = useState([materialInicial]);
-
-    console.log(data);
+    const [equipment, setEquipment] = useState();
 
     const loadData = async() => {
-        const response = await getOrderById(id);
+        let response = await getOrderById(id);
         setData(response[0]);
         setDataMaterial([...response[0].jobDetails.materials]);
+
+        response = await getAllEquipment();
+        setEquipment(response);
     }
+
+    console.log(data);
 
     useEffect(()=>{
         loadData();
@@ -60,6 +63,31 @@ export const Finalizar = () => {
         }
 
         setSobrantes(details)
+    }
+    const finishOrder = async () => {
+
+        
+        ///await getStepById(data._id);
+
+        const deliveredQuantity = document.getElementById('quantityForm').value;
+        const equipment = document.getElementById('equipmentForm')?.value;
+
+
+        if(data.jobDetails.area==='Impresion'){
+            ///finishOrderById(data._id,{deliveredQuantity, equipment});
+        }
+        else{
+            ///finishOrderById(data._id,{deliveredQuantity});
+        }
+        
+        const resultado = (sobrantes.filter(item=>{
+            if(item.material==='' || item.cantidad==='')
+                return false
+            else
+                return true
+        }))
+        console.log(resultado);
+        updateOver(resultado);
     }
 
     const classes = useStyles();
@@ -98,6 +126,23 @@ export const Finalizar = () => {
                                         <TextField id='quantityForm' defaultValue={data.requiredQuantity} size='small'/>
                                     </Grid>
                                 </Grid>
+                                {
+                                    data.jobDetails.area === 'Impresion'&&
+                                    <Grid item container alignItems='center'>
+                                        <Grid item xs={2}>
+                                            <label>Equipo Utilizado:</label>
+                                        </Grid>
+                                        <Grid item xs>
+                                            <Autocomplete
+                                                id="equipmentForm"
+                                                options={equipment?.map(item=>item.name)}
+                                                size='small'
+                                                disablePortal
+                                                renderInput={(params) => <TextField {...params}/>}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                }
                             </Grid>
                             <Grid item container direction='column' rowSpacing={2}>
                                 <Grid item>
@@ -167,19 +212,7 @@ export const Finalizar = () => {
                                 <Grid item justifyContent='center' display='flex'>
                                     <Button
                                         variant="contained"
-                                        onClick={()=>{
-                                            getStepById(data._id);
-                                            finishOrderById(data._id,{ 'deliveredQuantity': document.getElementById('quantityForm').value});
-                                            const resultado = (sobrantes.filter(item=>{
-                                                console.log(item);
-                                                if(item.material==='' || item.cantidad==='')
-                                                    return false
-                                                else
-                                                    return true
-                                            }))
-                                            console.log(resultado);
-                                            updateOver(resultado);
-                                        }}
+                                        onClick={finishOrder}
                                     >
                                         Finalizar
                                     </Button>

@@ -18,10 +18,8 @@ const getId = (data) => {
 }
 const myFetch = async(url) => {
 
-    const myIpResponse = await fetch('https://api.ipify.org/?format=json');
-    const myIp = await myIpResponse.json();
-
-    console.log(myIp.ip);
+    ///const myIpResponse = await fetch('https://api.ipify.org/?format=json');
+    ///const myIp = await myIpResponse.json();
 
     const response = await fetch(url,{
         method: 'GET',
@@ -29,19 +27,17 @@ const myFetch = async(url) => {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
-        'IpAddress': myIp.ip
     },   
     })
-    let data = await response.json();
-
-    if(response.status!==404){
+    if(response.status!==204){
+        let data = await response.json();
         if(isArray(data)){
             data = getIndex(data);
             data = getId(data);
         }
         return data;
     }else{
-        return 404
+        return 204
     }
 }
 
@@ -50,8 +46,21 @@ export const allClientsInternal = async() => {
     const data = await myFetch(url)
     return (data);
 }
+
+export const allClientsInternalActive = async() => {
+    const url = 'http://localhost:5000/api/clientInternal/active';
+    const data = await myFetch(url)
+    return (data);
+}
+
 export const allClientsExternal = async() => {
     const url = 'http://localhost:5000/api/clientExternal';
+    const data = await myFetch(url)
+    return (data);
+}
+
+export const allClientsExternalActive = async() => {
+    const url = 'http://localhost:5000/api/clientExternal/active';
     const data = await myFetch(url)
     return (data);
 }
@@ -60,6 +69,16 @@ export const allEmployees = async () => {
     const url = 'http://localhost:5000/api/employee';
     const data = await myFetch(url)
     return (data);
+}
+
+export const clientById = async (id) => {
+    const url = `http://localhost:5000/api/clients/${id}`;
+    return (myFetch(url));
+}
+
+export const getEmpInstById = async (id) => {
+    const url = `http://localhost:5000/api/clients/empInst/${id}`;
+    return (myFetch(url));
 }
 
 export const clientInternalById = async (id) => {
@@ -88,6 +107,12 @@ export const allJobs = async (id) => {
     const url = 'http://localhost:5000/api/job';
     return (myFetch(url));
 }
+
+export const allJobsActive = async (id) => {
+    const url = 'http://localhost:5000/api/job/active';
+    return (myFetch(url));
+}
+
 export const JobById = async (id) => {
     const url = `http://localhost:5000/api/job/${id}`;
     return (myFetch(url));
@@ -140,11 +165,18 @@ export const getBackupFiles = async () => {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token}
     })
-    let data = await response.json();
-    let final = data.map((item,index)=>{
-        return {...item, id:index+1, date: item.createAt.slice(0,10), time: item.createAt.slice(11,19)}
-    });
-    return (final); 
+
+    if(response.status!==204){
+        let data = await response.json();
+        let final = data.map((item,index)=>{
+            return {...item, id:index+1, date: item.createAt.slice(0,10), time: item.createAt.slice(11,19)}
+        });
+        return (final); 
+    }else{
+        return(204);
+    }
+
+    
 }
 
 export const getOrderNoConfirmed = async () => {
@@ -177,8 +209,8 @@ export const getOrderById = async (id) => {
     return (response);
 }
 
-export const getMaterialStractByid = async (id) => {
-    const url = `http://localhost:5000/api/material/extract/${id}`;
+export const getMaterialStractByid = async (id,start,end) => {
+    const url = `http://localhost:5000/api/material/extract/${id}${(start&&end)?`?start=${start}&end=${end}`:''}`;
     const response = await fetch(url,{
         method: 'GET',
         headers: {
@@ -204,4 +236,136 @@ export const getOrdersDelayed = async () => {
     })
     let data = await response.json();
     return data
+}
+
+export const getAllEquipment = async () => {
+    const url = 'http://localhost:5000/api/equipment';
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getEquipmentById = async (id) => {
+    const url = `http://localhost:5000/api/equipment/detail/${id}`;
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getReportArea = async (area, start, end) => {
+    const url = `http://localhost:5000/api/reports/area/${area}?start=${start}&end=${end}`;
+    const response = await fetch(url,{
+        method: 'GET',
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token},
+    }
+    )
+    let data = await response.json();
+    data = getIndex(data);
+    data = getId(data);
+    return data
+}
+
+export const getAllOrdersFinished = async () => {
+    const url = 'http://localhost:5000/api/orders/allFinished';
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getOrdersFinishedReport = async (start, end) => {
+    const url = `http://localhost:5000/api/reports/orders/total?start=${start}&end=${end}`;
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getAllBinnacle = async (user,start='',end='') => {
+    let url=''
+    if(user==='Todos'){
+        url = `http://localhost:5000/api/binnacle?start=${start}&end=${end}`;
+    }
+    else
+        url = `http://localhost:5000/api/binnacle?user=${user}&start=${start}&end=${end}`;
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getBinnacleById = async (id) => {
+    const url = `http://localhost:5000/api/binnacle/${id}`;
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getAllUsers = async () => {
+    const url = 'http://localhost:5000/api/users';
+    const response = await fetch(url,{
+        method: 'GET',
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token},
+    }
+    )
+    let data = await response.json();
+    return (data);
+}
+
+export const getAllUsersComplete = async() => {
+    const url = 'http://localhost:5000/api/users/complete';
+    const response = await fetch(url,{
+        method: 'GET',
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+    },   
+    })
+    if(response.status!==204){
+        let data = await response.json();
+        data = {
+            institution: getId(getIndex(data.institution)),
+            employee: getId(getIndex(data.employee))
+        }
+        return data;
+    }else{
+        return 204
+    }
+}
+
+export const getUserById = async (id) => {
+    const url = `http://localhost:5000/api/users/${id}`;
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getAllOrdersList = async () => {
+
+    const formater = (data) => {
+        data = getIndex(data);
+        data = getId(data);
+        return data
+    }
+
+    const url = 'http://localhost:5000/api/orders/allList';
+    const response = await fetch(url,{
+        method: 'GET',
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+    },   
+    })
+    if(response.status!==204){
+        let data = await response.json();
+        data={
+            internal : formater(data.internal),
+            external : formater(data.external)
+        }
+        return data;
+    }else{
+        return 204
+    }
+
+
+
+    return (response);
 }

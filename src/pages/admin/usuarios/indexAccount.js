@@ -12,9 +12,9 @@ import 'chart.js/auto';
 import { formatCharBar } from "../../../utilities/formatCharBar";
 import { useNavigate } from "react-router-dom";
 import { useStyles } from "../admin.styles";
-import { allClientsInternal, allEmployees } from "../../../utilities/allGetFetch";
+import { allClientsInternal, allEmployees, getAllUsersComplete } from "../../../utilities/allGetFetch";
 
-export const Usuarios = () => {
+export const Cuentas = () => {
 
     const navigator = useNavigate();
 
@@ -28,33 +28,30 @@ export const Usuarios = () => {
     const columnsA = [
         {field: 'index', headerName: 'N°', flex: 0.5},
         {field: 'institution', headerName: 'Institucion', flex: 1.2},
-        {field: 'address', headerName: 'Direccion', flex: 1},
-        {field: 'phone', headerName: 'Telefono', flex: 0.5},
+        {field: 'user', headerName: 'Usuario', flex: 1},
+        {field: 'role', headerName: 'Rol', flex: 0.5},
         {field: 'status', headerName: 'Estado', flex: 0.5},
     ];
 
 
     const columnsB = [
         {field: 'index', headerName: 'N°', flex: 0.5},
-        {field: 'name', headerName: 'Empleado', flex: 1},
-        {field: 'phone', headerName: 'Telefono', flex: 0.5},
+        {field: 'name', headerName: 'Nombre', flex: 1},
+        {field: 'user', headerName: 'Usuario', flex: 0.5},
         {field: 'role', headerName: 'Rol', flex: 0.5},
         {field: 'status', headerName: 'Estado', flex: 0.5},
     ];
 
     const loadData = async() => {
-        let dataClient = await allClientsInternal();
-        let dataEmployee = await allEmployees();
-
-        if(dataClient!==204)
-            dataClient = dataClient.map(item=> {return{...item, status:item.status?'ACTIVO':'SUSPENDIDO'}})
-        if(dataEmployee!==204)
-            dataEmployee = dataEmployee.map(item=> {return{...item, status:item.status?'ACTIVO':'SUSPENDIDO'}})
-        
-            Promise.all([dataClient, dataEmployee]).then(()=>{
-            setDataClient(dataClient);
-            setDataEmployee(dataEmployee);
-        })
+        let data = await getAllUsersComplete();
+        if(dataClient!==204){
+            data={
+                institution : data.institution.map(item=>{return{...item, status:item.status?'ACTIVO':'SUSPENDIDO'}}),
+                employee : data.employee.map(item=>{return{...item, status:item.status?'ACTIVO':'SUSPENDIDO'}})
+            }
+            setDataClient(data.institution);
+            setDataEmployee(data.employee)
+        }
     }
 
     useEffect(()=>{
@@ -67,7 +64,7 @@ export const Usuarios = () => {
             <Grid container direction='column' rowGap={2} alignItems='center'>
                 <Grid item style={{width:'80%'}}>
                     <Card raised>
-                        <h1 className={classes.titlePage}>Informacion de Usuarios de Sistema</h1>
+                        <h1 className={classes.titlePage}>Cuentas de Usuarios del Sistema</h1>
                         <Box>
                             <Button onClick={()=>{navigator('crear')}} startIcon={<AddIcon/>} variant='contained'>Crear Usuario</Button>
                         </Box>

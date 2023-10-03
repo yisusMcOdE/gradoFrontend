@@ -1,4 +1,4 @@
-import { Box, RadioGroup, FormControlLabel, Radio, IconButton, Button, Dialog } from "@mui/material";
+import { Box, RadioGroup, FormControlLabel, Radio, IconButton, Button, Dialog, Backdrop, CircularProgress, Snackbar, Alert } from "@mui/material";
 import { Card, Grid, TextField, Autocomplete } from "@mui/material";
 import { Main } from "../../../components/main";
 import AddIcon from '@mui/icons-material/Add';
@@ -13,16 +13,18 @@ import { formatCharBar } from "../../../utilities/formatCharBar";
 import { useNavigate } from "react-router-dom";
 import { useStyles } from "../admin.styles";
 import { allClients, allEmployees, allMaterials, getBackupFiles } from "../../../utilities/allGetFetch";
-import { restoreBackup } from "../../../utilities/allPostFetch";
+import { addBackUp, restoreBackup } from "../../../utilities/allPostFetch";
 
 export const Backup = () => {
 
+    const [loading, setLoading] = useState(false);
+    const [alert,setAlert] = useState({open:false, severity:'', message:''});
+
+    const [search, setSearch] = useState('');
     const [modal, setModal] = useState(false);
     const [item, setItem] = useState({});
     const [confirmation, setConfirmation] = useState(false);
     const [data, setData] = useState();
-
-    const navigator = useNavigate();
 
     const classes = useStyles(); 
 
@@ -36,8 +38,21 @@ export const Backup = () => {
 
     const loadData = async() => {
         let response = await getBackupFiles();
-        console.log(response);
         setData(response);
+    }
+
+    const handleResponse = async(response) => {
+        if(response.status === 201){
+            setAlert({open:true, severity:'success', message:'201: Backup creado'});
+        }
+        if(response.status === 202){
+            setModal(false);
+            setAlert({open:true, severity:'success', message:'202: Restauracion Completa'});
+        }
+        if(response.status === 501){
+            const data = await response.json();
+            setAlert({open:true, severity:'warning', message: `501: ${(data.reason || data.message)}`})
+        }
     }
 
     useEffect(()=>{
@@ -45,26 +60,56 @@ export const Backup = () => {
     },[])
 
     const restoreDataBase = async(archive) => {
-        console.log(archive);
         const body = {
-            "archive" : archive
+            "archive" : archive,
+            "code": '123'
         };
-        restoreBackup(body);
+        const response = await restoreBackup(body);
+        handleResponse(response)
     }
+
+    const generateBackup = async () =>{
+        const response = await addBackUp();
+        handleResponse(response)
+    }
+
+    console.log(search);
 
     return (
         data&&
         <Main>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            <Snackbar
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                open={alert.open}
+                onClose={()=>{setAlert({...alert, open:false})}}
+                autoHideDuration={3000}
+            >
+                <Alert variant='filled' severity={alert.severity}>
+                    {alert.message}
+                </Alert>
+            </Snackbar>
+
             <Grid container direction='column' rowGap={3} alignItems='center'>
                 <Grid item style={{width:'80%'}}>
                     <Card raised>
                         <h1 className={classes.titlePage}>Copias De Respaldo</h1>
                         <Box>
-                            <Button onClick={()=>{navigator('crear')}} variant='contained'>Generar Nueva Copia</Button>
+                            <Button onClick={generateBackup} variant='contained'>Generar Nueva Copia</Button>
                         </Box>
                         <Box display='flex' justifyContent= 'flex-end' >
                             <SearchIcon sx={{ color: 'white', mr: 1, my: 0.5 }} />
-                            <TextField type='date' variant="filled" size='small'/>
+                            <TextField 
+                                type='date'
+                                value={search}
+                                onChange={(e)=>{setSearch(e.target.value)}}
+                                variant="filled" 
+                                size='small'/>
                         </Box>
                     </Card>
                 </Grid>
@@ -72,15 +117,21 @@ export const Backup = () => {
                     <Card raised >
                         <Grid container direction='column' rowSpacing={2}>
                             <Grid item>
-                                <DataGrid
-                                    style={{width:'99%'}}
-                                    onRowClick={(e)=>{setItem(e.row); setModal(true)}}
-                                    rows={data}
-                                    columns={columns}
-                                    getRowClassName={(params) =>
-                                        params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                                    }
+                                {(data!==204)?
+                                    <DataGrid
+                                        style={{width:'95%'}}
+                                        onRowClick={(e)=>{setItem(e.row); setModal(true)}}
+                                        rows={data.filter(item=>{
+                                            return item.date.includes(search)
+                                        })}
+                                        columns={columns}
+                                        getRowClassName={(params) =>
+                                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                                        }
                                     />
+                                    :
+                                    <h3 style={{textAlign:'center'}}>No existen backups generados</h3>
+                                }
                                 <Dialog open={modal} onClose={()=>{setModal(false)}}>
                                     <Card>
                                         <Grid container direction='column' rowSpacing={3}>

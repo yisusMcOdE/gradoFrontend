@@ -3,6 +3,7 @@ import { useStyles } from "./area.styles";
 import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
+import AdfScannerIcon from '@mui/icons-material/AdfScanner';
 import { Grid } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { BackgroundPage } from "../../components/background";
@@ -12,7 +13,7 @@ export const Area = () => {
 
     const classes = useStyles();
 
-    const menu= ['Trabajos', 'Materiales', 'Reportes'];
+    const menu= ['Trabajos', 'Materiales', 'Equipamiento', 'Reportes'];
     const subMenu= {
         Trabajos: [
             {name: 'Ver Trabajos', to:'trabajos'}, 
@@ -22,11 +23,15 @@ export const Area = () => {
             {name: 'Ver Materiales', to: 'material'}, 
         ],
         Reportes: [
-            {name: 'Trabajos', to: 'reportesTrabajo'},
-            {name: 'Trabajos', to: 'reportesMaterial'}
+            {name: 'Trabajos por Area', to: 'reporteArea'},
+            {name: 'Uso de Material', to: 'reporteMaterial'},
+            {name: 'Pedidos Realizados', to: 'reportePedidos'}
+        ],
+        Equipamiento:[
+            {name: 'Ver Equipamiento', to: 'equipamiento'}
         ]
     }
-    const icons= [<AutoAwesomeMotionIcon/>,<WidgetsIcon/>,<FindInPageIcon/>]
+    const icons= [<AutoAwesomeMotionIcon/>,<WidgetsIcon/>,<AdfScannerIcon/>,<FindInPageIcon/>]
 
     return (
         <Grid container >

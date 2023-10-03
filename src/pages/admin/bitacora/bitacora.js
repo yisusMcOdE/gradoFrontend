@@ -12,43 +12,49 @@ import 'chart.js/auto';
 import { formatCharBar } from "../../../utilities/formatCharBar";
 import { useNavigate } from "react-router-dom";
 import { useStyles } from "../admin.styles";
-import { allClients, allEmployees, allMaterials } from "../../../utilities/allGetFetch";
+import { getAllBinnacle, getAllUsers } from "../../../utilities/allGetFetch";
 
-export const Bitacora = () => {
+export const Binnacle = () => {
 
     const navigator = useNavigate();
 
-    const classes = useStyles();
-
-    const [materials, setMaterials] = useState();    
+    const classes = useStyles();  
 
     const columns = [
-        {field: 'id', headerName: 'N°', flex: 0.5},
-        {field: 'action', headerName: 'Accion', flex: 1},
-        {field: 'result', headerName: 'Resultado', flex: 1},
-        {field: 'document', headerName: 'Documento', flex: 1},
-        {field: 'newValue', headerName: 'Nuevo Valor', flex: 1},
-        {field: 'oldValue', headerName: 'Antiguo Valor', flex: 1},
+        {field: 'index', headerName: 'N°', flex: 0.2},
+        {field: 'user', headerName: 'Usuario', flex: 0.5},
+        {field: 'method', headerName: 'Metodo', flex: 0.5},
+        {field: 'route', headerName: 'EndPoint', flex: 1},
         {field: 'date', headerName: 'Fecha', flex: 0.5},
         {field: 'time', headerName: 'Hora', flex: 0.5},
+        {field: 'successful', headerName: 'Resultado', flex: 0.5},
     ]
+    const [data, setData] = useState();
+    const [users, setUsers] = useState();
+    const [usersSelected, setUserSelected] = useState('Todos');
 
-    const data = [
-        {
-            id:1,
-            action:'crear',
-            result:'correcto',
-            document:'User',
-            newValue:'jesus',
-            oldValue:'morales',
-            date:'01-01-2023',
-            time:'00:00:00'
-        }
-    ]
+    console.log(users);
 
+    const loadData = async() => {
+        let response = await getAllBinnacle(usersSelected);
+        setData(response);
+    }
+    const loadUsers = async() => {
+        let response = await getAllUsers();
+        setUsers(response);
+    }
+
+    useEffect(()=>{
+        loadData();
+        loadUsers();
+    },[])
+
+    useEffect(()=>{
+        loadData();
+    },[usersSelected])
 
     return (
-        <Main>
+        data&&<Main>
             <Grid container direction='column' rowGap={3} alignItems='center'>
                 <Card raised style={{width:'80%'}}>
                     <Grid container direction='column' rowSpacing={2}>
@@ -56,35 +62,28 @@ export const Bitacora = () => {
                             <Grid item>
                                 <h1 className={classes.titlePage}>Bitacora</h1>
                             </Grid>
-                            <Grid item container>
+                            <Grid item container alignItems={'center'}>
+                                <Grid item xs = {1}>
+                                    Usuario:
+                                </Grid>
                                 <Grid item xs={3}>
                                     <Autocomplete
                                         size='small'
-                                        options={['']}
+                                        value={usersSelected}
+                                        onChange={(e)=>{setUserSelected(e.target.textContent)}}
+                                        options={['Todos'].concat(users?.map(item=>{return item.user}))}
                                         renderInput={(params) =><TextField 
                                                                     variant="filled"
                                                                     {...params}
                                                                 />}
                                     />
                                 </Grid>
-                                <Grid item xs>
-                                    <Box display='flex' justifyContent= 'center' >
-                                        <RadioGroup
-                                            aria-labelledby="demo-controlled-radio-buttons-group"
-                                            name="controlled-radio-buttons-group"
-                                            defaultValue={true}
-                                            row
-                                        >
-                                            <FormControlLabel value={true} control={<Radio />} label="Clientes" />
-                                            <FormControlLabel value={false} control={<Radio />} label="Empleados" />
-                                        </RadioGroup>
-                                    </Box>
-                                </Grid>
                             </Grid>
                         </Grid>
                         <Grid item>
                             <DataGrid
-                            onRowClick={(e)=>{navigator(`${e.row._id}`)}}
+                            style={{width:'95%'}}
+                            onRowClick={(e)=>{navigator(`detail/${e.row._id}`)}}
                             rows={data} 
                             columns={columns}
                             getRowClassName={(params) =>

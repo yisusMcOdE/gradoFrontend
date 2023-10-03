@@ -1,61 +1,122 @@
-import { Button, Card, Dialog, Grid, Switch, TextField, Autocomplete } from "@mui/material";
+import { Button, Card, Dialog, Grid, Switch, TextField, Autocomplete, Backdrop, CircularProgress, Snackbar, Alert } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Main } from "../../../components/main";
-import { clientInternalById, employeeById } from "../../../utilities/allGetFetch";
+import { clientById, clientInternalById, employeeById, getEmpInstById } from "../../../utilities/allGetFetch";
 import { updateClientInternal, updateEmployee } from "../../../utilities/allPutFetch";
 import { useStyles } from "../admin.styles";
 export const DetailsClient = () => {
 
     const {id} = useParams();
+    const initialInput = {error:false, value:''}
+
+    const [loading, setLoading] = useState(false);
+    const [alert,setAlert] = useState({open:false, severity:'', message:''});
 
     const [data, setData] = useState();
+    const [dataEdition, setDataEdition] = useState();
+    const [institution, setInstitution] = useState(false);
     const [status, setStatus] = useState();
     const [editionMode, setEditionMode] = useState(false);
     const [dialog, setDialog] = useState(false);
+    console.log(data);
+
+    const handleResponse = async(response) => {
+        if(response.status === 202){
+            setAlert({open:true, severity:'success', message:'202: Actualizado'});
+            setEditionMode(false);
+            loadData();
+        }
+        if(response.status === 404){
+            setAlert({open:true, severity:'error', message:'404: No encontrado'});
+        }
+        if(response.status === 409){
+            setAlert({open:true, severity:'warning', message:'409: Conflicto'});
+        }
+        if(response.status === 304){
+            setAlert({open:true, severity:'warning', message:'304: No Modificado'})
+        }
+    }
 
     const loadData = async() => {
-        let response = await clientInternalById(id);
-        if(response !== 404){
-            setStatus(response.status);
-            console.log(response);
-            setData(response);
-        }else{
-            response = await employeeById(id);
-            setStatus(response.status);
-            console.log(response);
-            setData(response);
-        }
+        let response = await getEmpInstById(id);
+        if(response !== 204){
+            setData({...response});
+            if(response.institution){
+                setInstitution(true);
+                response = {
+                    institution : {error:false, value:response.institution},
+                    email : {error:false, value:response.email},
+                    address : {error:false, value:response.address},
+                    courier : {error:false, value:response.courier},
+                    phone : {error:false, value:response.phone},
+                    status : response.status
+                }
+                setDataEdition({...response})
+            }else{
+                response = {
+                    name : {error:false, value:response.name},
+                    phone : {error:false, value:response.phone},
+                    status : response.status
+                }
+                setDataEdition({...response})
+            }
+        }else
+            setData(204)
+        
     }
 
     const editUser = async () => {
 
-        if(data.role==='cliente'){
-            const newData = {
-                "institution": document.getElementById('nameForm').value,
-                "email": document.getElementById('emailForm').value,
-                "address": document.getElementById('addressForm').value,
-                "phone": document.getElementById('phoneForm').value,
-                "status": status,
+        ///Validation
+        let error = false;
+        if(institution){
+            if(dataEdition.institution.value===''){
+                setDataEdition({...dataEdition, institution:{error:true, value:''}})
+                error=true;
             }
-            updateClientInternal(id, newData, data);
-            setEditionMode(false);
-            loadData();
+            if(dataEdition.courier.value===''){
+                setDataEdition({...dataEdition, courier:{error:true, value:''}})
+                error=true;
+            }
         }else{
-            const newData = {
-                "name": document.getElementById('nameForm').value,
-                "email": document.getElementById('emailForm').value,
-                "phone": document.getElementById('phoneForm').value,
-                "role": document.getElementById('roleForm').value,
-                "status": status,
+            if(dataEdition.name.value===''){
+                setDataEdition({...dataEdition, name:{error:true, value:''}})
+                error=true;
             }
-            updateEmployee(id, newData, data);
-            setEditionMode(false);
-            loadData();
         }
 
-        
-        
+        if(!error){
+            let newData = {}
+            if(institution){
+                newData = {
+                    institution : dataEdition.institution.value,
+                    email : dataEdition.email.value,
+                    address : dataEdition.address.value,
+                    courier : dataEdition.courier.value,
+                    phone : dataEdition.phone.value,
+                    status : dataEdition.status
+                }
+                setLoading(true);
+                const response = await updateClientInternal(id, newData, data);
+                setLoading(false);
+                handleResponse(response);
+            }
+            else{
+                newData = {
+                    name : dataEdition.name.value,
+                    phone : dataEdition.phone.value,
+                    status : dataEdition.status
+                }
+                setLoading(true);
+                const response = await updateEmployee(id, newData, data);
+                setLoading(false);
+                handleResponse(response);
+            }
+            
+        }else{
+            setAlert({open:true, severity:'error', message:'Formulario Invalido * '});
+        }
     }
 
     useEffect(()=>{
@@ -67,6 +128,24 @@ export const DetailsClient = () => {
     return (
         data&&
         <Main>
+
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            <Snackbar
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                open={alert.open}
+                onClose={()=>{setAlert({...alert, open:false})}}
+                autoHideDuration={3000}
+            >
+                <Alert variant='filled' severity={alert.severity}>
+                    {alert.message}
+                </Alert>
+            </Snackbar>
+
             <Dialog open={dialog} onClose={()=>{setDialog(false)}}>
                 <Card>
                     <h2>¿Esta seguro de editar los valores?</h2>
@@ -83,13 +162,14 @@ export const DetailsClient = () => {
             <Grid container direction='column' alignItems={'center'}>
                 <Grid item >
                 <Card>
-                    <Grid container direction='column' rowSpacing={3}>
+                    {data!==204?
+                        <Grid container direction='column' rowSpacing={3}>
                         {
                             ///------TITLE------///
                         }
                         <Grid item>
                             <h1 className={classes.titlePage}>
-                                {data.role==='cliente'?'Detalles de Cliente': 'Detalles de empleado'}
+                                {data.email?'Detalles de Institucion': 'Detalles de Empleado'}
                             </h1>
                         </Grid>
 
@@ -116,12 +196,35 @@ export const DetailsClient = () => {
                         {editionMode?
                         
                         <Grid item container direction='column' rowSpacing={1}>
+                            {institution?<>
                             <Grid item container alignItems='center'>
                                 <Grid item xs={4}>
-                                    <label>Nombre Completo:</label>
+                                    <label>Institucion</label>
                                 </Grid>
                                 <Grid item >
-                                    <TextField id="nameForm" size='small' defaultValue={data.name || data.institution}/>
+                                    <TextField
+                                        value={dataEdition.institution.value}
+                                        onChange={(e)=>{setDataEdition({...dataEdition, institution:{error:false, value:e.target.value}})}}
+                                        error={dataEdition.institution.error}
+                                        required
+                                        label='Requerido'
+                                        size='small' 
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid item container alignItems='center'>
+                                <Grid item xs={4}>
+                                    <label>Mensajero:</label>
+                                </Grid>
+                                <Grid item >
+                                    <TextField
+                                        value={dataEdition.courier.value}
+                                        onChange={(e)=>{setDataEdition({...dataEdition, courier:{error:false, value:e.target.value}})}}
+                                        error={dataEdition.courier.error}
+                                        required
+                                        label='Requerido'
+                                        size='small' 
+                                    />
                                 </Grid>
                             </Grid>
                             <Grid item container alignItems='center'>
@@ -129,66 +232,96 @@ export const DetailsClient = () => {
                                     <label>Correo Electronico:</label>
                                 </Grid>
                                 <Grid item >
-                                    <TextField id="emailForm" size='small' defaultValue={data.email}/>
+                                    <TextField
+                                        value={dataEdition.email.value}
+                                        onChange={(e)=>{setDataEdition({...dataEdition, email:{error:false, value:e.target.value}})}}
+                                        label='Opccional'
+                                        size='small' 
+                                    />
                                 </Grid>
                             </Grid>
-                            {data.role==='cliente'&&<Grid item container alignItems='center'>
+                            <Grid item container alignItems='center'>
                                 <Grid item xs={4}>
                                     <label>Direccion:</label>
                                 </Grid>
                                 <Grid item >
-                                    <TextField id='addressForm'  size='small' defaultValue={data.address}/>
+                                    <TextField
+                                        value={dataEdition.address.value}
+                                        onChange={(e)=>{setDataEdition({...dataEdition, address:{error:false, value:e.target.value}})}}
+                                        label='Opccional'
+                                        size='small' 
+                                    />
                                 </Grid>
-                            </Grid>}
+                            </Grid>
                             <Grid item container alignItems='center'>
                                 <Grid item xs={4}>
                                     <label>Telefono:</label>
                                 </Grid>
                                 <Grid item >
-                                    <TextField id='phoneForm'  size='small' defaultValue={data.phone}/>
-                                </Grid>
-                            </Grid>
-                            {data.role!=='cliente'&&<Grid item container alignItems='center'>
-                                <Grid item xs={4}>
-                                    <label>Role:</label>
-                                </Grid>
-                                <Grid item >
-                                    <Autocomplete
-                                    size='small'
-                                    id="roleForm"
-                                    options={['area','recepcion','direccion','admin']}
-                                    sx={{ width: 150 }}
-                                    renderInput={(params) => <TextField {...params}/>}
-                                    defaultValue={data.role}
+                                    <TextField
+                                        value={dataEdition.phone.value}
+                                        onChange={(e)=>{setDataEdition({...dataEdition, phone:{error:false, value:e.target.value}})}}
+                                        label='Opccional'
+                                        size='small' 
                                     />
                                 </Grid>
-                            </Grid>}
+                            </Grid>
                             <Grid item container alignItems='center'>
                                 <Grid item xs={4}>
                                     <label>Estado:</label>
                                 </Grid>
                                 <Grid item >
                                     <Button 
-                                        className={status?'activo':'inactivo'}
-                                        onClick={()=>{setStatus(prev => !prev)}}
+                                        className={dataEdition.status?'activo':'inactivo'}
+                                        onClick={()=>{setDataEdition({...dataEdition, status:!dataEdition.status})}}
                                     >
-                                            {status?'Activo':'Inhabilitado'}
+                                            {dataEdition.status?'Activo':'Suspendido'}
                                     </Button>
                                 </Grid>
                             </Grid>
-                        </Grid>
-
-
-                        :
-
-
-                        <Grid item container direction='column' rowSpacing={1}>
+                            </>:<>
                             <Grid item container alignItems='center'>
                                 <Grid item xs={4}>
-                                    <label>Nombre Completo:</label>
+                                    <label>Nombre</label>
                                 </Grid>
                                 <Grid item >
-                                    <TextField disabled size='small' value={data.name || data.institution}/>
+                                    <TextField
+                                        value={dataEdition.name.value}
+                                        onChange={(e)=>{setDataEdition({...dataEdition, name:{error:false, value:e.target.value}})}}
+                                        error={dataEdition.name.error}
+                                        required
+                                        label='Requerido'
+                                        size='small' 
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid item container alignItems='center'>
+                                <Grid item xs={4}>
+                                    <label>Telefono:</label>
+                                </Grid>
+                                <Grid item >
+                                    <TextField
+                                        value={dataEdition.phone.value}
+                                        onChange={(e)=>{setDataEdition({...dataEdition, phone:{error:false, value:e.target.value}})}}
+                                        label='Opccional'
+                                        size='small' 
+                                    />
+                                </Grid>
+                            </Grid>
+                            
+                            </>}
+                        </Grid>
+                    
+                        :
+
+                        <Grid item container direction='column' rowSpacing={1}>
+                            {institution?<>
+                            <Grid item container alignItems='center'>
+                                <Grid item xs={4}>
+                                    <label>Institucion</label>
+                                </Grid>
+                                <Grid item >
+                                    <TextField disabled size='small' value={data.institution}/>
                                 </Grid>
                             </Grid>
                             <Grid item container alignItems='center'>
@@ -199,14 +332,22 @@ export const DetailsClient = () => {
                                     <TextField disabled size='small' value={data.email}/>
                                 </Grid>
                             </Grid>
-                            {data.role==='cliente'&&<Grid item container alignItems='center'>
+                            <Grid item container alignItems='center'>
                                 <Grid item xs={4}>
                                     <label>Direccion:</label>
                                 </Grid>
                                 <Grid item >
                                     <TextField disabled size='small' value={data.address}/>
                                 </Grid>
-                            </Grid>}
+                            </Grid>
+                            <Grid item container alignItems='center'>
+                                <Grid item xs={4}>
+                                    <label>Mensajero:</label>
+                                </Grid>
+                                <Grid item >
+                                    <TextField disabled size='small' value={data.courier}/>
+                                </Grid>
+                            </Grid>
                             <Grid item container alignItems='center'>
                                 <Grid item xs={4}>
                                     <label>Telefono:</label>
@@ -215,35 +356,40 @@ export const DetailsClient = () => {
                                     <TextField disabled size='small' value={data.phone}/>
                                 </Grid>
                             </Grid>
-                            {data.role!=='cliente'&&<Grid item container alignItems='center'>
-                                <Grid item xs={4}>
-                                    <label>Role:</label>
-                                </Grid>
-                                <Grid item >
-                                    <Autocomplete
-                                    size='small'
-                                    disabled
-                                    id="combo-box-demo"
-                                    options={['area','recepcion','direccion','admin']}
-                                    sx={{ width: 150 }}
-                                    renderInput={(params) => <TextField {...params}/>}
-                                    defaultValue={data.role}
-                                    />
-                                </Grid>
-                            </Grid>}
                             <Grid item container alignItems='center'>
                                 <Grid item xs={4}>
                                     <label>Estado:</label>
                                 </Grid>
                                 <Grid item >
-                                    <Button className={data.status?'activo':'inactivo'}>{data.status?'Activo':'Inhabilitado'}</Button>
+                                    <Button className={data.status?'activo':'inactivo'}>{data.status?'Activo':'Suspendido'}</Button>
                                 </Grid>
                             </Grid>
+                            </>:<>
+                            <Grid item container alignItems='center'>
+                                <Grid item xs={4}>
+                                    <label>Nombre</label>
+                                </Grid>
+                                <Grid item >
+                                    <TextField disabled size='small' value={data.name}/>
+                                </Grid>
+                            </Grid>
+                            <Grid item container alignItems='center'>
+                                <Grid item xs={4}>
+                                    <label>Telefono</label>
+                                </Grid>
+                                <Grid item >
+                                    <TextField disabled size='small' value={data.phone}/>
+                                </Grid>
+                            </Grid>
+                            </>}
                         </Grid>}
                         {editionMode&&<Grid item container justifyContent='center'>
                             <Button variant='contained' onClick={()=>{setDialog(true)}}>Guardar</Button>
                         </Grid>}
-                    </Grid>
+                        </Grid>
+                    :
+                        <h3>Usuario no Encontrado</h3>
+                    }
                 </Card>
                 </Grid>
 

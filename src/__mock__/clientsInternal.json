@@ -1,0 +1,903 @@
+[
+    {
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "RECTORADO",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "SECRETARÍA GENERAL",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "ASESORÍA JURÍDICA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DIRECCIÓN DE RELACIONES NAC. E INTERNAC.",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "RELACIONES PÚBLICAS",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DIRECCIÓN DE PLANIFICACIÓN",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DIRECCIÓN DE EVALUACIÓN Y ACREDITACIÓN",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "AUDITORÍA INTERNA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DIRECCIÓN ADMINISTRATIVA Y FINANCIERA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "TESORO UNIVERSITARIO (DAF)",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CONTABILIDAD (DAF)",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "BIENES E INVENTARIOS (DAF)",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DIVISIÓN DE PRESUPUESTOS (DAF)",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DEPARTAMENTO DE PERSONAL",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DEPARTAMENTO DE INFRAESTRUCTURA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DEPARTAMENTO DE TÍTULOS",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DATA CENTER",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "VICERRECTORADO",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DIRECCIÓN DE SERVICIOS ACADÉMICOS",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DEPARTAMENTO DE ADMISIONES Y REGISTROS",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DIRECCIÓN DE INTERACC. Y EXT. UNIVERSITARIA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DIRECCIÓN DE INV. CIENCIA Y TECNOLOGÍA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DIRECCIÓN DE GESTIÓN CURRICULAR",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DIRECCIÓN DE POSTGRADO",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "DEPARTAMENTO DE BIBLIOTECA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "FACULTAD DE ARTES",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE ARTES PLÁSTICAS",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE ARTES MUSICALES",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "FACULTAD DE CIENCIAS AGRÍCOLAS Y PECUARIAS",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "INGENIERÍA AGROINDUSTRIAL",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "INGENIERÍA AGRONÓMICA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "INGENIERÍA EN DESARROLLO RURAL",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "AGROPECUARIA VILLAZÓN",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "VETERINARIA Y ZOOTECNIA TUPIZA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "FACULTA DE CC.EE.FF Y AA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE ADM. DE EMPRESAS",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE CONTABILIDAD Y FINANZAS",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA CONTADURÍA PÚBLICA - AUDITORÍA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE CONTADURÍA PÚBLICA TUPIZA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE ECONOMÍA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE ECONOMÍA UNCÍA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE ECONOMÍA UYUNI",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "FACULTAD DE CIENCIAS PURAS",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE ESTADÍSTICA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE FÍSICA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE INFORMÁTICA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE MATEMÁTICA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE QUÍMICA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "FACULTAD DE CC.SS Y HH",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE LINGÜÍSTICA E IDIOMAS",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "LINGÜÍSTICA E IDIOMAS UYUNI",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE TRABAJO SOCIAL",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "TRABAJO SOCIAL UNCÍA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE TURISMO",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "TURISMO UYUNI",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "FACULTAD DE DERECHO",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE DERECHO",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "FACULTAD DE INGENIERÍA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE CONSTRUCCIONES CIVILES",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE GEODESIA Y TOPOGRAFÍA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE INGENIERÍA CIVIL",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "FACULTAD DE INGENIERÍA GEOLÓGICA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE ING. DEL MEDIO AMBIENTE",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE ING. GEOLÓGICA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "FACULTAD DE INGENIERÍA MINERA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "ING. PROCESOS Y MATERIAS PRIMAS",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE INGENIERÍA MINERA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "FACULTAD DE ING. TECNOLÓGICA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE INGENIERÍA ELÉCTRICA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE INGENIERÍA ELECTRÓNICA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE INGENIERÍA MECÁNICA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE ING- MECÁNICA AUTOMOTRIZ",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE INGENIERÍA MECATRONICA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "FACULTAD DE CIENCIAS DE LA SALUD",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE ENFERMERÍA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE ENFERMERÍA VILLAZÓN",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "FACULTAD DE MEDICINA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE MEDICINA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE ODONTOLOGÍA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE ARQUITECTURA",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE COMUNICACIÓN SOCIAL",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+},
+
+{
+    "user": "data",
+    "password": "uatf",
+    "email": "data@gmail.com",
+    "courier" : "mensajero de institucion",
+    "institution": "CARRERA DE INGENIERÍA DE SISTEMAS",
+    "phone": "11223344",
+    "role": "cliente",
+    "address": "universidad central"
+}
+]

@@ -26,16 +26,20 @@ export const MaterialesAdmin = () => {
     const columns = [
         {field: 'index', headerName: 'N°', flex: 0.5},
         {field: 'name', headerName: 'Nombre', flex: 1},
-        {field: 'status', headerName: 'Estado', flex: 0.5},
+        {field: 'status', headerName: 'Estado', flex: 1},
     ]
 
-    const getData = async() => {
-        const response = await allMaterials()
-        setMaterials(response);
+    const loadData = async() => {
+        let response = await allMaterials();
+        if(response!==204){
+            response = response.map(item=> {return{...item, status:item.status?'ACTIVO':'SUSPENDIDO'}})
+            setMaterials(response);
+        }else
+            setMaterials(204);
     }
 
     useEffect(()=>{
-        getData();
+        loadData();
     },[])
 
     return (
@@ -63,17 +67,21 @@ export const MaterialesAdmin = () => {
                     <Card raised >
                         <Grid container direction='column' rowSpacing={2}>
                             <Grid item>
-                                <DataGrid
-                                style={{width:'99%'}}
-                                onRowClick={(e)=>{navigator(`${e.row._id}`)}}
-                                rows={materials.filter(item=>{
-                                    return item.name.toLowerCase().includes(search.toLowerCase());
-                                })}  
-                                columns={columns}
-                                getRowClassName={(params) =>
-                                    params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                                {(materials!==204)?
+                                    <DataGrid
+                                    style={{width:'99%'}}
+                                    onRowClick={(e)=>{navigator(`${e.row._id}`)}}
+                                    rows={materials.filter(item=>{
+                                        return item.name.toLowerCase().includes(search.toLowerCase());
+                                    })}  
+                                    columns={columns}
+                                    getRowClassName={(params) =>
+                                        params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                                    }
+                                    />
+                                :
+                                    <h3 style={{textAlign:'center'}}>No existen Materiales Registrados</h3>
                                 }
-                                />
                             </Grid>
                         </Grid>
                     </Card>

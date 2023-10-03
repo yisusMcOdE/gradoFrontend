@@ -10,6 +10,9 @@ import { addDelayById } from "../../utilities/allPostFetch";
 import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 
+import { Gantt, Task, EventOption, StylingOption, ViewMode, DisplayOption } from 'gantt-task-react';
+import "gantt-task-react/dist/index.css";
+
 export const MyGantt =  ({type}) => {
 
     const navigator = useNavigate();
@@ -19,17 +22,44 @@ export const MyGantt =  ({type}) => {
     const [jobModal, setJobModal] = useState({trabajo:'',cantidad_solicitada:'',detalle:''});
     const [delayMenu, setDelayMenu] = useState(false);
 
+    console.log(tasks);
+
     const ganttRef = useRef(null);
 
     const loadData = async() => {
         const response = await getSchedule();
 
         const formatItem = (item) => {
+
+            let color = ''
+            let progressSelectedColor = ''
+            let disabled = false
+            
+            ///----COLOR
+            if(item.steps[item.steps.length - 1].type==='delayed'){
+                color = 'red'
+                progressSelectedColor = '#D22B2B'
+            }else{
+                color = '#008000'
+                progressSelectedColor = '#3B9C3B'
+            }
+
+            ///---DISABLES
+            if((item.steps[item.steps.length - 1].type==='delayed') || (item.progress===0)){
+                disabled = true
+            }
+
+
             return{
                 ...item, 
-                start: (item.start.slice(0,10)), 
-                end: (item.end.slice(0,10)), 
-                id:item._id
+                start: new Date(item.start), 
+                end: new Date(item.end),
+                id:item._id,
+                isDisabled: disabled,
+                styles:{
+                    progressColor : color,
+                    progressSelectedColor : progressSelectedColor
+                }
             } 
         }
 
@@ -62,21 +92,35 @@ export const MyGantt =  ({type}) => {
         });
     }
 
-  const changeDate = async(id, start, end) => {
+  const changeDate = async(id, start, end, steps) => {
 
     const index = datos.findIndex(item => {
       return item.id===id
     })
     const diferenciaMs = end.getTime() - start.getTime();
-    const dias = Math.round(diferenciaMs / (1000 * 60 * 60 * 24));
+    let segundos = (diferenciaMs / (1000));
+
+    let segundosRetraso = 0;
+    steps.map(item => {
+        if(item.type === 'delayed'){
+            segundosRetraso += (item.dayDelay * 86400)
+        }
+    })
+
+    segundos -= segundosRetraso;
+
+
+    console.log(segundos);
 
     ///Guardar en array changes para enviar al server
 
     if(index !== -1){
-      datos[index]={...datos[index], start:start, end:end, dias:dias};
+      datos[index]={...datos[index], start:start, end:end, segundos:segundos};
     }else{
-      datos.push({id:id, dias:dias, start:start, end:end});
+      datos.push({id:id, seconds:segundos, start:start, end:end});
     }
+
+    console.log(datos);
   }
 
   const updateTasks = async() => {
@@ -132,6 +176,7 @@ export const MyGantt =  ({type}) => {
         className={`cont ${classes.container}`}
     >
         {
+            /*
             tasks[type]?.length > 0 ?
                 <FrappeGantt
                 
@@ -150,7 +195,31 @@ export const MyGantt =  ({type}) => {
             <div>
                 <label>No existen trabajos para el area seleccionada</label>
             </div>
+            */
         }
+
+
+        {
+            tasks[type]?.length > 0 ?
+                <Gantt 
+                    locale="spa" 
+                    tasks={tasks[type]} 
+                    onDoubleClick={task => {
+                        openModal(task);
+                    }}
+                    onDateChange={(task)=>{
+                        changeDate(task.id, task.start, task.end, task.steps);
+                    }}
+                    listCellWidth={null}
+                    todayColor={'gray'}
+                    TooltipContent={()=>{}}
+                />
+            :
+            <div>
+                <label>No existen trabajos para el area seleccionada</label>
+            </div>
+        }
+
             <Button
                 variant="contained"
                 onClick={()=>{updateTasks()}}

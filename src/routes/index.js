@@ -2,7 +2,7 @@ import { createBrowserRouter, createRoutesFromElements, Route } from 'react-rout
 import { Root } from '../pages';
 import { Admin } from '../pages/admin';
 import { Backup } from '../pages/admin/backup';
-import { Bitacora } from '../pages/admin/backup/bitacora';
+import { Binnacle } from '../pages/admin/bitacora/bitacora';
 import { Configuracion } from '../pages/admin/backup/configuracion';
 import { MaterialesAdmin } from '../pages/admin/materiales';
 import { CreateMaterial } from '../pages/admin/materiales/createMaterial';
@@ -14,8 +14,14 @@ import { Usuarios } from '../pages/admin/usuarios';
 import { CreateUser } from '../pages/admin/usuarios/createUser';
 import { DetailsClient } from '../pages/admin/usuarios/detailsClient';
 import { Area } from '../pages/area';
+import { EquipmentArea } from '../pages/area/equipamiento';
+import { CreateEquipment } from '../pages/area/equipamiento/createEquipment';
+import { DetailsEquipment } from '../pages/area/equipamiento/detailsEquipment';
 import { MaterialArea } from '../pages/area/materiales';
 import { DetailsMaterialArea } from '../pages/area/materiales/detailsMaterialArea';
+import { ReporteArea } from '../pages/area/reportes/ReporteArea';
+import { ReporteMaterial } from '../pages/area/reportes/ReporteMaterial';
+import { ReportePedidos } from '../pages/area/reportes/ReportePedidos';
 import { Trabajos } from '../pages/area/trabajos';
 import { Cronograma } from '../pages/area/trabajos/Cronograma';
 import { DetalleTrabajo } from '../pages/area/trabajos/DetalleTrabajo';
@@ -36,6 +42,10 @@ import { Confirmar } from '../pages/Recepcion/Pedidos/Confirmar';
 import { Crear } from '../pages/Recepcion/Pedidos/Crear';
 import { Details } from '../pages/Recepcion/Pedidos/Details';
 import { Entregar } from '../pages/Recepcion/Pedidos/Entregar';
+import { BinnacleDetail } from '../pages/admin/bitacora/details';
+import { ReporteBitacora } from '../pages/admin/reportes/reporteBitacora';
+import { Cuentas } from '../pages/admin/usuarios/indexAccount';
+import { AccountDetails } from '../pages/admin/usuarios/accountDetails';
 
 export const routes = createBrowserRouter(createRoutesFromElements(
     <>
@@ -66,8 +76,16 @@ export const routes = createBrowserRouter(createRoutesFromElements(
             <Route path='trabajos/finalizar/:id' element={<Finalizar/>}/>
             <Route path='material' element={<MaterialArea/>}/>
             <Route path='material/:id' element={<DetailsMaterialArea/>}/>
+            <Route path='equipamiento' element={<EquipmentArea/>}/>
+            <Route path='equipamiento/crear' element={<CreateEquipment/>}/>
+            <Route path='equipamiento/:id' element={<DetailsEquipment/>}/>
+            <Route path='reporteArea' element={<ReporteArea/>}/>
+            <Route path='reporteMaterial' element={<ReporteMaterial/>}/>
+            <Route path='reportePedidos' element={<ReportePedidos/>}/>
         </Route>
         <Route path='/admin' element={<Admin/>}>
+            <Route path='cuentaUsuarios' element={<Cuentas/>}/>
+            <Route path='cuentaUsuarios/:id' element={<AccountDetails/>}/>
             <Route path='usuarios' element={<Usuarios/>}/>
             <Route path='usuarios/:id' element={<DetailsClient/>}/>
             <Route path='usuarios/crear' element={<CreateUser/>}/>
@@ -79,7 +97,9 @@ export const routes = createBrowserRouter(createRoutesFromElements(
             <Route path='trabajos/crear' element={<CreateJob/>}/>
             <Route path='backup' element={<Backup/>}/>
             <Route path='backup/configurar' element={<Configuracion/>}/>
-            <Route path='bitacora' element={<Bitacora/>}/>
+            <Route path='bitacora' element={<Binnacle/>}/>
+            <Route path='bitacora/detail/:id' element={<BinnacleDetail/>}/>
+            <Route path='reporteBitacora' element={<ReporteBitacora/>}/>
         </Route>
     </>
 ))

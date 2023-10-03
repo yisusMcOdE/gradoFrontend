@@ -7,7 +7,7 @@ import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import { GridToolbar } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { orderExternalList, orderInternalList } from "../../../utilities/allGetFetch";
+import { getAllOrdersList, orderExternalList, orderInternalList } from "../../../utilities/allGetFetch";
 import { width } from "@mui/system";
 import { Main } from "../../../components/main";
 
@@ -19,53 +19,74 @@ export const Pedidos = () => {
     const [dataInternal, setDataInternal] = useState([]);
     const [dataExternal, setDataExternal] = useState([]);
     const [dataView, setDataView] = useState();
-
-    console.log(dataView);
+    const [search, setSearch] = useState('');
 
     const [tipeView, setTipeView] = useState('Todos');
 
     const classes = useStyles();
 
     const columns= [
-        
-        { field: 'id', headerName: 'Id de Pedido', flex: 1 },
-        { field: 'client', headerName: 'Cliente', flex: 1 },
-        { field: 'createdAt', headerName: 'Fecha de registro', flex: 1.5 },
+        { field: 'number', headerName: 'N°', flex: 0.3 },
+        { field: 'client', headerName: 'Cliente', flex: 1.5 },
+        { field: 'createdAt', headerName: 'Fecha de registro', flex: 1.3},
     ];
     if(tipeView.includes('finalizado')){
-        columns.push({ field: 's', headerName: 'Fecha de entrega', flex: 1.5 })
+        columns.push({ field: 'dateDelivered', headerName: 'Fecha de entrega', flex: 1.3 })
+    }
+
+    const dateFormat = (date) => {
+        return (date.slice(0,10)+'  '+date.slice(11,19))
+    }
+
+    const orderByDate = (data) =>{
+        data.sort((a,b)=> (new Date(a.createdAt)) - (new Date(b.createdAt)))
+        return data
     }
 
     const handleChangeTypeView = (type) => {
+
+
         setTipeView(type);
         let newData
         switch (type) {
             case 'Todos':
-                newData = dataExternal.concat(dataInternal).map(item => {return {...item, client:item.institution||item.name}})
+                newData = orderByDate(dataInternal.concat(
+                            dataExternal)).map(
+                                (item, index) => {return {...item, number:index+1, createdAt: dateFormat(item.createdAt)}})
                 setDataView(newData);
                 break;
             case 'Internos':
-                newData = dataInternal.map(item=>{return {...item, client:item.institution}})
+                newData = orderByDate(dataInternal).map(
+                            (item, index) => {return {...item, number:index+1, createdAt: dateFormat(item.createdAt)}})
                 setDataView(newData);
                 break;
             case 'Internos pendientes':
-                newData = dataInternal.filter(item=>item.statusDelivered===false).map(item => {return {...item, client:item.institution}})
+                newData = orderByDate(dataInternal.filter(
+                            item=>item.statusDelivered===false)).map(
+                                (item, index) => {return {...item, number:index+1, createdAt: dateFormat(item.createdAt)}})
                 setDataView(newData);
                 break;
             case 'Internos finalizados':
-                newData = dataInternal.filter(item=>item.statusDelivered===true).map(item => {return {...item, client:item.institution}})
+                newData = orderByDate(dataInternal.filter(
+                    item=>item.statusDelivered===true)).map(
+                        (item, index) => {return {...item, number:index+1, createdAt: dateFormat(item.createdAt), dateDelivered: dateFormat(item.dateDelivered)}})
                 setDataView(newData);
                 break
             case 'Externos':
-                newData = dataExternal.map(item=>{return {...item, client:item.name}})
+                newData = orderByDate(dataExternal).map(
+                            (item, index) => {return {...item, number:index+1, createdAt: dateFormat(item.createdAt)}})
                 setDataView(newData);
                 break;
             case 'Externos pendientes':
-                newData = dataExternal.filter(item=>item.statusDelivered===false).map(item => {return {...item, client:item.name}})
+                newData = orderByDate(dataExternal.filter(
+                            item=>item.statusDelivered===false)).map(
+                                (item, index) => {return {...item, number:index+1, createdAt: dateFormat(item.createdAt)}})
                 setDataView(newData);
                 break;
             case 'Externos finalizados':
-                newData = dataExternal.filter(item=>item.statusDelivered===true).map(item => {return {...item, client:item.name}})
+                newData = orderByDate(dataExternal.filter(
+                    item=>item.statusDelivered===true)).map(
+                        (item, index) => {return {...item, number:index+1, createdAt: dateFormat(item.createdAt), dateDelivered: dateFormat(item.dateDelivered)}})
                 setDataView(newData);
                 break
             default:
@@ -75,9 +96,18 @@ export const Pedidos = () => {
     }
 
     const loadData = async () => {
-        setDataInternal(await orderInternalList());
-        setDataExternal(await orderExternalList());
-        setDataView((await orderInternalList()).concat(await orderExternalList()));
+        const response = await getAllOrdersList();
+        if(response!==204){
+            setDataInternal(response.internal);
+            setDataExternal(response.external);
+            setDataView(orderByDate(response.internal.concat(
+                            response.external)).map(
+                                (item,index) => {return {...item, number:index+1, createdAt: dateFormat(item.createdAt)}}));
+        }else{
+            setDataInternal([]);
+            setDataExternal([]);
+            setDataView(204)
+        }
     }
 
     useEffect(()=>{
@@ -96,7 +126,13 @@ export const Pedidos = () => {
                         </Box>
                         <Box display='flex' justifyContent= 'flex-end' >
                             <SearchIcon sx={{ color: 'white', mr: 1, my: 0.5 }} />
-                            <TextField label="Buscar por cliente...." variant="filled" size='small'/>
+                            <TextField
+                                value={search}
+                                onChange={(e)=>{setSearch(e.target.value)}}
+                                label="Buscar por cliente...." 
+                                variant="filled" 
+                                size='small'
+                            />
                         </Box>
                     </Card>
                 </Grid>
@@ -119,15 +155,19 @@ export const Pedidos = () => {
                                 </Grid>
                             </Grid>
                             <Grid item>
-                                <DataGrid 
-                                    style={{width:'95%'}}
-                                    onRowClick={(e)=>{navigator(e.row._id)}}
-                                    rows={dataView} 
-                                    columns={columns}
-                                    getRowClassName={(params) =>
-                                        params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                                    }
-                                />
+                                {(dataView.length!==0)? 
+                                    <DataGrid 
+                                        style={{width:'95%'}}
+                                        onRowClick={(e)=>{navigator(e.row._id)}}
+                                        rows={dataView.filter(item=>{return item.client.toLowerCase().includes(search.toLowerCase())})} 
+                                        columns={columns}
+                                        getRowClassName={(params) =>
+                                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                                        }
+                                    />
+                                :
+                                    <h3 style={{textAlign:'center'}}>No existen registros para mostrar</h3>
+                                }
                             </Grid>
                         </Grid>
                     </Card>

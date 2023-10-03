@@ -1,7 +1,11 @@
 const token = localStorage.token;
 
 const myPost = async(url, body) => {
-    console.log(body);
+
+    ///const myIpResponse = await fetch('https://api.ipify.org/?format=json');
+    ///const myIp = await myIpResponse.json();
+
+
     const response = await fetch(url,{
         method: 'POST',
         headers: {
@@ -10,8 +14,8 @@ const myPost = async(url, body) => {
         'Authorization': 'Bearer ' + token},
         body: JSON.stringify(body)
     })
-    let data = await response.json();
-    return data
+    ///let data = await response.json();
+    return response
 }
 
 export const createClientExternal = async(data) => {
@@ -30,7 +34,7 @@ export const createEmployee = async(data) => {
 }
 
 export const createMaterial = async(data) => {
-    const url = `http://localhost:5000/api/material`;
+    const url = `http://192.168.100.111:5000/api/material`;
     return (myPost(url,data));
 }
 
@@ -69,7 +73,12 @@ export const addDelayById = async (data) => {
     return (myPost(url, data));
 }
 
-export const updateOver = async (data) => {
-    const url = 'http://localhost:5000/api/material/over';
+export const AddEquipment = async (data) => {
+    const url = 'http://localhost:5000/api/equipment';
     return (myPost(url, data));
+}
+
+export const addBackUp = async () => {
+    const url = 'http://localhost:5000/api/configBackup/generate';
+    return (myPost(url, {}));
 }

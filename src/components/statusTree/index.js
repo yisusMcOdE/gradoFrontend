@@ -123,7 +123,7 @@ export const StatusTree = ({steps}) => {
 
     const handlePosition = (deltaY) => {
       let newPosition = {}
-      if(deltaY<0){
+      if(deltaY>0){
         newPosition = {...position, y:position.y-7}
       }else{
         newPosition = {...position, y:position.y+7}

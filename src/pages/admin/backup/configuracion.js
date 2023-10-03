@@ -1,4 +1,4 @@
-import { Button, Card, Grid, Switch, TextField } from "@mui/material";
+import { Alert, Backdrop, Button, Card, CircularProgress, Grid, Snackbar, Switch, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Main } from "../../../components/main";
 import { getConfigBackup } from "../../../utilities/allGetFetch";
@@ -9,9 +9,29 @@ import { useStyles } from "../admin.styles";
 
 export const Configuracion = () => {
 
+    const [loading, setLoading] = useState(false);
+    const [alert, setAlert] = useState({open:false, severity:'', message:''});
+
     const [data, setData] = useState();
     const [dataEdit, setDataEdit] = useState();
     const [editionMode, setEditionMode] = useState(false);
+
+    const handleResponse = async(response) => {
+        if(response.status === 202){
+            setAlert({open:true, severity:'success', message:'202: Actualizado'});
+            setEditionMode(false);
+            loadData();
+        }
+        if(response.status === 404){
+            setAlert({open:true, severity:'error', message:'404: No encontrado'});
+        }
+        if(response.status === 409){
+            setAlert({open:true, severity:'warning', message:'409: Conflicto'});
+        }
+        if(response.status === 304){
+            setAlert({open:true, severity:'warning', message:'304: No Modificado'})
+        }
+    }
 
     const loadData = async() => {
         const response = await getConfigBackup();
@@ -23,9 +43,16 @@ export const Configuracion = () => {
         loadData();
     },[])
 
-    const updateConfig = () => {
-        const body = {status:dataEdit.status, interval:dataEdit.interval};
-        updateConfigBackup(body);
+    const updateConfig = async() => {
+        const body = {
+            status:dataEdit.status, 
+            interval:dataEdit.interval
+        };
+        setLoading(true);
+        const response = await updateConfigBackup(body);;
+        setLoading(false);
+        handleResponse(response);
+        
     }
 
     const classes = useStyles();
@@ -33,6 +60,22 @@ export const Configuracion = () => {
     return (
         data&&
         <Main>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            <Snackbar
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                open={alert.open}
+                onClose={()=>{setAlert({...alert, open:false})}}
+                autoHideDuration={3000}
+            >
+                <Alert variant='filled' severity={alert.severity}>
+                    {alert.message}
+                </Alert>
+            </Snackbar>
             <Grid container direction='column' alignItems='center'>
                 <Grid item>
                     <Card>
@@ -66,7 +109,7 @@ export const Configuracion = () => {
                                             className={dataEdit.status?'activo':'inactivo'}
                                             onClick={e=>{setDataEdit({...dataEdit, status:!dataEdit.status})}}
                                         >
-                                            {dataEdit.status?'Habilitado':'Inhabilitado'}
+                                            {dataEdit.status?'Habilitado':'Suspendido'}
                                         </Button>
                                     </Grid>
                                 </Grid>
@@ -85,7 +128,10 @@ export const Configuracion = () => {
                                 </Grid>
                             </Grid>
                             <Grid item display='grid' justifyContent='center'>
-                                <Button onClick={()=>{updateConfig()}}>
+                                <Button
+                                    variant="contained"
+                                    onClick={()=>{updateConfig()}}
+                                >
                                     Guardar Configuracion
                                 </Button>
                             </Grid>
@@ -99,7 +145,7 @@ export const Configuracion = () => {
                                     </Grid>
                                     <Grid item xs>
                                         <Button disabled className={data.status?'activo':'inactivo'}>
-                                            {data.status?'Habilitado':'Inhabilitado'}
+                                            {data.status?'Habilitado':'Suspendido'}
                                         </Button>
                                     </Grid>
                                 </Grid>

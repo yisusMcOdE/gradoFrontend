@@ -1,5 +1,5 @@
 import { Button, Card, Grid, TextField, Autocomplete, Dialog, Collapse, Snackbar, Alert } from "@mui/material"
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridRemoveIcon } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { Main } from "../../../components/main";
 import { allClientsExternal, allClientsInternal, getOrderNoConfirmed } from "../../../utilities/allGetFetch";
@@ -12,9 +12,10 @@ export const Confirmar = () => {
     const classes = useStyles();
     const columns= [
         
-        { field: 'id', headerName: 'Id de Pedido', flex: 1 },
+        { field: 'index', headerName: 'N°', flex: 0.3 },
         { field: 'client', headerName: 'Cliente', flex: 1 },
-        { field: 'createdAt', headerName: 'Fecha de registro', flex: 1.5 },
+        { field: 'stringDetails', headerName: 'Detalle', flex:1.5},
+        { field: 'date', headerName: 'Fecha de registro', flex: 1.5 },
     ];
 
     const [modal, setModal] = useState(false);
@@ -24,7 +25,9 @@ export const Confirmar = () => {
     const [confirm, setConfirm] = useState(false);
     const [cancel, setCancel] = useState(false);
     const [openSnack, setOpenSnack] = useState(false);
+    const [numberCheck, setNumberCheck] = useState('');
 
+    console.log(data);
 
     const loadData = async() => {
         setData(await getOrderNoConfirmed());
@@ -47,7 +50,7 @@ export const Confirmar = () => {
     }
 
     const confirmOrderHandler = () => {
-        confirmOrder(order._id, order.details);
+        confirmOrder(order._id, {details:order.details, numberCheck:numberCheck});
         loadData();
         setModal(false);
         setOpenSnack(true);
@@ -59,6 +62,8 @@ export const Confirmar = () => {
         det[index].days = e.target.value;
         setOrder({...order, details: [...det]});
     }
+
+    console.log(order);
 
     useEffect(()=>{
         loadData()
@@ -185,6 +190,16 @@ export const Confirmar = () => {
                                 
                                 <Collapse in={confirm}>
                                     <Grid item container direction='column' rowSpacing={1}>
+
+                                        {order.fundsOrigin===undefined&&<Grid item container alignItems='center'>
+                                            <Grid item xs={4}>
+                                                <label>N° de Boleta</label>
+                                            </Grid>
+                                            <Grid item xs={5}>
+                                                <TextField size="small" value={numberCheck} onChange={(e)=>{setNumberCheck(e.target.value)}}/>
+                                            </Grid>
+                                        </Grid>}
+
                                         <Grid item container>
                                             <Grid item xs={6}>
                                                 <label>Trabajo</label>
