@@ -1,30 +1,38 @@
-import { Button, Card, Grid, TextField, Box, IconButton, Autocomplete } from "@mui/material"
+import { Button, Card, Grid, TextField, Box, IconButton, Autocomplete, RadioGroup, FormControlLabel, Radio } from "@mui/material"
 import { useEffect, useState } from "react"
 import { Main } from "../../../components/main"
 import { useStyles } from "../area.styles"
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { getAllEquipment, getOrderById, getStepById } from "../../../utilities/allGetFetch";
+import { getAllEquipment, getOrderFinishedById, addStepById } from "../../../utilities/allGetFetch";
 import { useParams } from "react-router-dom";
 import { finishOrderById, updateOver } from "../../../utilities/allPutFetch";
+import { useSnackbar } from "notistack";
 
 
-export const Finalizar = () => {
+export const Finalizar = ({id, close, load}) => {
 
     const materialInicial = {
-        material: '',
-        cantidad: ''
+        material: {error:false, value:''},
+        cantidad: {error:false, value:0}
     }
 
-    const {id} = useParams();
+    
+    const { enqueueSnackbar } = useSnackbar();
 
+
+    const [complete, setComplete] = useState(true);
+    const [sobrantes, setSobrantes] = useState(false);
     const [data, setData] = useState();
     const [dataMaterial, setDataMaterial] = useState();
-    const [sobrantes, setSobrantes] = useState([materialInicial]);
+    const [deliveredForm, setDeliveredForm] = useState({error:false, value:''});
+    const [equipmentForm, setEquipmentForm] = useState({error:false, value:''});
+    const [dataSobrante, setDataSobrante] = useState([materialInicial]);
     const [equipment, setEquipment] = useState();
 
     const loadData = async() => {
-        let response = await getOrderById(id);
+        let response = await getOrderFinishedById(id);
+        setDeliveredForm({error:false, value:response[0].requiredQuantity});
         setData(response[0]);
         setDataMaterial([...response[0].jobDetails.materials]);
 
@@ -32,7 +40,6 @@ export const Finalizar = () => {
         setEquipment(response);
     }
 
-    console.log(data);
 
     useEffect(()=>{
         loadData();
@@ -40,189 +47,303 @@ export const Finalizar = () => {
 
 
     const addDetail = () => {
-        setSobrantes([...sobrantes, materialInicial])
+        setDataSobrante([...dataSobrante, materialInicial])
     };
 
     const removeDetail = () => {
-        const details = [...sobrantes];
+        const details = [...dataSobrante];
         if(details.length>1){
             details.pop();
         }
-        setSobrantes([...details]);
+        setDataSobrante([...details]);
     }
 
     const handleChange = (e, field, index) => {
-        const details = [...sobrantes];
+        const details = [...dataSobrante];
         if(field==='material'){
-            const idMaterial = dataMaterial.find(item=>item.name===e?.target?.textContent).idMaterial;
-            details[index][field] = e?.target?.textContent;
-            details[index]['id'] = idMaterial;
-
+            const name = e.target.textContent;
+            if(!details.map(item=>item.material.value).includes(name)){
+                const idMaterial = dataMaterial.find(item=>item.name===name).idMaterial;
+                details[index][field].value = name;
+                details[index]['id'] = idMaterial;
+            }else{
+                enqueueSnackbar('Material ya seleccionado',{variant:'warning'});            
+            }
         }else{
-            details[index][field] = e?.target?.value;
+            details[index][field].value = e?.target?.value;
         }
 
-        setSobrantes(details)
+        setDataSobrante(details)
     }
+
+
     const finishOrder = async () => {
-
-        
-        ///await getStepById(data._id);
-
-        const deliveredQuantity = document.getElementById('quantityForm').value;
-        const equipment = document.getElementById('equipmentForm')?.value;
-
-
+        ///Validation
+        let error = false
+        if(!complete){
+            if(deliveredForm.value<=0 || deliveredForm.value>data.requiredQuantity){
+                enqueueSnackbar('Valor de cantidad entregada invalido',{variant:'error'});
+                setDeliveredForm({error:true, value:deliveredForm.value});          
+                error=true;
+            }
+        }
         if(data.jobDetails.area==='Impresion'){
-            ///finishOrderById(data._id,{deliveredQuantity, equipment});
+            if(equipmentForm.value === ''){
+                enqueueSnackbar('Equipo utilizado invalido',{variant:'error'});
+                setEquipmentForm({error:true, value:''});          
+                error=true;
+            }
         }
-        else{
-            ///finishOrderById(data._id,{deliveredQuantity});
+        if(sobrantes){
+            let details = [...dataSobrante];
+            let errordetails = false
+            details = details.map(item => {
+                if(item.material.value===''){
+                    item.material.error=true;
+                    errordetails=true;
+                }
+                if(item.cantidad.value<=0){
+                    item.cantidad.error=true;
+                    errordetails=true;
+                }
+                return item
+            })
+            setDataSobrante([...details]);
+            if(errordetails){
+                enqueueSnackbar('Error en materiales sobrantes',{variant:'error'});
+                error=true
+            }
         }
         
-        const resultado = (sobrantes.filter(item=>{
-            if(item.material==='' || item.cantidad==='')
-                return false
-            else
-                return true
-        }))
-        console.log(resultado);
-        updateOver(resultado);
+
+
+        if(!error){
+            let response
+            if(data.jobDetails.area==='Impresion'){
+
+                response = await finishOrderById(
+                    data._id,
+                    {
+                        deliveredQuantity:deliveredForm.value, 
+                        equipment:equipmentForm.value
+                    });
+                handleResponse(response);
+            }
+            else{
+                response = await finishOrderById(
+                    data._id,
+                    {deliveredQuantity:deliveredForm.value});
+                handleResponse(response);
+            }
+            
+            const resultado = (dataSobrante.map(item=>{
+                item.material = item.material.value;
+                item.cantidad = item.cantidad.value;
+                return item
+            }))
+            updateOver(resultado);
+        }
+    }
+
+    const handleResponse = (response) => {
+        if(response.status===202){
+            enqueueSnackbar('Trabajo finalizado con exito',{variant:'success'});
+            close();
+            load();
+            
+        }else{
+            enqueueSnackbar('Error: No finalizado',{variant:'error'});
+            
+        }
     }
 
     const classes = useStyles();
     return (
         data&&
-        <Main>
-            <Grid container justifyContent='center'>
-                <Grid item style={{width:'80%'}}>
-                    <Card>
-                        <Grid container direction='column' rowSpacing={3}>
-                            <Grid item>
-                                <h1 className={classes.titlePage}>Finalizar Trabajo</h1>
+        <Card style={{overflow:'auto'}}>
+            <Grid container direction='column' rowSpacing={3}>
+                <Grid item>
+                    <h1 className={classes.titlePage}>Finalizar Trabajo</h1>
+                </Grid>
+                <Grid container item direction='column' rowSpacing={1}>
+                    <Grid item container  alignItems='center'>
+                        <Grid item xs={4}>
+                            <label>Trabajo:</label>
+                        </Grid>
+                        <Grid item xs>
+                            <TextField disabled value={data.job} size='small'/>
+                        </Grid>
+                    </Grid>
+                    <Grid item container alignItems='center'>
+                        <Grid item xs={4}>
+                            <label>Detalle:</label>
+                        </Grid>
+                        <Grid item xs>
+                            <TextField disabled value={data.detail} size='small'/>
+                        </Grid>
+                    </Grid>
+                    <Grid item container alignItems='center'>
+                        <Grid item xs={4}>
+                            <label>Cantidad Solicitada:</label>
+                        </Grid>
+                        <Grid item xs>
+                            <TextField disabled value={data.requiredQuantity} size='small'/>
+                        </Grid>
+                    </Grid>
+                    <Grid item container >
+                        <Grid item xs={4}>
+                            <label>Cantidad Entregada:</label>
+                        </Grid>
+                        <Grid item xs>
+                            <TextField
+                                type='number'
+                                error={deliveredForm.error}
+                                required
+                                label='Requerido'
+                                disabled={complete}
+                                id='quantityForm' 
+                                value={complete ? data.requiredQuantity : deliveredForm.value}
+                                onChange={(e)=>{setDeliveredForm({error:false, value:e.target.value})}}
+                                size='small'
+                            />
+                            <RadioGroup
+                                aria-labelledby="demo-controlled-radio-buttons-group"
+                                name="controlled-radio-buttons-group"
+                                value={complete}
+                                onChange={()=>{setComplete(prev => !prev)}}
+                                row
+                            >
+                                <FormControlLabel value={true} control={<Radio/>} label="Completo" />
+                                <FormControlLabel value={false} control={<Radio/>} label="Parcial" />
+                            </RadioGroup>
+                        </Grid>
+                    </Grid>
+                    
+                    {
+                        data.jobDetails.area === 'Impresion'&&
+                        <Grid item container alignItems='center'>
+                            <Grid item xs={4}>
+                                <label>Equipo Utilizado:</label>
                             </Grid>
-                            <Grid container item direction='column' rowSpacing={1}>
-                                <Grid item container  alignItems='center'>
-                                    <Grid item xs={2}>
-                                        <label>Trabajo:</label>
-                                    </Grid>
-                                    <Grid item xs>
-                                        <TextField disabled value={data.job} size='small'/>
-                                    </Grid>
-                                </Grid>
-                                <Grid item container alignItems='center'>
-                                    <Grid item xs={2}>
-                                        <label>Detalle:</label>
-                                    </Grid>
-                                    <Grid item xs>
-                                        <TextField disabled value={data.detail} size='small'/>
-                                    </Grid>
-                                </Grid>
-                                <Grid item container alignItems='center'>
-                                    <Grid item xs={2}>
-                                        <label>Cantidad Entregada:</label>
-                                    </Grid>
-                                    <Grid item xs>
-                                        <TextField id='quantityForm' defaultValue={data.requiredQuantity} size='small'/>
-                                    </Grid>
-                                </Grid>
-                                {
-                                    data.jobDetails.area === 'Impresion'&&
-                                    <Grid item container alignItems='center'>
-                                        <Grid item xs={2}>
-                                            <label>Equipo Utilizado:</label>
-                                        </Grid>
-                                        <Grid item xs>
-                                            <Autocomplete
-                                                id="equipmentForm"
-                                                options={equipment?.map(item=>item.name)}
-                                                size='small'
-                                                disablePortal
-                                                renderInput={(params) => <TextField {...params}/>}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                }
-                            </Grid>
-                            <Grid item container direction='column' rowSpacing={2}>
-                                <Grid item>
-                                    <h2 className={classes.titlePage}>Registro de material sobrante</h2>
-                                </Grid>
-                                <Grid item>
-                                    <Grid container>
-                                        <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'10px 10px 0 0'}}>
-                                            <h3 style={{textAlign:'center'}}>REGISTRO DE MATERIAL SOBRANTE</h3>
-                                        </Grid>
-
-                                        <Box display='flex' className={classes.addRemoveBox} columnGap={2}>
-                                            <IconButton size="small" onClick={addDetail}>
-                                                <AddIcon fontSize="inherit"/>
-                                            </IconButton>
-                                            <IconButton size="small" onClick={removeDetail}>
-                                                <RemoveIcon fontSize="inherit"/>
-                                            </IconButton>
-                                        </Box>
-
-                                        <Grid item xs={12} className={classes.tableHeader} container>
-                                            <Grid item xs={1}>
-                                                <h3>N°</h3>
-                                            </Grid>
-                                            <Grid item xs={7}>
-                                                <h3>Material</h3>
-                                            </Grid>
-                                            <Grid item xs={4}>
-                                                <h3>Cantidad</h3>
-                                            </Grid>
-                                        </Grid>
-
-                                        {sobrantes.map((item,index)=>{
-                                            return (
-                                            <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
-                                                <Grid item xs={1}>
-                                                    {index+1}
-                                                </Grid>
-                                                <Grid item xs={7}> 
-                                                    <Autocomplete
-                                                    value={sobrantes[index].material}
-                                                    onChange={(e)=>{
-                                                        handleChange(e,'material',index)
-                                                    }}
-                                                    options={dataMaterial.map(item=>{return item.name})}
-                                                    size='small'
-                                                    disablePortal
-                                                    id="combo-box-demo"
-                                                    fullWidth
-                                                    renderInput={(params) => <TextField {...params}/>}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={4}>
-                                                    <TextField 
-                                                        fullWidth 
-                                                        variant="filled" 
-                                                        size='small' 
-                                                        onChange={(e)=>{handleChange(e,'cantidad',index)}}
-                                                        value={sobrantes[index].cantidad}
-                                                    />
-                                                </Grid>
-                                            </Grid>
-                                            )
-                                        })}
-                                    </Grid>
-                                </Grid>
-                                <Grid item justifyContent='center' display='flex'>
-                                    <Button
-                                        variant="contained"
-                                        onClick={finishOrder}
-                                    >
-                                        Finalizar
-                                    </Button>
-                                </Grid>
+                            <Grid item xs>
+                                {equipment&&
+                                <Autocomplete
+                                    defaultValue={equipmentForm.value}
+                                    onChange={(e)=>{
+                                        setEquipmentForm({error:false, value:e.target.textContent})
+                                    }}
+                                    options={equipment.map(item=>item.name)}
+                                    size='small'
+                                    renderInput={(params) => <TextField
+                                        error={equipmentForm.error}
+                                        required
+                                        label='Requerido'
+                                        {...params}
+                                    />}
+                                />}
                             </Grid>
                         </Grid>
-                    </Card>
+                    }
+                    <Grid item container alignItems='center'>
+                        <Grid item xs={4}>
+                            <label>Materiales Sobrante:</label>
+                        </Grid>
+                        <Grid item xs>
+                            <RadioGroup
+                                aria-labelledby="demo-controlled-radio-buttons-group"
+                                name="controlled-radio-buttons-group"
+                                value={sobrantes}
+                                onChange={()=>{setSobrantes(prev => !prev)}}
+                                row
+                            >
+                                <FormControlLabel value={true} control={<Radio/>} label="Si" />
+                                <FormControlLabel value={false} control={<Radio/>} label="No" />
+                            </RadioGroup>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item container direction='column' rowSpacing={2}>
+                    
+                    {sobrantes&&
+                    <Grid item>
+                        <Grid container direction='column'>
+                            <Grid item  className={classes.tableHeader} style={{borderRadius:'10px 10px 0 0'}}>
+                                <p style={{textAlign:'center'}}>REGISTRO DE MATERIAL SOBRANTE</p>
+                            </Grid>
+
+                            <Box display='flex' className={classes.addRemoveBox} columnGap={2}>
+                                <IconButton size="small" onClick={addDetail}>
+                                    <AddIcon fontSize="inherit"/>
+                                </IconButton>
+                                <IconButton size="small" onClick={removeDetail}>
+                                    <RemoveIcon fontSize="inherit"/>
+                                </IconButton>
+                            </Box>
+
+                            <Grid item  className={classes.tableHeader} container>
+                                <Grid item xs={2}>
+                                    <p style={{textAlign:'center'}}>N°</p>
+                                </Grid>
+                                <Grid item xs={7}>
+                                    <p style={{textAlign:'center'}}>Material</p>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <p style={{textAlign:'center'}}>Cantidad</p>
+                                </Grid>
+                            </Grid>
+
+                            {dataSobrante.map((item,index)=>{
+                                return (
+                                <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
+                                    <Grid item xs={2}>
+                                        {index+1}
+                                    </Grid>
+                                    <Grid item xs={7}> 
+                                        <Autocomplete
+                                        value={dataSobrante[index].material.value}
+                                        onChange={(e)=>{
+                                            handleChange(e,'material',index)
+                                        }}
+                                        options={dataMaterial.map(item=>{return item.name})}
+                                        size='small'
+                                        fullWidth
+                                        renderInput={(params) => <TextField
+                                            error={dataSobrante[index].material.error}
+                                            required
+                                            label='Requerido' 
+                                            {...params}
+                                        />}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <TextField
+                                            type='number'
+                                            error={dataSobrante[index].cantidad.error}
+                                            required
+                                            label='Requerido'
+                                            fullWidth 
+                                            variant="filled" 
+                                            size='small' 
+                                            onChange={(e)=>{handleChange(e,'cantidad',index)}}
+                                            value={dataSobrante[index].cantidad.value}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                )
+                            })}
+                        </Grid>
+                    </Grid>
+                    }
+                    <Grid item justifyContent='center' display='flex'>
+                        <Button
+                            variant="contained"
+                            onClick={finishOrder}
+                        >
+                            Finalizar
+                        </Button>
+                    </Grid>
                 </Grid>
             </Grid>
-            
-        </Main>
+        </Card>
     )
 }

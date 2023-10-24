@@ -46,12 +46,36 @@ import { BinnacleDetail } from '../pages/admin/bitacora/details';
 import { ReporteBitacora } from '../pages/admin/reportes/reporteBitacora';
 import { Cuentas } from '../pages/admin/usuarios/indexAccount';
 import { AccountDetails } from '../pages/admin/usuarios/accountDetails';
+import { ConfirmOrder } from '../pages/Recepcion/Materiales/confirmOrder';
+import { ConfigWhatsapp } from '../pages/admin/mensajeria/configWhats';
+import { Direccion } from '../pages/direccion';
+import { ConfigEmail } from '../pages/admin/mensajeria/configEmail';
+import { decodeToken } from 'react-jwt';
+
+const token = localStorage.token;
+let isSuperUser = false;
+let decode;
+if(token !== undefined){
+    decode = decodeToken(token);
+    if(decode.data.role === 'SuperUsuario')
+        isSuperUser = true
+}
 
 export const routes = createBrowserRouter(createRoutesFromElements(
-    <>
-        <Route path='' element={<Root/>}/>
+    
+    <Route path='' element={<Root/>}>
         <Route path='/login' element={<Login/>}/>
-        <Route path='/recepcion' element={<Recepcion/>}>
+        <Route path='/cliente' element={<Cliente isSuperUser={isSuperUser} role={decode.data.role}/>}>
+            <Route path='pedidos' element={<PedidosCliente/>}/>
+            <Route path='pedidos/:id' element={<Details/>}/>
+            <Route path='pedidos/nuevo' element={<SolicitarCliente/>}/>
+        </Route>
+        <Route path='/direccion' element={<Direccion isSuperUser={isSuperUser} role={decode.data.role}/>}>
+            <Route path='reporteMaterial' element={<ReporteMaterial/>}/>
+            <Route path='cronograma' element={<Cronograma direction={true}/>}/>
+
+        </Route>
+        <Route path='/recepcion' element={<Recepcion isSuperUser={isSuperUser} role={decode.data.role}/>}>
             <Route path='clientes' element={<ClientesRecepcion/>}/>
             <Route path='clientes/:id' element={<DetailsClientRecepcion/>}/>
             <Route path='clientes/crear' element={<CreateClientRecepcion/>}/>
@@ -63,16 +87,12 @@ export const routes = createBrowserRouter(createRoutesFromElements(
             <Route path='material' element={<Materiales/>}/>
             <Route path='material/solicitar' element={<Solicitar/>}/>
             <Route path='material/recepcionar' element={<Recepcionar/>}/>
+            <Route path='material/recepcionar/:id' element={<ConfirmOrder/>}/>
         </Route>
-        <Route path='/cliente' element={<Cliente/>}>
-            <Route path='pedidos' element={<PedidosCliente/>}/>
-            <Route path='pedidos/:id' element={<Details/>}/>
-            <Route path='pedidos/solicitar' element={<SolicitarCliente/>}/>
-        </Route>
-        <Route path='/area' element={<Area/>}>
+        <Route path='/area' element={<Area isSuperUser={isSuperUser} role={decode.data.role}/>}>
             <Route path='trabajos' element={<Trabajos/>}/>
             <Route path='trabajos/:id' element={<DetalleTrabajo/>}/>
-            <Route path='trabajos/cronograma' element={<Cronograma/>}/>
+            <Route path='trabajos/cronograma' element={<Cronograma direction={false}/>}/>
             <Route path='trabajos/finalizar/:id' element={<Finalizar/>}/>
             <Route path='material' element={<MaterialArea/>}/>
             <Route path='material/:id' element={<DetailsMaterialArea/>}/>
@@ -83,7 +103,9 @@ export const routes = createBrowserRouter(createRoutesFromElements(
             <Route path='reporteMaterial' element={<ReporteMaterial/>}/>
             <Route path='reportePedidos' element={<ReportePedidos/>}/>
         </Route>
-        <Route path='/admin' element={<Admin/>}>
+        <Route path='/admin' element={<Admin isSuperUser={isSuperUser} role={decode.data.role}/>}>
+            <Route path='configWhatsapp' element={<ConfigWhatsapp/>}/>
+            <Route path='configEmail' element={<ConfigEmail/>}/>
             <Route path='cuentaUsuarios' element={<Cuentas/>}/>
             <Route path='cuentaUsuarios/:id' element={<AccountDetails/>}/>
             <Route path='usuarios' element={<Usuarios/>}/>
@@ -101,5 +123,5 @@ export const routes = createBrowserRouter(createRoutesFromElements(
             <Route path='bitacora/detail/:id' element={<BinnacleDetail/>}/>
             <Route path='reporteBitacora' element={<ReporteBitacora/>}/>
         </Route>
-    </>
+    </Route>
 ))

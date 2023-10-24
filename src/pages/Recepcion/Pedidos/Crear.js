@@ -55,12 +55,12 @@ export const Crear = () => {
         setDetails([...details, detalleInicial]);
     }
 
-    const removeDetail = () => {
+    const removeDetailByIndex = (index) => {
         const auxDetails = [...details];
         if(auxDetails.length>1){
-            auxDetails.pop();
+            auxDetails.splice(index,1);
+            setDetails([...auxDetails]);
         }
-        setDetails([...auxDetails]);
     }
 
     const loadData = async() => {
@@ -143,7 +143,6 @@ export const Crear = () => {
         })
 
         if(!error){
-            ///setLoading(true);
             const detailsFormated = details.map(item=>{
                 return {
                     job: item.job.value,
@@ -181,7 +180,7 @@ export const Crear = () => {
     const handleResponse = async(response) => {
         const data = await response.json();
         if(response.status === 201){
-            if(data.alert.length!==0){
+            if(Object.keys(data.alert).length!==0){
                 const mess = <>
                     <Typography gutterBottom>
                         LOS SIGUIENTES TRABAJOS NO PODRAN PASAR A SER CONFIRMADOS POR FALTA DE MATERIAL NECESARIO.
@@ -377,19 +376,18 @@ export const Crear = () => {
                             }
                             <Grid item>
                                 <Grid container>
+                                    <Grid item position='relative' display='flex' alignItems='center'>
+                                        <IconButton 
+                                            size="small" 
+                                            onClick={addDetail} 
+                                            style={{background:'#006E0A', position:'absolute', left:'10px'}}
+                                        >
+                                            <AddIcon fontSize="inherit"/>
+                                        </IconButton>
+                                    </Grid>
                                     <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'10px 10px 0 0'}}>
                                         <h3 style={{textAlign:'center'}}>DETALLE DE PEDIDO</h3>
                                     </Grid>
-                    
-                                    <Box display='flex' className={classes.addRemoveBox} columnGap={2}>
-                                        <IconButton size="small" onClick={addDetail}>
-                                            <AddIcon fontSize="inherit"/>
-                                        </IconButton>
-                                        <IconButton size="small" onClick={removeDetail}>
-                                            <RemoveIcon fontSize="inherit"/>
-                                        </IconButton>
-                                    </Box>
-                    
                                     <Grid item xs={12} className={classes.tableHeader} container>
                                         <Grid item xs={1}>
                                             <h3>N°</h3>
@@ -467,6 +465,11 @@ export const Crear = () => {
                                                     onChange={(e)=>{handleChange(e,'cost',index)}}
                                                 />
                                             </Grid>
+                                            <div style={{position:'relative', display:'flex', alignItems:'center'}}  >
+                                                <IconButton style={{position:'absolute', right:'-15px', background:'#4B0000'}} size="small" onClick={()=>{removeDetailByIndex(index)}}>
+                                                    <RemoveIcon fontSize="inherit" color="neutro1"/>
+                                                </IconButton>
+                                            </div>
                                         </Grid>
                                         )
                                     })}

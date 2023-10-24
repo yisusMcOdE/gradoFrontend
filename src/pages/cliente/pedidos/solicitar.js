@@ -1,265 +1,385 @@
-import { Button, Card, Collapse, Grid, Slide, TextField, Box, IconButton, Autocomplete,  } from "@mui/material"
-import { useState } from "react";
-import { Main } from "../../../components/main";
+import { Card, Grid, Autocomplete, TextField, Box, RadioGroup, FormControlLabel, Radio, IconButton, Button, Snackbar, Alert, Backdrop, CircularProgress, DialogTitle, DialogContent, Typography, DialogActions, Dialog } from "@mui/material";
 import { useStyles } from "../cliente.styles";
+import { useDebugValue, useEffect, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import {Checkbox} from "@mui/material";
+import WarningIcon from '@mui/icons-material/Warning';
+import { allClientsExternal, allClientsExternalActive, allClientsInternal, allClientsInternalActive, allJobs, allJobsActive } from "../../../utilities/allGetFetch";
+import { createOrderExternal, createOrderInternal } from "../../../utilities/allPostFetch";
+import { useNavigate } from "react-router-dom";
+import { Main } from "../../../components/main";
+import { generateTicketPay } from "../../../utilities/pdfMake/checkPay";
+import CloseIcon from '@mui/icons-material/Close';
+import { styled } from '@mui/material/styles';
 
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiDialogContent-root': {
+        padding: theme.spacing(2),
+    },
+    '& .MuiDialogActions-root': {
+        background:'black',
+        padding: theme.spacing(1),
+    },
+  }));
 
 export const SolicitarCliente = () => {
 
+    console.log('im here');
+
+    const initialInput = {error:false, value:''}
+
     const detalleInicial = {
-        trabajo: '',
-        detalle: '',
-        cantidad: '',
-        costo: 0
+        job: {...initialInput},
+        detail: {...initialInput},
+        requiredQuantity: {error:false, value:0},
+        cost: {error:false, value:0}
     }
+
+    const [loading, setLoading] = useState(false);
+    const [alert,setAlert] = useState({open:false, severity:'', message:''});
+    const [dialog, setDialog] = useState({open:false, message:''});
+
+
+    const [details, setDetails] = useState([detalleInicial]);
+    const [funds, setFunds] = useState(initialInput);
+
+    const [jobs, setJobs] = useState();
+
     const classes = useStyles();
-    const [withMaterials, setWithMaterials] = useState(false);
-    const [stepForm, setStepForm] = useState(1);
-    const [form, setForm] = useState({
-        institucion: '',
-        detalle: [detalleInicial],
-    });
 
     const addDetail = () => {
-        setForm({...form, detalle:[...form.detalle, detalleInicial]})
+        setDetails([...details, detalleInicial]);
     }
 
-    const removeDetail = () => {
-        const details = [...form.detalle];
-        if(details.length>1){
-            details.pop();
+    const removeDetailByIndex = (index) => {
+        const auxDetails = [...details];
+        if(auxDetails.length>1){
+            auxDetails.splice(index,1);
+            setDetails([...auxDetails]);
         }
-        setForm({...form, detalle:details});
     }
 
-    const DetailsBox = () => {
-        return (
-            <Grid container>
-
-                <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'10px 10px 0 0'}}>
-                    <h3 style={{textAlign:'center'}}>DETALLE DE PEDIDO</h3>
-                </Grid>
-
-                <Box display='flex' className={classes.addRemoveBox} columnGap={2}>
-                    <IconButton size="small" onClick={addDetail}>
-                        <AddIcon fontSize="inherit"/>
-                    </IconButton>
-                    <IconButton size="small" onClick={removeDetail}>
-                        <RemoveIcon fontSize="inherit"/>
-                    </IconButton>
-                </Box>
-
-                <Grid item xs={12} className={classes.tableHeader} container>
-                    <Grid item xs={1}>
-                        <h3>N°</h3>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <h3>Trabajo</h3>
-                    </Grid>
-                    <Grid item xs={5}>
-                        <h3>Detalle</h3>
-                    </Grid>
-                    <Grid item xs={1.5}>
-                        <h3>Cantidad</h3>
-                    </Grid>
-                    <Grid item xs={1.5}>
-                        <h3>Costo</h3>
-                    </Grid>
-                </Grid>
-
-                {form.detalle.map((item,index)=>{
-                    return (
-                    <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
-                        <Grid item xs={1}>
-                            {index+1}
-                        </Grid>
-                        <Grid item xs={3}> 
-                            <Autocomplete
-                            size='small'
-                            disablePortal
-                            id="combo-box-demo"
-                            fullWidth
-                            renderInput={(params) => <TextField {...params}/>}
-                            />
-                        </Grid>
-                        <Grid item xs={5}>
-                            <TextField fullWidth multiline id="filled-basic" variant="filled" size='small' />
-                        </Grid>
-                        <Grid item xs={1.5}>
-                            <TextField fullWidth id="filled-basic" variant="filled" size='small' />
-                        </Grid>
-                        <Grid item xs={1.5}>
-                            <TextField fullWidth id="filled-basic" variant="filled" size='small' />
-                        </Grid>
-                    </Grid>
-                    )
-                })}
-            </Grid>
-        )
+    const loadData = async() => {
+        const data = await allJobsActive();
+        setJobs(data);
     }
 
-    return(
+    const handleChange = (e, field, index) => {
+
+        const values = [...details];
+        if(field==='job'){
+            values[index][field].value = e?.target?.textContent;
+        }else{
+            values[index][field].value = e?.target?.value;
+        }
+
+        if(field==='job' || field==='requiredQuantity'){
+            const costo = calcCost(values[index].job.value, values[index].requiredQuantity.value);
+            values[index]['cost'].value = costo;
+        }
+        setDetails([...values]);
+    }
+
+    const calcCost = (nameJob, require=0) => {
+        const job = jobs.find(item=>item.name===nameJob);
+        if(job){
+            const costos = job.cost;
+            let costoTotal = 0;
+            for (let index = costos.length-1; index >= 0; index--) {
+                while(require >= costos[index].lot){
+                    costoTotal += costos[index].price;
+                    require -= costos[index].lot;
+                }
+            }
+            return Number(Number(costoTotal).toFixed(2));
+        }else{
+            return 0;
+        }
+        
+    }
+
+    const createOrder = async() => {
+
+        ///Validation
+        let error = false;
+
+        if(funds.value===''){
+            setFunds({error:true, value:''})
+            error = true
+        }
+        let detailsAux = [...details];
+        detailsAux = detailsAux.map(item=>{
+
+            if(item.job.value===''){
+                item.job.error = true
+                error = true
+            }
+            if(item.requiredQuantity.value==='' || item.requiredQuantity.value===0){
+                item.requiredQuantity.error = true
+                error = true
+            }
+            if(item.cost.value==='' || item.cost.value===0){
+                item.cost.error = true
+                error = true
+            }
+            return item
+        })
+
+        if(!error){
+            const detailsFormated = details.map(item=>{
+                return {
+                    job: item.job.value,
+                    detail: item.detail.value,
+                    requiredQuantity: item.requiredQuantity.value,
+                    cost: item.cost.value
+                }
+            });
+            let body={
+                details:detailsFormated,
+                fundsOrigin:funds.value,
+                cost: details.reduce((accumulator, item)=>{return (accumulator+item.cost.value)},0)
+            }
+            setLoading(true);
+            const response = await createOrderInternal(body);
+            setLoading(false);
+            handleResponse(response);
+        }else{
+            setAlert({open:true, severity:'error', message:'Formulario Invalido * '});
+        }
+    }
+    
+    const handleResponse = async(response) => {
+        const data = await response.json();
+        if(response.status === 201){
+            if(Object.keys(data.alert).length!==0){
+                const mess = <>
+                    <Typography gutterBottom>
+                        LOS SIGUIENTES TRABAJOS NO PODRAN PASAR A SER CONFIRMADOS POR FALTA DE MATERIAL NECESARIO.
+                    </Typography>
+                    {
+                        Object.keys(data.alert).map((key)=>{
+                            return <Typography gutterBottom>
+                                        <label>{`Trabajo: ${key}`}</label>
+                                        <br/>
+                                        <label>{`Falta: ${data.alert[key]}`}</label>
+                                    </Typography>
+                        })
+                    }
+                </>
+                setDialog({open:true, message:mess});
+            }else
+                setAlert({open:true, severity:'success', message:'201: Pedido creado existosamente'});
+
+            clearInputs();
+        }
+        if(response.status === 501){
+            setAlert({open:true, severity:'warning', message: `501: ${(data.reason || data.message)}`})
+        }
+    }
+
+    const clearInputs = () => {
+        setDetails([detalleInicial]);
+        setFunds(initialInput);
+    }
+
+    useEffect(()=>{
+        loadData();
+    },[])
+
+    return (
+        jobs&&
         <Main>
-            <Card raised>
-                <Grid container direction='column' rowGap={3}>
-                    <Grid item>
-                        <h1 className={classes.titlePage}>Solicitar Pedido</h1>
-                    </Grid>
-                    <Grid item container>
-                        <Grid item xs={12}>
-                            <Collapse in={stepForm===1}>
-                                <Grid container direction='column' rowGap={3}>
-                                    <Grid item container columnSpacing={3} alignItems='center'>
-                                        <Grid item xs={3}>
-                                            <label>Institucion:</label>
-                                        </Grid>
-                                        <Grid item xs={9}>
-                                            <TextField size='small'/>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item>
-                                        <DetailsBox/>
-                                    </Grid>
-                                </Grid>
-                            </Collapse>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Collapse in={stepForm===2} orientation='vertical'>
-                                <Grid container direction='column' rowSpacing={3}>
-                                    <Grid item>
-                                        <h2>Nota Importante:</h2>
-                                        <p>
-                                            Para garantizar una pronta ejecucion de su pedido debera recepcionar a 
-                                            oficinas de la imprenta todo el material necesario para su trabajo, 
-                                            el cual sera calculado automaticamente mediante este sistema, ademas de 
-                                            que se le proporcionara un formulario listo para imprimir el cual debera ser entregado a almacenes
-                                            de la Universidad Autonoma Tomas Frias.
-                                        </p>
-                                    </Grid>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            <Snackbar
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                open={alert.open}
+                onClose={()=>{setAlert({...alert, open:false})}}
+                autoHideDuration={alert.time || 3000}
+            >
+                <Alert variant='filled' severity={alert.severity}>
+                    {alert.message}
+                </Alert>
+            </Snackbar>
 
-                                    <Grid item container justifyContent='space-evenly'>
-                                        <Grid item>
-                                            <Checkbox
-                                                checked={!withMaterials}
-                                                onChange={()=>{setWithMaterials(prev => !prev)}}
-                                                inputProps={{ 'aria-label': 'controlled' }}
-                                            />
-                                            <label>No llevare materiales</label>
-                                        </Grid>
-                                        <Grid item>
-                                            <Checkbox
-                                                checked={withMaterials}
-                                                onChange={()=>{setWithMaterials(prev => !prev)}}
-                                                inputProps={{ 'aria-label': 'controlled' }}
-                                            />
-                                            <label>Si les proporcionare materiales</label>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item display='flex' justifyContent='center'>
-                                        {
-                                            !withMaterials?
-                                                <label>*Si no existiese material necesario su pedido podria retrasarse*</label> :
-                                                <label>*Su pedido sera agendado al momento de que recepcionemos su material*</label>
-                                        }
-                                    </Grid>
-                                    {
-                                        withMaterials&&
-                                        <Grid item display='flex' justifyContent='center'>
-                                            <Button>Calcular Material</Button>
-                                        </Grid>
-                                    }
-                                </Grid>
-                            </Collapse>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Collapse in={stepForm===3}>
-                                <Grid container direction='column' rowSpacing={2}>
-                                    <Grid item container>
-                                        <Grid item xs={2}>
-                                            <label>Inttitucion:</label>
-                                        </Grid>
-                                        <Grid item xs={9}>
-                                            <TextField size='small'/>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item container>
-                                        <Grid item xs={2}>
-                                            <label>Trabajo(s):</label>
-                                        </Grid>
-                                        <Grid item xs={9} container direction='column' rowSpacing={1}>
-                                            <Grid item container columnSpacing={3}>
-                                                <Grid item xs={4}>
-                                                    <TextField size='small'/>
-                                                </Grid>
-                                                <Grid item xs={2}>
-                                                    <TextField size='small'/>
-                                                </Grid>
-                                            </Grid>
-                                            <Grid item container columnSpacing={3}>
-                                                <Grid item xs={4}>
-                                                    <TextField size='small'/>
-                                                </Grid>
-                                                <Grid item xs={2}>
-                                                    <TextField size='small'/>
-                                                </Grid>
-                                            </Grid>
-                                            <Grid item container columnSpacing={3}>
-                                                <Grid item xs={4}>
-                                                    <TextField size='small'/>
-                                                </Grid>
-                                                <Grid item xs={2}>
-                                                    <TextField size='small'/>
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item container>
-                                        <Grid item xs={2}>
-                                            <label>Materiales Propios:</label>
-                                        </Grid>
-                                        <Grid item xs={1}>
-                                            <TextField size='small'/>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Collapse>
-                        </Grid>
-                    </Grid>
-                    <Grid item container justifyContent='space-evenly'>
-                        {
-                            stepForm!==1&&
-                            <Grid item xs='auto'>
-                                <Button onClick={()=>{
-                                    const value = stepForm===2?1:2;
-                                    setStepForm(value);
-                                }}>
-                                    Anterior
-                                </Button>
+            <BootstrapDialog
+                onClose={()=>{
+                    setDialog({...dialog, open:false});
+                    setAlert({open:true, severity:'success', message:'201: Pedido creado existosamente'});
+                }}
+                open={dialog.open}
+                
+            >
+                <DialogTitle sx={{ m: 0, p: 2, background:'black', color:'white', alignItems:'center', display:'flex' }} id="customized-dialog-title">
+                    <WarningIcon sx={{ color: 'yellow', marginRight:2}} fontSize="large" />
+                    <b>{`ADVERTENCIA`}</b>
+                </DialogTitle>
+                <IconButton
+                    onClick={()=>{
+                        setDialog({...dialog, open:false});
+                        setAlert({open:true, severity:'success', message:'201: Pedido creado existosamente'});
+                    }}
+                    sx={{
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: 'white',
+                    }}
+                >
+                <CloseIcon />
+                </IconButton>
+                <DialogContent dividers>
+                    {dialog.message}
+                </DialogContent>
+                <DialogActions>
+                <Button variant="contained" autoFocus onClick={()=>{
+                    setDialog({...dialog, open:false});
+                    setAlert({open:true, severity:'success', message:'201: Pedido creado existosamente'});
+                }}>
+                    Entendido
+                </Button>
+                </DialogActions>
+            </BootstrapDialog>
+
+            <Grid container justifyContent='center'>
+                <Grid item style={{width:'80%'}}>
+                    <Card raised className={classes.nuevoPedidoContainer}>
+                        <Grid container direction='column' spacing={3}>
+                            <Grid item>
+                                <h1 className={classes.titlePage}>Nuevo Pedido</h1>
                             </Grid>
-                        }
-                        
-                        <Grid item xs='auto'>
-                            <Button onClick={()=>{
-                                const value = stepForm===1?2:3;
-                                setStepForm(value);
-                            }}>
-                                {
-                                    stepForm===1 && 'Siguiente'
-                                }
-                                {
-                                    stepForm===2 && 'Siguiente'
-                                }
-                                {
-                                    stepForm===3 && 'Finalizar'
-                                }
-                            </Button>
+                            <Grid item display='flex' alignItems='center' columnGap={1}>
+                                <label>Origen de Fondos:</label>
+                                <Autocomplete
+                                    value={funds.value}
+                                    onChange={(e)=>{
+                                        setFunds({error:false, value:e.target.textContent})
+                                    }}
+                                    size='small'
+                                    options={['Institucionales', 'Propios']}
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        error={funds.error}
+                                        required
+                                        label='Requerido'
+                                        {...params}
+                                    />}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <Grid container>
+                                    <Grid item position='relative' display='flex' alignItems='center'>
+                                        <IconButton 
+                                            size="small" 
+                                            onClick={addDetail} 
+                                            style={{background:'#006E0A', position:'absolute', left:'10px'}}
+                                        >
+                                            <AddIcon fontSize="inherit"/>
+                                        </IconButton>
+                                    </Grid>
+                                    <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'10px 10px 0 0'}}>
+                                        <h3 style={{textAlign:'center'}}>DETALLE DE PEDIDO</h3>
+                                    </Grid>
+                                    <Grid item xs={12} className={classes.tableHeader} container>
+                                        <Grid item xs={1}>
+                                            <h3>N°</h3>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <h3>Trabajo</h3>
+                                        </Grid>
+                                        <Grid item xs={5}>
+                                            <h3>Detalle</h3>
+                                        </Grid>
+                                        <Grid item xs={1.5}>
+                                            <h3>Cantidad</h3>
+                                        </Grid>
+                                        <Grid item xs={1.5}>
+                                            <h3>Costo</h3>
+                                        </Grid>
+                                    </Grid>
+                    
+                                    {details.map((item,index)=>{
+                                        return (
+                                        <Grid key={index} container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
+                                            <Grid item xs={1}>
+                                                {index+1}
+                                            </Grid>
+                                            <Grid item xs={3}> 
+                                                <Autocomplete
+                                                    size='small'
+                                                    fullWidth
+                                                    options={jobs.map(element=>element.name).concat([""])}
+                                                    renderInput={(params) => <TextField
+                                                        error={item.job.error}
+                                                        required
+                                                        label='Requerido'
+                                                        variant="standard"
+                                                        {...params}
+                                                    />}
+                                                    onChange={(e)=>{handleChange(e,'job',index)}}
+                                                    value={item.job.value || ''}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={5}>
+                                                <TextField
+                                                    label='Opccional'
+                                                    fullWidth 
+                                                    multiline 
+                                                    variant="standard"
+                                                    size='small'
+                                                    value={item.detail.value}
+                                                    onChange={(e)=>{handleChange(e,'detail',index)}}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={1.5}>
+                                                <TextField
+                                                    error={item.requiredQuantity.error}
+                                                    required
+                                                    label='Requerido'
+                                                    type='number'
+                                                    fullWidth 
+                                                    variant="standard"
+                                                    size='small' 
+                                                    value={item.requiredQuantity.value}
+                                                    onChange={(e)=>{handleChange(e,'requiredQuantity',index)}}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={1.5}>
+                                                <TextField 
+                                                    error={item.cost.error}
+                                                    required
+                                                    label='Requerido'
+                                                    type='number'
+                                                    fullWidth 
+                                                    variant="standard"
+                                                    size='id' 
+                                                    value={item.cost.value}
+                                                    onChange={(e)=>{handleChange(e,'cost',index)}}
+                                                />
+                                            </Grid>
+                                            <div style={{position:'relative', display:'flex', alignItems:'center'}}  >
+                                                <IconButton style={{position:'absolute', right:'-15px', background:'#4B0000'}} size="small" onClick={()=>{removeDetailByIndex(index)}}>
+                                                    <RemoveIcon fontSize="inherit" color="neutro1"/>
+                                                </IconButton>
+                                            </div>
+                                        </Grid>
+                                        )
+                                    })}
+                                </Grid>
+                                
+                            </Grid>
+                            
+                            <Grid item display='flex' justifyContent='center'>
+                                <Button variant="contained" onClick={()=>{createOrder()}}>Generar Pedido</Button>
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    </Card>
                 </Grid>
-            </Card>
+            </Grid>
         </Main>
     )
 }

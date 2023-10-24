@@ -5,12 +5,16 @@ import BallotIcon from '@mui/icons-material/Ballot';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { BackgroundPage } from "../../components/background";
+import { SuperUserBar } from "../../components/superUserBar";
+import { useEffect } from "react";
+import { redirectRole } from "../../utilities/pdfMake/redirectRole";
 
-export const Recepcion = () => {
+export const Recepcion = ({isSuperUser, role}) => {
     
     const classes = useStyles();
+    const navigator = useNavigate();
 
     const menu= ['Clientes','Pedidos', 'Materiales', 'Reportes'];
     const subMenu= {
@@ -34,14 +38,29 @@ export const Recepcion = () => {
     }
     const icons= [<ContactPageIcon/>, <BallotIcon/>,<WidgetsIcon/>,<FindInPageIcon/>]
 
+    useEffect(()=>{
+        if(role!=='Direccion'){
+            if(!isSuperUser)
+                redirectRole(role, navigator);
+        }
+    },[])
+
     return (
         <Grid container >
             <BackgroundPage/>
             <Grid item xs='auto'>
                 <SideBar role='Recepcion' menu={menu} icons={icons} subMenu={subMenu}/>
             </Grid>
-            <Grid item xs className={classes.containerPage}>
-                <Outlet/>
+            <Grid item container direction='column' xs className={classes.containerPage}>
+                {
+                isSuperUser&&
+                    <Grid item>
+                        <SuperUserBar/>
+                    </Grid>
+                }
+                <Grid item>
+                    <Outlet/>
+                </Grid>
             </Grid>
         </Grid>
     )

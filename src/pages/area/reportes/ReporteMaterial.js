@@ -36,7 +36,6 @@ export const ReporteMaterial = () => {
         const material = document.getElementById('FormMaterial').value;
         const idMaterial = materials.find(item=>{ return item.name===material})._id;
         let response = await getMaterialStractByid(idMaterial, start, end);
-        response = response.map(item => {return {...item, date:item.date.slice(0,10)}})
         setData(response);
     }
 

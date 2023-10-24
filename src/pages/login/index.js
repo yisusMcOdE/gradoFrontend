@@ -2,6 +2,8 @@ import { Button, Card, FormLabel, Grid, TextField } from "@mui/material";
 import { useStyles } from "./index.styles";
 import logoUatf from '../../assets/images/uatf.png';
 import { useNavigate } from "react-router-dom";
+import { redirectRole } from "../../utilities/pdfMake/redirectRole";
+import { decodeToken } from "react-jwt";
 
 export const Login = () => {
 
@@ -10,7 +12,7 @@ export const Login = () => {
     const login = async() => {
         const user = document.getElementById('user').value;
         const password = document.getElementById('password').value;
-        const url = 'http://192.168.100.111:5000/api/login/employee';
+        const url = 'http://localhost:5000/api/login/employee';
         const response = await fetch(url,{
             method:'POST',
             headers:{
@@ -23,7 +25,8 @@ export const Login = () => {
         })
         const token = await response.json();
         localStorage.setItem('token',token.token);
-        navigator('/');
+        const decode = decodeToken(token.token);
+        redirectRole(decode.data.role, navigator);
     }
 
     const classes = useStyles();

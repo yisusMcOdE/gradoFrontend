@@ -25,13 +25,13 @@ export const MaterialArea = () => {
 
     const columns = [
         {field: 'index', headerName: 'N°', flex: 0.5},
-        {field: 'name', headerName: 'Material', flex: 1},
-        {field: 'unit', headerName: 'Unidad', flex: 0.5},
-        {field: 'reserved', headerName: 'Reservado', flex: 0.5},
-        {field: 'used', headerName: 'En uso', flex: 0.5},
-        {field: 'available', headerName: 'Disponible', flex: 0.5},
-        {field: 'over', headerName: 'Sobrantes', flex: 0.5},
-        {field: 'total', headerName: 'Total', flex: 0.5},
+        {field: 'name', headerName: 'Material', flex: 1.5},
+        {field: 'unit', headerName: 'Unidad', flex: 1},
+        {field: 'reserved', headerName: 'Reservado', flex: 1},
+        {field: 'used', headerName: 'En uso', flex: 1},
+        {field: 'available', headerName: 'Disponible', flex: 1},
+        {field: 'over', headerName: 'Sobrantes', flex: 1},
+        {field: 'total', headerName: 'Total', flex: 1},
     ]
 
     const loadData = async() => {
@@ -39,7 +39,6 @@ export const MaterialArea = () => {
         setData( response);
     }
 
-    console.log(data);
 
     useEffect(()=>{
         loadData();
@@ -63,6 +62,7 @@ export const MaterialArea = () => {
                         <Grid container direction='column' rowSpacing={2}>
                             
                             <Grid item>
+                                {data!==204?
                                     <DataGrid
                                     onRowClick={(e)=>{navigator(`${e.row._id}`)}}
                                     rows={data.filter(item=>{
@@ -73,6 +73,9 @@ export const MaterialArea = () => {
                                         params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
                                     }
                                     />
+                                :
+                                    <h3 style={{textAlign:'center'}}>No existen Materiales Registrados</h3>
+                                }
                             </Grid>
                             
                         </Grid>

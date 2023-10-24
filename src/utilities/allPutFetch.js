@@ -55,6 +55,10 @@ export const confirmOrderMaterial = async (id, newData) => {
     const body = newData;
     return(myPut(url, body));
 }
+export const cancelOrderMaterialById = async (id) => {
+    const url = `http://localhost:5000/api/material/order/cancel/${id}`;
+    return(myPut(url, {}));
+}
 export const confirmOrder = async (id, data) => {
     const url = `http://localhost:5000/api/orders/confirm/${id}`;
     const body = data;
@@ -96,4 +100,28 @@ export const updateUser = async(id,newData,oldData) => {
     const url = `http://localhost:5000/api/users/${id}`;
     const body = diferential(newData,oldData);
     return(myPut(url, body));
+}
+
+export const addStepById = async (id) => {
+    const url = `http://localhost:5000/api/step/next/${id}`;
+    let response = await myPut(url,{});
+    return (response);
+}
+
+export const logoutWWeb = async () => {
+    const url = 'http://localhost:5000/api/whatsapp/logout';
+    let response = await myPut(url,{});
+    return (response);
+}
+
+export const updateNotificationsWWeb = async (state) => {
+    const url = 'http://localhost:5000/api/whatsapp/notifications';
+    let response = await myPut(url,{notifications:state});
+    return (response);
+}
+
+export const updateConfigEmail = async(body) => {
+    const url = 'http://localhost:5000/api/email';
+    let response = await myPut(url,body);
+    return (response);
 }

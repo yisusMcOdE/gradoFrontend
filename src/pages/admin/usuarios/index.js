@@ -138,7 +138,6 @@ export const Usuarios = () => {
                                         <h3 style={{textAlign:'center'}}>No existen cuentas de empleados registradas</h3>
                                 }
                             </Grid>
-                            
                         </Grid>
                     </Card>
                 </Grid>

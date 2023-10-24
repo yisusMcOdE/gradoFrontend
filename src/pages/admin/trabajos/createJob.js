@@ -42,13 +42,22 @@ export const CreateJob = () => {
         setMaterialDetails([...materialDetails, materialInitial]);
     }
 
-    const removeCost = () => {
+    const removeCostByIndex = (index) => {
         const cost = [...costDetails];
         if(cost.length>1){
-            cost.pop();
+            cost.splice(index,1);
+            setCostDetails([...cost]);
         }
-        setCostDetails([...cost]);
     }
+
+    const removeMaterialByIndex = (index) => {
+        const material = [...materialDetails];
+        if(material.length>1){
+            material.splice(index, 1);
+            setMaterialDetails([...material]);
+        }
+    }
+
     const removeMaterial = () => {
         const material = [...materialDetails];
         if(material.length>1){
@@ -285,19 +294,18 @@ export const CreateJob = () => {
                                 </Grid>
                                 <Grid item xs>
                                     <Grid container>
-                                        <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'5px 5px 0 0'}}>
-                                            <h3 style={{textAlign:'center'}}>DETALLE DE COSTOS</h3>
-                                        </Grid>
-
-                                        <Box display='flex' className={classes.addRemoveBox} columnGap={2}>
-                                            <IconButton size="small" onClick={addCost}>
+                                        <Grid item position='relative' display='flex' alignItems='center'>
+                                            <IconButton 
+                                                size="small" 
+                                                onClick={addCost} 
+                                                style={{background:'#006E0A', position:'absolute', left:'10px'}}
+                                            >
                                                 <AddIcon fontSize="inherit"/>
                                             </IconButton>
-                                            <IconButton size="small" onClick={removeCost}>
-                                                <RemoveIcon fontSize="inherit"/>
-                                            </IconButton>
-                                        </Box>
-
+                                        </Grid>
+                                        <Grid item xs className={classes.tableHeader} style={{borderRadius:'5px 5px 0 0'}}>
+                                            <h3 style={{textAlign:'center'}}>DETALLE DE COSTOS</h3>
+                                        </Grid>
                                         <Grid item xs={12} className={classes.tableHeader} container>
                                             <Grid item xs={1.2}>
                                                 <h3>N°</h3>
@@ -313,7 +321,7 @@ export const CreateJob = () => {
                                         {costDetails.map((item,index)=>{
                                             return (
                                             <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
-                                                <Grid item xs={1}>
+                                                <Grid item xs={1} alignItems='center'>
                                                     {index+1}
                                                 </Grid>
                                                 <Grid item xs>
@@ -329,7 +337,7 @@ export const CreateJob = () => {
                                                         size='small'
                                                     />
                                                 </Grid>
-                                                <Grid item xs>
+                                                <Grid item xs style={{position:'relative'}}>
                                                     <TextField
                                                         type='number'
                                                         min='1'
@@ -343,6 +351,11 @@ export const CreateJob = () => {
                                                         size='small'
                                                     />
                                                 </Grid>
+                                                <div style={{position:'relative', display:'flex', alignItems:'center'}}  >
+                                                    <IconButton style={{position:'absolute', right:'-15px', background:'#4B0000'}} size="small" onClick={()=>{removeCostByIndex(index)}}>
+                                                        <RemoveIcon fontSize="inherit" color="neutro1"/>
+                                                    </IconButton>
+                                                </div>
                                             </Grid>
                                             )
                                         })}
@@ -352,19 +365,18 @@ export const CreateJob = () => {
 
                             <Grid item>
                                 <Grid container>
+                                    <Grid item position='relative' display='flex' alignItems='center'>
+                                        <IconButton 
+                                            size="small" 
+                                            onClick={addMaterial} 
+                                            style={{background:'#006E0A', position:'absolute', left:'10px'}}
+                                        >
+                                            <AddIcon fontSize="inherit"/>
+                                        </IconButton>
+                                    </Grid>
                                     <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'10px 10px 0 0'}}>
                                         <h3 style={{textAlign:'center'}}>DETALLE DE USO DE MATERIALES</h3>
                                     </Grid>
-
-                                    <Box display='flex' className={classes.addRemoveBox} columnGap={2}>
-                                        <IconButton size="small" onClick={addMaterial}>
-                                            <AddIcon fontSize="inherit"/>
-                                        </IconButton>
-                                        <IconButton size="small" onClick={removeMaterial}>
-                                            <RemoveIcon fontSize="inherit"/>
-                                        </IconButton>
-                                    </Box>
-
                                     <Grid item xs={12} className={classes.tableHeader} container>
                                         <Grid item xs={1}>
                                             <h3>N°</h3>
@@ -383,7 +395,7 @@ export const CreateJob = () => {
                                     {materialDetails.map((item,index)=>{
                                         return (
                                         <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
-                                            <Grid item xs={1}>
+                                            <Grid item xs={1} alignItems='center'>
                                                 {index+1}
                                             </Grid>
                                             <Grid item xs={3}> 
@@ -434,6 +446,11 @@ export const CreateJob = () => {
                                                     size='small'
                                                 />
                                             </Grid>
+                                            <div style={{position:'relative', display:'flex', alignItems:'center'}}  >
+                                                <IconButton style={{position:'absolute', right:'-15px', background:'#4B0000'}} size="small" onClick={()=>{removeMaterialByIndex(index)}}>
+                                                    <RemoveIcon fontSize="inherit" color="neutro1"/>
+                                                </IconButton>
+                                            </div>
                                         </Grid>
                                         )
                                     })}

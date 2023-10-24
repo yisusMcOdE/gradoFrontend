@@ -1,21 +1,28 @@
-import { Box, Card, Grid, TextField, Button, RadioGroup, Radio,FormControlLabel } from "@mui/material"
+import { Box, Card, Grid, TextField, Button, RadioGroup, Radio,FormControlLabel, Backdrop, CircularProgress, Snackbar, Alert, Dialog, Collapse } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Main } from "../../../components/main";
-import { allOrderMaterial } from "../../../utilities/allGetFetch";
-import { confirmOrderMaterial } from "../../../utilities/allPutFetch";
+import { allOrderMaterial, getOrderMaterialById } from "../../../utilities/allGetFetch";
+import { cancelOrderMaterialById, confirmOrderMaterial } from "../../../utilities/allPutFetch";
 import { useStyles } from "./materials.style";
 
 
 export const Recepcionar = () => {
 
-    const pedido = require('../../../__mock__/pedido_listo.json');
-    
-    const [allOrders, setAllOrders] = useState();
-    const [listOrders, setlistOrders] = useState();
+    const navigator = useNavigate('');
+
+    const [loading, setLoading] = useState(false);
+    const [alert,setAlert] = useState({open:false, severity:'', message:''});
+    const [dialog, setDialog] = useState({open:false, message:''});
+
+    const [modal, setModal] = useState(false);
+    const [confirm, setConfirm] = useState(false);
+    const [cancel, setCancel] = useState(false);
+   
+    const [data, setData] = useState();
     const [order, setOrder] = useState();
-    const [detailsEdit, setDetailsEdit] = useState();
 
 
     const [complete, setComplete] = useState(true);
@@ -24,224 +31,277 @@ export const Recepcionar = () => {
 
     const columns = [
         {field: 'index', headerName: 'N°', flex: 0.5},
-        {field: 'id', headerName: 'Id de Pedido', flex: 1},
         {field: 'details', headerName: 'Detalle', flex: 2.5},
-        {field: 'orderDate', headerName: 'Fecha de pedido', flex: 1},
+        {field: 'createdAt', headerName: 'Fecha de pedido', flex: 1},
     ]
+
+    const handleResponse = async(response) => {
+        if(response.status === 202){
+            setAlert({open:true, severity:'success', message:'202: Operacion exitosa'});
+            setModal(false);
+            loadData();
+        }
+        if(response.status === 404){
+            setAlert({open:true, severity:'error', message:'404: No encontrado'});
+        }
+        if(response.status === 409){
+            setAlert({open:true, severity:'warning', message:'409: Conflicto'});
+        }
+        if(response.status === 304){
+            setAlert({open:true, severity:'warning', message:'304: No Modificado'})
+        }
+    }
 
     const loadData = async() => {
         const response = await allOrderMaterial();
-        setAllOrders(response);
-        let final = response.map(item=>{
-            console.log(item);
-            const objeto = {};
-            objeto.statusDelivered = item.statusDelivered;
-            objeto.index = item.index;
-            objeto.id = item.id;
-            let detalle = '';
-            item.details.map(item=>{
-                detalle += ` ${item.material.name} ${item.requiredQuantity} ${item.material.unit},`
-            });
-            detalle = detalle.slice(0, -1);
-            objeto.details = detalle;
-            objeto.orderDate = item.createdAt.slice(0,10);
-            objeto._id = item._id;
-            return objeto
-        });
-
-        console.log(final)
-
-        final = final.filter(item=>{return (item.statusDelivered===false)})
-
-        setlistOrders(final);
+        setData(response);
+        
     }
 
     const loadOrder = async(id) => {
-        let order;
-        if(id){
-            document.getElementById('idForm').value=id.slice(17)
-            order = allOrders.find(item=>item._id===id)
-        }else{
-            const idShort = document.getElementById('idForm').value;
-            order = allOrders.find(item=>item.id===idShort);
-        }
-        if (order) {
-            console.log(order);
-            setOrder(order);
-            setDetailsEdit([...order.details]);
-        }
-
+        let response = await getOrderMaterialById(id);
+        response.details = response.details.map(item=>{
+            item.deliveredQuantity = {error:false, value:item.deliveredQuantity};
+            return item
+        })
+        setOrder(response);
+        setModal(true);
     }
 
-    const confirmOrder = () => {
-        const body = {};
-
-        if(complete){
-            body.complete = true
-        }else{
-            body.complete = false;
-            body.details = detailsEdit.map(item=>{
+    const confirmOrder = async() => {
+        ///Validation
+        let error = false;
+        const details = order.details.map(item=>{
+            console.log('validation');
+            console.log(item);
+            if(!complete){
+                if(item.deliveredQuantity.value<=0 || item.deliveredQuantity.value > item.requiredQuantity){
+                    item.deliveredQuantity.error = true;
+                    error = true;
+                }
+            }
+            return item
+        })
+        setOrder({...order, details:details});
+        if(!error){
+            const body = {
+                complete: complete
+            };
+            body.details = order.details.map(item=>{
                 return{
                     _id:item._id,
-                    deliveredQuantity:item.deliveredQuantity
+                    deliveredQuantity:item.deliveredQuantity.value
                 }
             })
+            setLoading(true);
+            const response = await confirmOrderMaterial(order._id,body);
+            setLoading(false);
+            handleResponse(response);
+        }else{
+            setAlert({open:true, severity:'error', message:'Formulario Invalido * '});
         }
-        confirmOrderMaterial(order._id,body);
-        console.log(order._id);
-        console.log(body);
+
+        
     }
+
+    const cancelOrder = async() => {
+        setLoading(true);
+        const response = await cancelOrderMaterialById(order._id);
+        setLoading(false);
+        handleResponse(response);
+    }
+
+    console.log(order);
 
     useEffect(()=>{
         loadData();
     },[])
 
     return (
-        listOrders&&
+        data&&
         <Main>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            <Snackbar
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                open={alert.open}
+                onClose={()=>{setAlert({...alert, open:false})}}
+                autoHideDuration={alert.time || 3000}
+            >
+                <Alert variant='filled' severity={alert.severity}>
+                    {alert.message}
+                </Alert>
+            </Snackbar>
+
             <Grid container direction='column' rowSpacing={3} alignItems='center'>
                 <Grid item style={{width:'80%'}}>
                     <Card>
                         <Grid container direction='column' rowSpacing={3}>
-                            <h1 style={{textAlign:'center'}}>Recepcionar Material</h1>
-                            <Grid item container columnGap={3} alignItems='center'>
-                                <label>Id de pedido:</label>
-                                <TextField id="idForm" size='small'/>
-                            </Grid>
+                            <h1 style={{textAlign:'center'}}>Recepcionar / Cancelar</h1>
+                            
                             <Grid item>
                                 <DataGrid
                                     style={{width:'99%'}}
                                     onRowClick={(e)=>{loadOrder(e.row._id)}}
-                                    rows={listOrders} 
+                                    rows={data} 
                                     columns={columns}
                                     getRowClassName={(params) =>
                                         params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
                                     }
                                 />
                             </Grid>
-                            <Grid item display='flex' justifyContent='center'>
-                                <Button variant="contained" onClick={()=>{loadOrder()}}>Buscar</Button>
-                            </Grid>
+                            
                         </Grid>
                     </Card>
                 </Grid>
-                {order&&
-                <Grid item style={{width:'80%'}}>
-                    <Card>
-                        <Grid container direction='column'>
+            </Grid>
+
+            {
+                order&&
+                <Dialog onClose={()=>{setModal(prev => !prev)}} open={modal}>
+                    <Card style={{overflow:'auto'}}>
+                        <Grid container direction='column' rowSpacing={2}>
+                            <Grid item>
+                                <h1 style={{margin:'0', textAlign:'center'}}>Detalle de orden</h1>
+                            </Grid>
                             <Grid item container direction='column' rowSpacing={1}>
-                                <Grid item container>
+                                <Grid item container columnSpacing={2} alignItems='center'>
                                     <Grid item xs={4}>
-                                        <label>Fecha de solicitud:</label>
+                                        <label>Fecha de pedido</label>
                                     </Grid>
                                     <Grid item xs>
-                                        <TextField value={order.createdAt.slice(0,10)} size='small'/>
+                                        <TextField size='small' disabled value={order?.createdAt.slice(0,10)}/>
                                     </Grid>
                                 </Grid>
-                                <Grid item container>
+                                <Grid item container columnSpacing={2} alignItems='center'>
                                     <Grid item xs={4}>
-                                        <label>Fecha de entrega:</label>
+                                        <label>Fecha de recepcion</label>
                                     </Grid>
                                     <Grid item xs>
-                                        <TextField
-                                            value={`${moment().format('YYYY/MM/DD')}`}
-                                            disabled
-                                            size='small'
-                                        />
+                                        <TextField size='small' disabled value={new Date().toISOString().slice(0,10)}/>
                                     </Grid>
                                 </Grid>
-                                <Grid item container rowSpacing={3}>
+                                <Grid item container columnSpacing={2} alignItems='center'>
                                     <Grid item xs={4}>
-                                        <label>Estado de entrega</label>
+                                        <label>Detalle de pedido</label>
                                     </Grid>
                                     <Grid item xs>
-                                        <Box >
+                                        <TextField multiline size='small' disabled value={order.detailsResumen}/>
+                                    </Grid>
+                                </Grid>
+                                
+                            </Grid>
+                            <Grid item container justifyContent='space-evenly'>
+                                <Button variant="contained" onClick={()=>{setConfirm(prev=>!prev); setCancel(false)}}> Confirmar </Button>
+                                <Button variant="contained" onClick={()=>{setCancel(prev=>!prev); setConfirm(false)}}> Cancelar </Button>
+                            </Grid>
+                            
+                            <Collapse in={confirm}>
+                                <Grid item container direction='column' rowSpacing={1}>
+
+                                    <Grid item>
+                                        <Box display='flex' justifyContent= 'center' >
                                             <RadioGroup
-                                                aria-labelledby="demo-controlled-radio-buttons-group"
-                                                name="controlled-radio-buttons-group"
                                                 value={complete}
                                                 onChange={()=>{setComplete(prev => !prev)}}
                                                 row
                                             >
-                                                <FormControlLabel value={true} control={<Radio />} label="Complete" />
+                                                <FormControlLabel value={true} control={<Radio />} label="Completo" />
                                                 <FormControlLabel value={false} control={<Radio />} label="Parcial" />
                                             </RadioGroup>
                                         </Box>
                                     </Grid>
-                                    <Grid item>
-                                        <Grid container>
-                                            <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'10px 10px 0 0'}}>
-                                                <h3 style={{textAlign:'center'}}>DETALLE DE PEDIDO</h3>
-                                            </Grid>
-                                            <Grid item xs={12} className={classes.tableHeader} container>
-                                                <Grid item xs={1}>
-                                                    <h3>N°</h3>
-                                                </Grid>
-                                                <Grid item xs={7}>
-                                                    <h3>Material</h3>
-                                                </Grid>
-                                                <Grid item xs={2}>
-                                                    <h3>Cant. Solicitada</h3>
-                                                </Grid>
-                                                <Grid item xs={2}>
-                                                    <h3>Cant. Entregada</h3>
-                                                </Grid>
-                                            </Grid>
-                                            {detailsEdit.map((item,index)=>{
-                                                return (
-                                                <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
-                                                    <Grid item xs={1}>
-                                                        {index+1}
-                                                    </Grid>
-                                                    <Grid item xs={7}>
-                                                        <TextField 
-                                                            disabled 
-                                                            fullWidth 
-                                                            multiline 
-                                                            variant="filled" 
-                                                            size='small' 
-                                                            value={item.material.name}/>
-                                                    </Grid>
-                                                    <Grid item xs={2}>
-                                                        <TextField 
-                                                            disabled 
-                                                            fullWidth 
-                                                            multiline 
-                                                            variant="filled" 
-                                                            size='small' 
-                                                            value={item.requiredQuantity}/>
-                                                    </Grid>
-                                                    <Grid item xs={2}>
-                                                        <TextField 
-                                                            disabled={complete} 
-                                                            fullWidth 
-                                                            multiline 
-                                                            variant="filled" 
-                                                            size='small' 
-                                                            value={
-                                                                complete? item.requiredQuantity : item.deliveredQuantity
-                                                            }
-                                                            onChange={(e)=>{
-                                                                const details = [...detailsEdit];
-                                                                details[index].deliveredQuantity = e.target.value;
-                                                                setDetailsEdit(details); 
-                                                            }}
-                                                        />
-                                                    </Grid>
-                                                </Grid>
-                                                )
-                                            })}
+
+                                    <Grid item container>
+                                        <Grid item xs={6}>
+                                            <label>Material</label>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <label>Cantidad Solicitada</label>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <label>Cantidad Recibida</label>
                                         </Grid>
                                     </Grid>
+                                    {
+                                        order?.details.map((item, index)=>{
+                                            return <Grid item container alignItems='center'>
+                                                <Grid item xs={6}>
+                                                    <label>{item.materialName}</label>
+                                                </Grid>
+                                                <Grid item xs={3}>
+                                                    <label>{item.requiredQuantity}</label>
+                                                </Grid>
+                                                <Grid item xs={3}>
+                                                    <TextField
+                                                        type='number'
+                                                        disabled={complete}
+                                                        value={complete? item.requiredQuantity : item.deliveredQuantity.value}
+                                                        onChange={(e)=>{
+                                                            const details = [...order.details];
+                                                            details[index].deliveredQuantity.error = false;
+                                                            details[index].deliveredQuantity.value = e.target.value;
+                                                            setOrder({...order, details:details}); 
+                                                        }}
+                                                        size="small"
+                                                        error={complete ? false : item.deliveredQuantity.error}
+                                                        required
+                                                        label='Requerido'
+                                                    />
+                                                </Grid>
+                                            </Grid>
+                                        })
+                                    }
+                                </Grid>
+                                <Grid item container justifyContent='space-evenly'>
                                     <Grid item>
-                                            <Button variant="contained" onClick={()=>{confirmOrder()}}>Confirmar</Button>
+                                        <Button
+                                            className="activo"
+                                            onClick={()=>{confirmOrder()}}
+                                        >
+                                            Sí
+                                        </Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button
+                                            onClick={()=>{setConfirm(false)}}
+                                            className="inactivo"
+                                        >
+                                            No
+                                        </Button>
                                     </Grid>
                                 </Grid>
-                            </Grid>
+                            </Collapse>
+
+                            <Collapse in={cancel}>
+                                <p style={{textAlign:'center'}}> No existe un metodo para revertir esta accion <br/> ¿Esta seguro que desea cancelar el pedido?</p>
+                                <Grid item container justifyContent='space-evenly'>
+                                    <Grid item>
+                                        <Button
+                                            className="activo"
+                                            onClick={()=>{cancelOrder()}}
+                                        >
+                                            Sí
+                                        </Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button
+                                            onClick={()=>{setCancel(false)}}
+                                            className="inactivo"
+                                        >
+                                            No
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Collapse>
                         </Grid>
                     </Card>
-                </Grid>}
-            </Grid>
+                </Dialog>
+            }
         </Main>
     )
 }

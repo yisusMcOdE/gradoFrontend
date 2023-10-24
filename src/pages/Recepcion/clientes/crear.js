@@ -7,19 +7,16 @@ import { useStyles } from "../recepcion.styles"
 
 export const CreateClientRecepcion = () => {
 
-    const navigator = useNavigate();
     const initialInput = {error:false, value:''}
 
     const [loading, setLoading] = useState(false);
     const [alert,setAlert] = useState({open:false, severity:'', message:''});
 
-    const [client, setClient] = useState(true);
+    const [titleForm, setTitleForm] = useState(initialInput);
     const [ciForm, setCiForm] = useState(initialInput);
     const [nameForm, setNameForm] = useState(initialInput);
     const [phoneForm, setPhoneForm] = useState(initialInput);
     const [emailForm, setEmailForm] = useState(initialInput);
-
-
     const classes = useStyles();
 
     const createUser = async() => {
@@ -38,10 +35,15 @@ export const CreateClientRecepcion = () => {
             setNameForm({error:true, value:''})
             error=true
         }
+        if(titleForm.value === ''){
+            setTitleForm({error:true, value:''})
+            error=true
+        }
 
         if(!error){
             setLoading(true);
             const response = await createClientExternal({
+                title:titleForm.value,
                 name: nameForm.value,
                 ci: ciForm.value,
                 email: emailForm.value,
@@ -66,6 +68,7 @@ export const CreateClientRecepcion = () => {
     }
 
     const clearInputs = () => {
+        setTitleForm(initialInput);
         setCiForm(initialInput);
         setNameForm(initialInput);
         setPhoneForm(initialInput);
@@ -104,12 +107,33 @@ export const CreateClientRecepcion = () => {
                             </Grid>
 
                             <Grid item container direction='column' rowSpacing={1}>
-                                
+                                <Grid item container alignItems='center'>
+                                    <Grid item xs={4}>
+                                        <label>Titulo:</label>
+                                    </Grid>
+                                    <Grid item xs>
+                                        <Autocomplete
+                                            
+                                            fullWidth
+                                            size='small'
+                                            value={titleForm.value}
+                                            onChange={(e)=>{setTitleForm({error:false, value:e.target.textContent})}}
+                                            options={['Señor', 'Señora']}
+                                            renderInput={(params) =><TextField
+                                                                        error={titleForm.error}
+                                                                        required
+                                                                        label='Requerido'
+                                                                        variant="standard"
+                                                                        {...params}
+                                                                    />}
+                                        />
+                                    </Grid>
+                                </Grid>
                                 <Grid item container alignItems='center'>
                                     <Grid item xs={4}>
                                         <label>Nombre Completo:</label>
                                     </Grid>
-                                    <Grid item >
+                                    <Grid item xs>
                                         <TextField
                                             value={nameForm.value}
                                             onChange={({target})=>{setNameForm({error:false, value:target.value})}}

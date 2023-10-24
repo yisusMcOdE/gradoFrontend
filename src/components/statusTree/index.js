@@ -10,6 +10,16 @@ export const StatusTree = ({steps}) => {
     const [element, setElement] = useState();
     const [position, setPosition] = useState({x:20,y:20});
 
+    const typesSpanish = {
+      registered: 'Registrado',
+      confirmation: 'Confirmado',
+      scheduled: 'Agendado',
+      delayed: 'Retrasado',
+      develop: 'Desarrollando',
+      resumed: 'Reanudado',
+      finished: 'Finalizado'
+    }
+
     const handleClick = (event,item) => {
       setElement(item);
       setAnchorEl(event.target);
@@ -23,27 +33,6 @@ export const StatusTree = ({steps}) => {
     const open = Boolean(anchorEl);
     
 
-    console.log(formatStatus(steps));
-    /*
-      <g 
-        id="a19617b2-dd97-403c-8815-a494e546dcb7" 
-        class="rd3t-node" 
-        transform="translate(0,0)" 
-        style="opacity: 1;"
-      >
-        <circle r="15"></circle>
-        <g class="rd3t-label">
-          <text class="rd3t-label__title" text-anchor="start" x="40">
-            Recepcionado
-          </text>
-          <text class="rd3t-label__attributes">
-            <tspan x="40" dy="1.2em">
-              Fecha: 01-01-2023}
-            </tspan>
-          </text>
-        </g>
-      </g>
-    */
 
     const rendererNode = (prop) => {
 
@@ -51,16 +40,6 @@ export const StatusTree = ({steps}) => {
 
       let status = prop.nodeDatum.data.finishedAt?'finalizado':'ejecucion';
       status = prop.nodeDatum.data.type==='delayed'?'retraso':status;
-
-      const textStatus = {
-        registered: 'Registrando',
-        confirmation: 'En confirmacion',
-        scheduled: 'En espera',
-        delayed: 'Retrasado',
-        develop:  'En proceso',
-        resumed:  'Proceso reanudado',
-        finished: 'Finalizado'
-      }
 
       return  <g>
         <circle
@@ -75,7 +54,7 @@ export const StatusTree = ({steps}) => {
           onClick={e=>{handleClick(e,prop.nodeDatum.data)}}
         >
           <text class="rd3t-label__title" text-anchor="start" x="40">
-            {textStatus[prop.nodeDatum.name]}
+            {typesSpanish[prop.nodeDatum.name]}
           </text>
           <text class="rd3t-label__attributes">
             <tspan x="40" dy="1.2em">
@@ -132,7 +111,7 @@ export const StatusTree = ({steps}) => {
     }
 
     return (
-        <div className={classes.container} >
+        <div className={classes.container}>
             <div className={classes.treeContainer} onWheel={({deltaY})=>{handlePosition(deltaY)}}>
               <Tree
                   draggable={false}
@@ -170,7 +149,7 @@ export const StatusTree = ({steps}) => {
                       variant="standard" 
                       className="input" 
                       size="small"
-                      value={element.type}
+                      value={typesSpanish[element.type]}
                     />
                   </Grid>
                 </Grid>

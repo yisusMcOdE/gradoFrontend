@@ -155,7 +155,7 @@ export const Pedidos = () => {
                                 </Grid>
                             </Grid>
                             <Grid item>
-                                {(dataView.length!==0)? 
+                                {(dataView.length!==0 && dataView!==204)? 
                                     <DataGrid 
                                         style={{width:'95%'}}
                                         onRowClick={(e)=>{navigator(e.row._id)}}

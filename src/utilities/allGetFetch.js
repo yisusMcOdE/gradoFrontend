@@ -131,6 +131,10 @@ export const allOrderMaterial = async() => {
     const url = 'http://localhost:5000/api/material/order';
     return (myFetch(url));
 }
+export const getOrderMaterialById = async(id) => {
+    const url = `http://localhost:5000/api/material/order/${id}`;
+    return (myFetch(url));
+}
 
 export const orderInternalById = async(id) => {
     const url = `http://localhost:5000/api/orderInternal/detail/${id}`;
@@ -197,13 +201,29 @@ export const getSchedule = async () => {
     return (response);
 }
 
-export const getStepById = async (id) => {
-    const url = `http://localhost:5000/api/step/next/${id}`;
-    let response = await myFetch(url);
-    return (response);
-}
-
 export const getOrderById = async (id) => {
+    const url = `http://localhost:5000/api/orders/internalExternal/${id}`;
+    const response = await fetch(url,{
+        method: 'GET',
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+    },   
+    })
+    if(response.status!==204){
+        let data = await response.json();
+        let details = getIndex(data.details);
+        details = getId(details);
+        data = {...data, details:details};
+        return data;
+    }else{
+        return 204
+    }
+    return (response);
+} 
+
+export const getOrderFinishedById = async (id) => {
     const url = `http://localhost:5000/api/orders/finish/${id}`;
     let response = await myFetch(url);
     return (response);
@@ -364,8 +384,41 @@ export const getAllOrdersList = async () => {
     }else{
         return 204
     }
+}
 
+export const getAllOrdersListById = async () => {
 
+    const url = 'http://localhost:5000/api/orders/allListById';
+    const response = await myFetch(url);
+    return (response);
+}
 
+export const getQRCode = async() => {
+    const url = 'http://localhost:5000/api/whatsapp/qr';
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getAuthenticated = async () => {
+    const url = 'http://localhost:5000/api/whatsapp/status';
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getIsReady = async () => {
+    const url = 'http://localhost:5000/api/whatsapp/ready';
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getQRCodeAuto = async() => {
+    const url = 'http://localhost:5000/api/whatsapp/qrAuto';
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getStatusEmail = async() => {
+    const url = 'http://localhost:5000/api/email/status';
+    let response = await myFetch(url);
     return (response);
 }

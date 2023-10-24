@@ -1,14 +1,15 @@
 import { makeStyles } from "@mui/styles";
-import { theme } from "../../theme/theme";
+import { theme } from "../../theme/theme"
 
 export const useStyles = makeStyles({
     containerPage:{
-        backgroundColor:'transparent',
-        backdropFilter: 'blur(5px)',
+        background:theme.palette.primary.main,
     },
     titlePage:{
         textAlign:'center'
     },
+
+    ///---SOLICITAR PEDIDO
     tableHeader:{
         background:'#464646',
         color:'white',
@@ -17,13 +18,15 @@ export const useStyles = makeStyles({
             border:'1px solid gray'
         },
         '& h3':{
-            textAlign:'center',
-            margin:'0.4rem'
+            textAlign:'center'
         }
     },
     addRemoveBox:{
+        borderRadius:'10px',
+        position: 'absolute',
         margin:'10px 0 0 10px',
         '& button':{
+            background:'white',
             '&:hover':{
                 background:'#BABABA',
             }
@@ -34,7 +37,7 @@ export const useStyles = makeStyles({
         '& .MuiGrid-item':{
             display:'flex',
             placeContent:'center',
-            padding:'0 15px',
+            padding:'0 5px',
             '& .MuiFormControl-root':{
                 marginBottom:'5px'
             }

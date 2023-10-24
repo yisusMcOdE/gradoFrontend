@@ -1,22 +1,42 @@
-import { Button, Card, Grid, TextField, Autocomplete, Dialog, Collapse, Snackbar, Alert } from "@mui/material"
+import { Button, Card, Grid, TextField, Autocomplete, Dialog, IconButton, Collapse, Snackbar, Alert, Backdrop, CircularProgress, Typography, DialogTitle, DialogContent, DialogActions } from "@mui/material"
 import { DataGrid, GridRemoveIcon } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { Main } from "../../../components/main";
 import { allClientsExternal, allClientsInternal, getOrderNoConfirmed } from "../../../utilities/allGetFetch";
 import { cancelOrderById, confirmOrder } from "../../../utilities/allPutFetch";
 import { useStyles } from "./pedidos.styles";
+import { styled } from '@mui/material/styles';
+import WarningIcon from '@mui/icons-material/Warning';
+import CloseIcon from '@mui/icons-material/Close';
+
+
+
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiDialogContent-root': {
+        padding: theme.spacing(2),
+    },
+    '& .MuiDialogActions-root': {
+        background:'black',
+        padding: theme.spacing(1),
+    },
+  }));
 
 
 export const Confirmar = () => {
 
+    const initialInput = {error:false, value:''}
+
     const classes = useStyles();
     const columns= [
-        
         { field: 'index', headerName: 'N°', flex: 0.3 },
         { field: 'client', headerName: 'Cliente', flex: 1 },
         { field: 'stringDetails', headerName: 'Detalle', flex:1.5},
         { field: 'date', headerName: 'Fecha de registro', flex: 1.5 },
     ];
+
+    const [loading, setLoading] = useState(false);
+    const [alert,setAlert] = useState({open:false, severity:'', message:''});
+    const [dialog, setDialog] = useState({open:false, message:''});
 
     const [modal, setModal] = useState(false);
     const [data, setData] = useState();
@@ -25,7 +45,7 @@ export const Confirmar = () => {
     const [confirm, setConfirm] = useState(false);
     const [cancel, setCancel] = useState(false);
     const [openSnack, setOpenSnack] = useState(false);
-    const [numberCheck, setNumberCheck] = useState('');
+    const [numberCheck, setNumberCheck] = useState(initialInput);
 
     console.log(data);
 
@@ -44,22 +64,108 @@ export const Confirmar = () => {
         setClients(names);
     }
 
-    const findOrder = () => {
-        let orderFinded = data.find(item => item._id === document.getElementById('id_form').value);
+    const findOrder = (id) => {
+        let orderFinded = data.find(item => item._id === id);
+        let details = orderFinded.details.map(item=>{
+            item.seconds = {error:false, value:1};
+            return item
+        })
+        orderFinded = {... orderFinded, details:details}
+        if(orderFinded.fundsOrigin===undefined){
+            orderFinded = {...orderFinded, numberCheck:{error:false, value:orderFinded.numberCheck}}
+        }
         setOrder(orderFinded);
     }
 
-    const confirmOrderHandler = () => {
-        confirmOrder(order._id, {details:order.details, numberCheck:numberCheck});
-        loadData();
-        setModal(false);
-        setOpenSnack(true);
+    const cancelOrderHandler = async (id) => {
+        setLoading(true);
+        const response = await cancelOrderById(id);
+        setLoading(false);
+        if(response.status===202)
+            setAlert({open:true, severity:'success', message:'202: Trabajo cancelado exitosamente'});
+        if(response.status===404)
+            setAlert({open:true, severity:'warning', message:'404: Trabajo no encontrado'});
+        if(response.status===304)
+            setAlert({open:true, severity:'success', message:'304: Conflicto'});
+    }
+
+    const confirmOrderHandler = async() => {
+
+        ///Validation
+        let error = false;
+        if(order.fundsOrigin===undefined){
+            if(order.numberCheck.value===0){
+                setOrder({...order, numberCheck:{error:true, value:0}})
+                error=true
+            }
+        }
+        const detailsAux = [...order.details];
+        for (let index = 0; index < detailsAux.length; index++) {
+            const element = detailsAux[index];
+            if(element.seconds.value<=0){
+                detailsAux[index].seconds.error=true;
+                error=true
+            }
+        }
+        setOrder({...order, details:detailsAux});
+
+        if(!error){
+            let details = order.details.map(item=>{
+                return {
+                    _id:item._id,
+                    seconds:item.seconds.value
+                }
+            })
+            let body={
+                details:details
+            }
+            if(order.fundsOrigin===undefined)
+                body.numberCheck= order.numberCheck.value
+
+            setLoading(true);
+            const response = await confirmOrder(order._id, body);
+            handleResponse(response);
+            setLoading(false);
+
+        }else{
+            setAlert({open:true, severity:'error', message:'Formulario Invalido * '});
+        }
+        
+    }
+
+    const handleResponse = async(response) => {
+        const data = await response.json();
+        if(response.status === 202){
+            if(Object.keys(data.alert).length!==0){
+                const mess = <>
+                    <Typography gutterBottom>
+                        LOS SIGUIENTES TRABAJOS NO FUERON CONFIRMADOS POR FALTA DE MATERIAL NECESARIO.
+                    </Typography>
+                    {
+                        Object.keys(data.alert).map((key)=>{
+                            return <Typography gutterBottom>
+                                        <label>{`Trabajo: ${key}`}</label>
+                                        <br/>
+                                        <label>{`Falta: ${data.alert[key]}`}</label>
+                                    </Typography>
+                        })
+                    }
+                </>
+                setDialog({open:true, message:mess});
+            }else
+                setAlert({open:true, severity:'success', message:'202: Trabajos confirmados exitosamente'});
+            loadData();
+            setModal(false);
+        }
+        if(response.status === 304){
+            setAlert({open:true, severity:'warning', message: `304: ${(data.reason || data.message)}`})
+        }
     }
 
     const handleDays = (e, index) => {
 
         let det = [...order.details];
-        det[index].days = e.target.value;
+        det[index].seconds.value = e.target.value;
         setOrder({...order, details: [...det]});
     }
 
@@ -71,79 +177,90 @@ export const Confirmar = () => {
 
     return (
         data&&
-        <>
-            <Snackbar
-                    
-                    open={openSnack}
-                    onClose={()=>{setOpenSnack(false)}}
-                    autoHideDuration={3000}
-                >
-                    <Alert variant="filled" severity="success">
-                        Orden confirmada correctamente
-                    </Alert>
-            </Snackbar>
             <Main>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            <Snackbar
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                open={alert.open}
+                onClose={()=>{setAlert({...alert, open:false})}}
+                autoHideDuration={alert.time || 3000}
+            >
+                <Alert variant='filled' severity={alert.severity}>
+                    {alert.message}
+                </Alert>
+            </Snackbar>
+
+            <BootstrapDialog
+                onClose={()=>{
+                    setDialog({...dialog, open:false});
+                    setAlert({open:true, severity:'success', message:'202: Trabajos confirmados exitosamente'});
+                }}
+                open={dialog.open}
+                
+            >
+                <DialogTitle sx={{ m: 0, p: 2, background:'black', color:'white', alignItems:'center', display:'flex' }} id="customized-dialog-title">
+                    <WarningIcon sx={{ color: 'yellow', marginRight:2}} fontSize="large" />
+                    <b>{`ADVERTENCIA`}</b>
+                </DialogTitle>
+                <IconButton
+                    onClick={()=>{
+                        setDialog({...dialog, open:false});
+                        setAlert({open:true, severity:'success', message:'202: Trabajos confirmados exitosamente'});
+                    }}
+                    sx={{
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: 'white',
+                    }}
+                >
+                <CloseIcon />
+                </IconButton>
+                <DialogContent dividers>
+                    {dialog.message}
+                </DialogContent>
+                <DialogActions>
+                <Button variant="contained" autoFocus onClick={()=>{
+                    setDialog({...dialog, open:false});
+                    setAlert({open:true, severity:'success', message:'202: Trabajos confirmados exitosamente'});
+                }}>
+                    Entendido
+                </Button>
+                </DialogActions>
+            </BootstrapDialog>
+
             <Grid container justifyContent='center'>
                 <Grid item style={{width:'70%'}}>
                     <Card raised className={classes.confirmarPedidoContainer}>
                         <Grid container direction='column' rowSpacing={3}>
                             <Grid item>
-                                <h1 className={classes.titlePage}>Confirmar o Cancelar Pedido</h1>
+                                <h1 className={classes.titlePage}>Confirmar / Cancelar Pedido</h1>
                             </Grid>
                             <Grid item container direction='column' rowSpacing={1}>
-                                <Grid item xs='auto' container alignItems='center'>
-                                    <Grid item xs={4}>
-                                        <label>Id de Pedido:</label>
-                                    </Grid>
-                                    <Grid item xs>
-                                        <TextField
-                                           
-                                            size='small'
-                                            id='id_form'
-                                        />
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs='auto' container alignItems='center'>
-                                    <Grid item xs={4}>
-                                        <label>Cliente:</label>
-                                    </Grid>
-                                    <Grid item xs>
-                                        <Autocomplete
-                                        size='small'
-                                        disablePortal
-                                        options={clients}
-                                        id="client_form"
-                                        sx={{ width: '50%' }}
-                                        renderInput={(params) => <TextField {...params}/>}/>
-                                    </Grid>
-                                </Grid>
                                 <Grid item>
-                                    <DataGrid 
-                                        style={{width:'95%'}}
-                                        onRowClick={(e)=>{
-                                            document.getElementById('id_form').value=e.row._id
-                                            document.getElementById('client_form').value=e.row.client
-
-                                        }}
-                                        rows={data} 
-                                        columns={columns}
-                                        getRowClassName={(params) =>
-                                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                                        }
-                                    />
+                                    {(data!==204)?
+                                        <DataGrid 
+                                            style={{width:'95%'}}
+                                            onRowClick={(e)=>{
+                                                
+                                                setModal(prev => !prev);
+                                                findOrder(e.row._id);
+                                            }}
+                                            rows={data} 
+                                            columns={columns}
+                                            getRowClassName={(params) =>
+                                                params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                                            }
+                                        />
+                                    :
+                                        <h3 style={{textAlign:'center'}}>No existen pedidos para confirmar</h3>
+                                    }
                                 </Grid>
-                            </Grid>
-
-                            <Grid item display='flex' justifyContent='center'>
-                                <Button 
-                                    variant="contained"
-                                    onClick={()=>{
-                                        setModal(prev => !prev);
-                                        findOrder();
-                                    }}
-                                >
-                                    Buscar
-                                </Button>
                             </Grid>
                         </Grid>
                     </Card>
@@ -151,8 +268,8 @@ export const Confirmar = () => {
             </Grid>
             {
                 order&&
-                    <Dialog onClose={()=>{setModal(prev => !prev)}} open={modal}>
-                        <Card>
+                    <Dialog  onClose={()=>{setModal(prev => !prev)}} open={modal}>
+                        <Card style={{overflow:'auto'}}>
                             <Grid container direction='column' rowSpacing={2}>
                                 <Grid item>
                                     <h1 style={{margin:'0', textAlign:'center'}}>Agendar trabajos</h1>
@@ -174,6 +291,17 @@ export const Confirmar = () => {
                                             <TextField size='small' disabled value={order?.client}/>
                                         </Grid>
                                     </Grid>
+                                    {
+                                        order.numberTicketPay&&
+                                        <Grid item container columnSpacing={2} alignItems='center'>
+                                            <Grid item xs={4}>
+                                                <label>Numero de Ticket:</label>
+                                            </Grid>
+                                            <Grid item xs>
+                                                <TextField size='small' disabled value={order?.numberTicketPay}/>
+                                            </Grid>
+                                        </Grid>
+                                    }
                                     <Grid item container columnSpacing={2} alignItems='center'>
                                         <Grid item xs={4}>
                                             <label>Costo</label>
@@ -196,7 +324,18 @@ export const Confirmar = () => {
                                                 <label>N° de Boleta</label>
                                             </Grid>
                                             <Grid item xs={5}>
-                                                <TextField size="small" value={numberCheck} onChange={(e)=>{setNumberCheck(e.target.value)}}/>
+                                                <TextField
+                                                    type='number'
+                                                    disabled={order.numberCheck.value!==0}
+                                                    value={order.numberCheck.value} 
+                                                    onChange={(e)=>{
+                                                        setOrder({...order, numberCheck:{error:false, value:e.target.value}})
+                                                    }}
+                                                    error={order.numberCheck.error}
+                                                    required
+                                                    label='Requerido'
+                                                    size="small" 
+                                                />
                                             </Grid>
                                         </Grid>}
 
@@ -221,10 +360,14 @@ export const Confirmar = () => {
                                                         <label>{item.requiredQuantity}</label>
                                                     </Grid>
                                                     <Grid item xs={3}>
-                                                        <TextField 
-                                                            size="small" 
-                                                            value={item.days}
+                                                        <TextField
+                                                            type='number'
+                                                            value={item.seconds.value}
                                                             onChange={e=>handleDays(e, index)}
+                                                            size="small"
+                                                            error={item.seconds.error}
+                                                            required
+                                                            label='Requerido'
                                                         />
                                                     </Grid>
                                                 </Grid>
@@ -257,7 +400,7 @@ export const Confirmar = () => {
                                         <Grid item>
                                             <Button
                                                 className="activo"
-                                                onClick={()=>{cancelOrderById(order._id)}}
+                                                onClick={()=>{cancelOrderHandler(order._id)}}
                                             >
                                                 Sí
                                             </Button>
@@ -277,7 +420,6 @@ export const Confirmar = () => {
                     </Dialog>
             }
         </Main>
-        </>
         
     )
 }

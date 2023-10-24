@@ -13,10 +13,10 @@ export const formatCharPie = (data=[]) => {
         datasets: [{
             data:values,
             backgroundColor: [
-                'rgb(255, 99, 132)',
+                '#9A3A4D',
                 
-                'rgb(255, 205, 86)',
-                'rgb(54, 162, 235)'
+                '#856F39',
+                '#2A6790'
               ],
         }]
     }

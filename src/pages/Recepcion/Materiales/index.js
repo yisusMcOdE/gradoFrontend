@@ -54,7 +54,13 @@ export const Materiales = () => {
                     <Card raised>
                         <h1 className={classes.titlePage}>Materiales</h1>
                         <Box>
-                            <Button startIcon={<AddIcon/>} variant='contained'>Solicitar Material</Button>
+                            <Button 
+                                startIcon={<AddIcon/>} 
+                                variant='contained'
+                                onClick={()=>{navigator('solicitar')}}
+                            >
+                                Solicitar Material
+                            </Button>
                         </Box>
                         <Box display='flex' justifyContent= 'flex-end' >
                             <SearchIcon sx={{ color: 'white', mr: 1, my: 0.5 }} />
@@ -65,32 +71,20 @@ export const Materiales = () => {
                 <Grid item style={{width:'80%'}}>
                     <Card raised >
                         <Grid container direction='column'>
-                            <Grid item>
-                            <Box display='flex' justifyContent= 'center' >
-                                <RadioGroup
-                                    aria-labelledby="demo-controlled-radio-buttons-group"
-                                    name="controlled-radio-buttons-group"
-                                    value={dataType}
-                                    onChange={()=>{setDataType(prev => !prev)}}
-                                    row
-                                >
-                                    <FormControlLabel value={true} control={<Radio />} label="Grafico" />
-                                    <FormControlLabel value={false} control={<Radio />} label="Tabla" />
-                                </RadioGroup>
-                            </Box>
-                            </Grid>
+                            
                             <Grid item>
                                 {
-                                dataType?
-                                    <Chart type="bar" data={formatCharBar(data)} options={{indexAxis: "y",}}/> :
+                                data!==204 ?
                                     <DataGrid
-                                    onRowClick={(e)=>{navigator(e.row.id_pedido)}}
-                                    rows={data} 
+                                    
+                                    rows={data.filter(item=>{return item.name.toLowerCase().includes(searchBar.toLowerCase())})} 
                                     columns={columns}
                                     getRowClassName={(params) =>
                                         params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
                                     }
-                                />
+                                    />
+                                :
+                                    <h3 style={{textAlign:'center'}}>No existen materiales registrados</h3>
                                 }
                                 
                             </Grid>

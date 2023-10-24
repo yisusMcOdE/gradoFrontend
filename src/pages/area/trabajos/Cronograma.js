@@ -4,7 +4,7 @@ import { MyGantt } from "../../../components/gantt"
 import { Main } from "../../../components/main"
 import { useStyles } from "../area.styles"
 
-export const Cronograma = () => {
+export const Cronograma = ({direction}) => {
 
     const [areaType, setAreaType] = useState('Todos');
 
@@ -39,7 +39,7 @@ export const Cronograma = () => {
                                 </Grid>
                             </Grid>
                             <Grid item xs className={classes.ganttContainer}>
-                                <MyGantt type={areaType}/>
+                                <MyGantt type={areaType} direction={direction}/>
                             </Grid>
                         </Grid>
                     </Card>

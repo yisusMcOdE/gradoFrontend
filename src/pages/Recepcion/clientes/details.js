@@ -8,16 +8,13 @@ import { useStyles } from "../recepcion.styles";
 export const DetailsClientRecepcion = () => {
 
     const {id} = useParams();
-    const initialInput = {error:false, value:''}
 
 
     const [loading, setLoading] = useState(false);
     const [alert, setAlert] = useState({open:false, severity:'', message:''});
 
-    const [external, setExternal] = useState();
     const [data, setData] = useState();
     const [dataEdition, setDataEdition] = useState();
-    const [status, setStatus] = useState();
     const [editionMode, setEditionMode] = useState(false);
     const [dialog, setDialog] = useState(false);
     const [institution, setInstitution] = useState(false);
@@ -59,6 +56,7 @@ export const DetailsClientRecepcion = () => {
                 })
             else
                 setDataEdition({
+                    title: {error : false, value : response.title},
                     ci : {error : false, value : response.ci},
                     name : {error : false, value : response.name},
                     phone : {error : false, value : response.phone},
@@ -206,7 +204,7 @@ export const DetailsClientRecepcion = () => {
                                         <Grid item xs={4}>
                                             <label>Institucion</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField
                                                 value={dataEdition.institution.value}
                                                 onChange={(e)=>{setDataEdition({...dataEdition, institution:{error:false, value:e.target.value}})}}
@@ -221,7 +219,7 @@ export const DetailsClientRecepcion = () => {
                                         <Grid item xs={4}>
                                             <label>Mensajero</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField
                                                 value={dataEdition.courier.value}
                                                 onChange={(e)=>{setDataEdition({...dataEdition, courier:{error:false, value:e.target.value}})}}
@@ -236,7 +234,7 @@ export const DetailsClientRecepcion = () => {
                                         <Grid item xs={4}>
                                             <label>Correo</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField
                                                 value={dataEdition.email.value}
                                                 onChange={(e)=>{setDataEdition({...dataEdition, email:{error:false, value:e.target.value}})}}
@@ -249,7 +247,7 @@ export const DetailsClientRecepcion = () => {
                                         <Grid item xs={4}>
                                             <label>Telefono</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField
                                                 value={dataEdition.phone.value}
                                                 onChange={(e)=>{setDataEdition({...dataEdition, phone:{error:false, value:e.target.value}})}}
@@ -262,7 +260,7 @@ export const DetailsClientRecepcion = () => {
                                         <Grid item xs={4}>
                                             <label>Direccion</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField
                                                 value={dataEdition.address.value}
                                                 onChange={(e)=>{setDataEdition({...dataEdition, address:{error:false, value:e.target.value}})}}
@@ -288,9 +286,30 @@ export const DetailsClientRecepcion = () => {
                                 </>:<>
                                     <Grid item container alignItems='center'>
                                         <Grid item xs={4}>
+                                            <label>Titulo</label>
+                                        </Grid>
+                                        <Grid item xs>
+                                            <Autocomplete
+                                                fullWidth
+                                                size='small'
+                                                value={dataEdition.title.value}
+                                                onChange={(e)=>{setDataEdition({...dataEdition, title:{error:false, value:e.target.value}})}}
+                                                options={['Señor', 'Señora']}
+                                                renderInput={(params) =><TextField
+                                                                            error={dataEdition.title.error}
+                                                                            required
+                                                                            label='Requerido'
+                                                                            variant="standard"
+                                                                            {...params}
+                                                                        />}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item container alignItems='center'>
+                                        <Grid item xs={4}>
                                             <label>Nombre</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField
                                                 value={dataEdition.name.value}
                                                 onChange={(e)=>{setDataEdition({...dataEdition, name:{error:false, value:e.target.value}})}}
@@ -305,7 +324,7 @@ export const DetailsClientRecepcion = () => {
                                         <Grid item xs={4}>
                                             <label>C.I.</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField
                                                 value={dataEdition.ci.value}
                                                 onChange={(e)=>{setDataEdition({...dataEdition, ci:{error:false, value:e.target.value}})}}
@@ -320,7 +339,7 @@ export const DetailsClientRecepcion = () => {
                                         <Grid item xs={4}>
                                             <label>Telefono</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField
                                                 value={dataEdition.phone.value}
                                                 onChange={(e)=>{setDataEdition({...dataEdition, phone:{error:false, value:e.target.value}})}}
@@ -353,7 +372,7 @@ export const DetailsClientRecepcion = () => {
                                         <Grid item xs={4}>
                                             <label>Institucion</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField 
                                                 disabled 
                                                 size='small' 
@@ -364,7 +383,7 @@ export const DetailsClientRecepcion = () => {
                                         <Grid item xs={4}>
                                             <label>Mensajero</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField 
                                                 disabled 
                                                 size='small' 
@@ -375,7 +394,7 @@ export const DetailsClientRecepcion = () => {
                                         <Grid item xs={4}>
                                             <label>Correo</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField 
                                                 disabled 
                                                 size='small' 
@@ -386,7 +405,7 @@ export const DetailsClientRecepcion = () => {
                                         <Grid item xs={4}>
                                             <label>Telefono</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField 
                                                 disabled 
                                                 size='small' 
@@ -397,7 +416,7 @@ export const DetailsClientRecepcion = () => {
                                         <Grid item xs={4}>
                                             <label>Direccion</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField 
                                                 disabled 
                                                 size='small' 
@@ -415,9 +434,20 @@ export const DetailsClientRecepcion = () => {
                                 </>:<>
                                     <Grid item container alignItems='center'>
                                         <Grid item xs={4}>
+                                            <label>Titulo</label>
+                                        </Grid>
+                                        <Grid item xs>
+                                            <TextField 
+                                                disabled 
+                                                size='small' 
+                                                value={data.title}/>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item container alignItems='center'>
+                                        <Grid item xs={4}>
                                             <label>Nombre</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField 
                                                 disabled 
                                                 size='small' 
@@ -428,7 +458,7 @@ export const DetailsClientRecepcion = () => {
                                         <Grid item xs={4}>
                                             <label>C.I.</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField 
                                                 disabled 
                                                 size='small' 
@@ -439,7 +469,7 @@ export const DetailsClientRecepcion = () => {
                                         <Grid item xs={4}>
                                             <label>Telefono</label>
                                         </Grid>
-                                        <Grid item >
+                                        <Grid item xs>
                                             <TextField 
                                                 disabled 
                                                 size='small' 

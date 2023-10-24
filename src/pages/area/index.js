@@ -7,9 +7,12 @@ import AdfScannerIcon from '@mui/icons-material/AdfScanner';
 import { Grid } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { BackgroundPage } from "../../components/background";
+import { SuperUserBar } from "../../components/superUserBar";
+import { useEffect } from "react";
+import { redirectRole } from "../../utilities/pdfMake/redirectRole";
 
 
-export const Area = () => {
+export const Area = ({isSuperUser, role}) => {
 
     const classes = useStyles();
 
@@ -30,8 +33,16 @@ export const Area = () => {
         Equipamiento:[
             {name: 'Ver Equipamiento', to: 'equipamiento'}
         ]
+        
     }
-    const icons= [<AutoAwesomeMotionIcon/>,<WidgetsIcon/>,<AdfScannerIcon/>,<FindInPageIcon/>]
+    const icons= [<AutoAwesomeMotionIcon/>,<WidgetsIcon/>,<AdfScannerIcon/>,<FindInPageIcon/>,]
+
+    useEffect(()=>{
+        if(role!=='Area'){
+            if(!isSuperUser)
+                redirectRole(role, navigator);
+        }
+    },[])
 
     return (
         <Grid container >
@@ -39,8 +50,16 @@ export const Area = () => {
             <Grid item xs='auto'>
                 <SideBar role='Area' menu={menu} icons={icons} subMenu={subMenu}/>
             </Grid>
-            <Grid item xs className={classes.containerPage}>
-                <Outlet/>
+            <Grid item container direction='column' xs className={classes.containerPage}>
+                {
+                isSuperUser&&
+                    <Grid item>
+                        <SuperUserBar/>
+                    </Grid>
+                }
+                <Grid item>
+                    <Outlet/>
+                </Grid>
             </Grid>
         </Grid>
     )

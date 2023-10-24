@@ -55,25 +55,26 @@ export const DetailsJobAdmin = () => {
         newMaterial.push(materialInitial);
         setDataEdition({...dataEdition, materials:newMaterial});
     }
-    const removeCost = () => {
+    const removeCostByIndex = (index) => {
         const newCost = [...dataEdition.cost];
-        if(newCost.length > data.cost.length){
-            newCost.pop();
+        if(index > data.cost.length - 1){
+            newCost.splice(index,1);
+            setDataEdition({...dataEdition, cost:newCost});
         }
-        setDataEdition({...dataEdition, cost:newCost});
     }
-    const removeMaterial = () => {
+    
+    const removeMaterialByIndex = (index) => {
         const newMaterial = [...dataEdition.materials];
-        if(newMaterial.length > data.materials.length){
-            newMaterial.pop();
+        if(index > data.materials.length - 1){
+            newMaterial.splice(index,1);
+            setDataEdition({...dataEdition, materials:newMaterial});
         }
-        setDataEdition({...dataEdition, materials:newMaterial});
     }
-
+    
     const handleResponse = async(response) => {
         if(response.status === 202){
             setAlert({open:true, severity:'success', message:'202: Actualizado'});
-            await setEditionMode(false);
+            setEditionMode(false);
             await loadData();
         }
         if(response.status === 404){
@@ -188,19 +189,37 @@ export const DetailsJobAdmin = () => {
         }
     }
 
+    const verifyStatus = (cost, material) => {
+        let verifiedCost = false
+        for (let index = 0; index < cost.length; index++) {
+            if(cost[index].status.value === true )
+                verifiedCost = true
+        }
+        let verifiedMaterials = false
+        for (let index = 0; index < material.length; index++) {
+            if(material[index].status.value === true )
+                verifiedMaterials = true
+        }
+        if(!verifiedCost || !verifiedMaterials)
+            return false
+        else
+            return true
+    }
+
     const handleChange = (e, typeDetail, field, index) => {
 
         if(e==='status'){
+            const newCost = cloneDeep(dataEdition.cost);
+            const newMaterial = cloneDeep(dataEdition.materials);
+
             if(typeDetail==='cost'){
-                const newCost = cloneDeep(dataEdition.cost);
                 newCost[index][field].value = !newCost[index][field].value;
-                setDataEdition({...dataEdition,cost:newCost})
+                setDataEdition({...dataEdition, cost:newCost, status:{error:false, value:verifyStatus(newCost, newMaterial)}})
             }
             else
             {
-                const newMaterial = cloneDeep(dataEdition.materials);
                 newMaterial[index][field].value = !newMaterial[index][field].value;
-                setDataEdition({...dataEdition, materials:newMaterial});
+                setDataEdition({...dataEdition, materials:newMaterial, status:{error:false, value:verifyStatus(newCost, newMaterial)}});
             }
         }else{
             if(typeDetail==='cost'){
@@ -377,19 +396,18 @@ export const DetailsJobAdmin = () => {
 
                             <Grid item>
                                 <Grid container>
+                                    <Grid item position='relative' display='flex' alignItems='center'>
+                                        <IconButton 
+                                            size="small" 
+                                            onClick={addCost} 
+                                            style={{background:'#006E0A', position:'absolute', left:'10px'}}
+                                        >
+                                            <AddIcon fontSize="inherit"/>
+                                        </IconButton>
+                                    </Grid>
                                     <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'5px 5px 0 0'}}>
                                         <h3 style={{textAlign:'center'}}>DETALLE DE COSTOS</h3>
                                     </Grid>
-
-                                    <Box display='flex' className={classes.addRemoveBox} columnGap={2}>
-                                        <IconButton size="small" onClick={addCost}>
-                                            <AddIcon fontSize="inherit"/>
-                                        </IconButton>
-                                        <IconButton size="small" onClick={removeCost}>
-                                            <RemoveIcon fontSize="inherit"/>
-                                        </IconButton>
-                                    </Box>
-
                                     <Grid item xs={12} className={classes.tableHeader} container>
                                         <Grid item xs={1}>
                                             <h3>N°</h3>
@@ -408,6 +426,11 @@ export const DetailsJobAdmin = () => {
                                     {dataEdition.cost.map((item,index)=>{
                                         return (
                                         <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
+                                            <div style={{position:'relative', display:'flex', alignItems:'center'}}  >
+                                                <IconButton style={{position:'absolute', right:'-15px', background:'#4B0000'}} size="small" onClick={()=>{removeCostByIndex(index)}}>
+                                                    <RemoveIcon fontSize="inherit" color="neutro1"/>
+                                                </IconButton>
+                                            </div>
                                             <Grid item xs={1}>
                                                 {index+1}
                                             </Grid>
@@ -455,18 +478,20 @@ export const DetailsJobAdmin = () => {
 
                             <Grid item>
                                 <Grid container>
+
+                                    <Grid item position='relative' display='flex' alignItems='center'>
+                                        <IconButton 
+                                            size="small" 
+                                            onClick={addMaterial} 
+                                            style={{background:'#006E0A', position:'absolute', left:'10px'}}
+                                        >
+                                            <AddIcon fontSize="inherit"/>
+                                        </IconButton>
+                                    </Grid>
+
                                     <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'5px 5px 0 0'}}>
                                         <h3 style={{textAlign:'center'}}>DETALLE DE USO DE MATERIALES</h3>
                                     </Grid>
-
-                                    <Box display='flex' className={classes.addRemoveBox} columnGap={2}>
-                                        <IconButton size="small" onClick={addMaterial}>
-                                            <AddIcon fontSize="inherit"/>
-                                        </IconButton>
-                                        <IconButton size="small" onClick={removeMaterial}>
-                                            <RemoveIcon fontSize="inherit"/>
-                                        </IconButton>
-                                    </Box>
 
                                     <Grid item xs={12} className={classes.tableHeader} container>
                                         <Grid item xs={1}>
@@ -489,6 +514,11 @@ export const DetailsJobAdmin = () => {
                                     {dataEdition.materials.map((item,index)=>{
                                         return (
                                         <Grid container className={classes.tableBody} style={index%2===0?{background:'#D7D7D7'}:{background:'#FFFFFF'}}>
+                                            <div style={{position:'relative', display:'flex', alignItems:'center'}}  >
+                                                <IconButton style={{position:'absolute', right:'-15px', background:'#4B0000'}} size="small" onClick={()=>{removeMaterialByIndex(index)}}>
+                                                    <RemoveIcon fontSize="inherit" color="neutro1"/>
+                                                </IconButton>
+                                            </div>
                                             <Grid item xs={1}>
                                                 {index+1}
                                             </Grid>

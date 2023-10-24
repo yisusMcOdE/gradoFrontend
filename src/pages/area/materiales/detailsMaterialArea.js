@@ -49,14 +49,14 @@ export const DetailsMaterialArea = () => {
                     <Card>
                         <Grid container direction='column' rowSpacing={1}>
                             <Grid item>
-                                <h1 className={classes.titlePage}>{data.name}</h1>
+                                <h1 className={classes.titlePage}>Estado de material</h1>
                             </Grid>
                             <Grid item container alignItems='center'>
                                 <Grid item xs={3}>
-                                    <label>Id:</label>
+                                    <label>Nombre:</label>
                                 </Grid>
                                 <Grid item xs={5}>
-                                    <TextField value={data._id} size='small'/>
+                                    <TextField value={data.name} size='small'/>
                                 </Grid>
                             </Grid>
                             
@@ -85,17 +85,56 @@ export const DetailsMaterialArea = () => {
                         </Card>
                     </Grid>
                     <Grid item xs={3}>
-                        <Card style={{padding:'0', position:'sticky', top:'10px'}}>
-                            <h2 style={{textAlign:'center'}}>Estado actual</h2>
-                                <Chart type='doughnut' data={formatCharPie(
-                                    [
-                                        {
-                                            "En Uso":data.used,
-                                            "Reservado":data.reserved,
-                                            "Disponible":data.available,
-                                        }
-                                    ])}
-                                />
+                        <Card style={{padding:0}}>
+                            <Grid container direction='column'>
+                                <Grid item xs>
+                                    <h2 style={{textAlign:'center'}}>Estado actual</h2>
+                                </Grid>
+                                    <Chart style={{width:'100%'}} type='doughnut' data={formatCharPie(
+                                        [
+                                            {
+                                                "En Uso":data.used,
+                                                "Reservado":data.reserved,
+                                                "Disponible":data.available,
+                                            }
+                                        ])}
+                                    />
+                                <Grid style={{margin:15}} item container direction='column' xs>
+                                    <Grid item container>
+                                        <Grid xs={2} item style={{background:'#9A3A4D', margin:3, border:'2px solid white'}}>
+
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <label>En Uso:</label>
+                                        </Grid>
+                                        <Grid item>
+                                            <label>{data.used}</label>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item container>
+                                        <Grid xs={2} item style={{background:'#856F39', margin:3, border:'2px solid white'}}>
+
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <label>Reservado:</label>
+                                        </Grid>
+                                        <Grid item>
+                                            <label>{data.reserved}</label>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item container>
+                                        <Grid xs={2} item style={{background:'#2A6790', margin:3, border:'2px solid white'}}>
+
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <label>Disponible:</label>
+                                        </Grid>
+                                        <Grid item>
+                                            <label>{data.available}</label>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
                         </Card>
                     </Grid>
                 </Grid>

@@ -277,7 +277,7 @@ export const CreateUser = () => {
                                         value={roleForm.value}
                                         size='small'
                                         id="roleForm"
-                                        options={['Area','Recepcion','Direccion','Administracion']}
+                                        options={['Area','Recepcion','Direccion','Administracion','SuperUsuario']}
                                         sx={{ width: 150 }}
                                         renderInput={(params) => <TextField 
                                             label='Requerido'
