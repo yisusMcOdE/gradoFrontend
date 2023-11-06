@@ -6,7 +6,7 @@ import { SideBar } from "../../components/SideBar";
 import { Outlet, useNavigate } from "react-router-dom";
 import { SuperUserBar } from "../../components/superUserBar";
 import { useEffect } from "react";
-import { redirectRole } from "../../utilities/pdfMake/redirectRole";
+import { redirectRole, verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
 
 export const Direccion = ({isSuperUser, role}) => {
 
@@ -27,10 +27,7 @@ export const Direccion = ({isSuperUser, role}) => {
     const icons= [<AutoAwesomeMotionIcon/>,<FindInPageIcon/>];
 
     useEffect(()=>{
-        if(role!=='Direccion'){
-            if(!isSuperUser)
-                redirectRole(role, navigator);
-        }
+        verifyTokenWithPath('Direccion',navigator);
     },[])
 
     return (

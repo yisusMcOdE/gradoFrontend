@@ -1,5 +1,5 @@
+import { decodeToken } from "react-jwt";
 import { useNavigate } from "react-router-dom";
-
 
 export const redirectRole = (role, navigator) => {
     switch (role) {
@@ -24,5 +24,26 @@ export const redirectRole = (role, navigator) => {
         default:
         navigator('/login');
         break;
+    }
+}
+
+export const verifyTokenWithPath = (path,navigator) => {
+    const token = localStorage.token;
+    let decode;
+    let result;
+    if(token === undefined){
+        result = 'noToken'
+    }else{
+        decode = decodeToken(token);
+        if(decode.data.role==='SuperUsuario' && path!=='Cliente'){
+            result = path
+        }else{
+            result = decode.data.role
+        }
+        
+    }
+
+    if(result!==path){
+        redirectRole(result, navigator);
     }
 }

@@ -18,6 +18,11 @@ const myPost = async(url, body) => {
     return response
 }
 
+export const createUser = async (data) => {
+    const url = 'http://localhost:5000/api/users';
+    return (myPost(url,data));
+}
+
 export const createClientExternal = async(data) => {
     const url = `http://localhost:5000/api/clientExternal`;
     return (myPost(url,data));

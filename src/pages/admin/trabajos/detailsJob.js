@@ -9,9 +9,12 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { allMaterials, JobById } from "../../../utilities/allGetFetch";
 import { cloneDeep } from "lodash"
 import { updateJob } from "../../../utilities/allPutFetch"
+import { useSnackbar } from "notistack"
 
 
 export const DetailsJobAdmin = () => {
+
+    const { enqueueSnackbar } = useSnackbar();
 
     const initialInput = {error:false, value:''}
 
@@ -30,7 +33,6 @@ export const DetailsJobAdmin = () => {
     }
 
     const [loading, setLoading] = useState(false);
-    const [alert, setAlert] = useState({open:false, severity:'', message:''});
 
     
     const [materials, setMaterials] = useState();
@@ -73,18 +75,18 @@ export const DetailsJobAdmin = () => {
     
     const handleResponse = async(response) => {
         if(response.status === 202){
-            setAlert({open:true, severity:'success', message:'202: Actualizado'});
+            enqueueSnackbar('202: Actualizado',{variant:'success'});            
             setEditionMode(false);
             await loadData();
         }
         if(response.status === 404){
-            setAlert({open:true, severity:'error', message:'404: No encontrado'});
+            enqueueSnackbar('404: No encontrado',{variant:'error'});
         }
         if(response.status === 409){
-            setAlert({open:true, severity:'warning', message:'409: Conflicto'});
+            enqueueSnackbar('409: Conflicto',{variant:'warning'});
         }
         if(response.status === 304){
-            setAlert({open:true, severity:'warning', message:'304: No Modificado'})
+            enqueueSnackbar('304: No Modificado',{variant:'warning'});
         }
     }
 
@@ -185,7 +187,7 @@ export const DetailsJobAdmin = () => {
             setLoading(false);
             handleResponse(response);
         }else{
-            setAlert({open:true, severity:'error', message:'Formulario Invalido * '});
+            enqueueSnackbar('Formulario Invalido * ',{variant:'error'});
         }
     }
 
@@ -286,16 +288,6 @@ export const DetailsJobAdmin = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                open={alert.open}
-                onClose={()=>{setAlert({...alert, open:false})}}
-                autoHideDuration={3000}
-            >
-                <Alert variant='filled' severity={alert.severity}>
-                    {alert.message}
-                </Alert>
-            </Snackbar>
 
             <Grid container direction={'column'} alignItems={'center'}>
                 <Grid item style={{width:'90%'}}>

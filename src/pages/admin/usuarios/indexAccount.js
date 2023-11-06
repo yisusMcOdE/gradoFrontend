@@ -44,13 +44,16 @@ export const Cuentas = () => {
 
     const loadData = async() => {
         let data = await getAllUsersComplete();
-        if(dataClient!==204){
+        if(data!==204){
             data={
                 institution : data.institution.map(item=>{return{...item, status:item.status?'ACTIVO':'SUSPENDIDO'}}),
                 employee : data.employee.map(item=>{return{...item, status:item.status?'ACTIVO':'SUSPENDIDO'}})
             }
             setDataClient(data.institution);
             setDataEmployee(data.employee)
+        }else{
+            setDataClient(204);
+            setDataEmployee(204);
         }
     }
 

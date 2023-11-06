@@ -1,4 +1,5 @@
 import { Alert, Backdrop, Button, Card, CircularProgress, Grid, Snackbar, Switch, TextField } from "@mui/material";
+import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { Main } from "../../../components/main";
 import { getConfigBackup } from "../../../utilities/allGetFetch";
@@ -9,8 +10,9 @@ import { useStyles } from "../admin.styles";
 
 export const Configuracion = () => {
 
+    const { enqueueSnackbar } = useSnackbar();
+
     const [loading, setLoading] = useState(false);
-    const [alert, setAlert] = useState({open:false, severity:'', message:''});
 
     const [data, setData] = useState();
     const [dataEdit, setDataEdit] = useState();
@@ -18,18 +20,18 @@ export const Configuracion = () => {
 
     const handleResponse = async(response) => {
         if(response.status === 202){
-            setAlert({open:true, severity:'success', message:'202: Actualizado'});
+            enqueueSnackbar('202: Actualizado',{variant:'success'});            
             setEditionMode(false);
             loadData();
         }
         if(response.status === 404){
-            setAlert({open:true, severity:'error', message:'404: No encontrado'});
+            enqueueSnackbar('404: No encontrado',{variant:'error'});            
         }
         if(response.status === 409){
-            setAlert({open:true, severity:'warning', message:'409: Conflicto'});
+            enqueueSnackbar('409: Conflicto',{variant:'warning'});            
         }
         if(response.status === 304){
-            setAlert({open:true, severity:'warning', message:'304: No Modificado'})
+            enqueueSnackbar('304: No Modificado',{variant:'warning'});            
         }
     }
 
@@ -45,8 +47,8 @@ export const Configuracion = () => {
 
     const updateConfig = async() => {
         const body = {
-            status:dataEdit.status, 
-            interval:dataEdit.interval
+            statusBackups:dataEdit.statusBackups, 
+            intervalBackups:dataEdit.intervalBackups
         };
         setLoading(true);
         const response = await updateConfigBackup(body);;
@@ -66,16 +68,6 @@ export const Configuracion = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                open={alert.open}
-                onClose={()=>{setAlert({...alert, open:false})}}
-                autoHideDuration={3000}
-            >
-                <Alert variant='filled' severity={alert.severity}>
-                    {alert.message}
-                </Alert>
-            </Snackbar>
             <Grid container direction='column' alignItems='center'>
                 <Grid item>
                     <Card>
@@ -106,10 +98,10 @@ export const Configuracion = () => {
                                     </Grid>
                                     <Grid item xs>
                                         <Button 
-                                            className={dataEdit.status?'activo':'inactivo'}
-                                            onClick={e=>{setDataEdit({...dataEdit, status:!dataEdit.status})}}
+                                            className={dataEdit.statusBackups?'activo':'inactivo'}
+                                            onClick={e=>{setDataEdit({...dataEdit, statusBackups:!dataEdit.statusBackups})}}
                                         >
-                                            {dataEdit.status?'Habilitado':'Suspendido'}
+                                            {dataEdit.statusBackups?'Habilitado':'Suspendido'}
                                         </Button>
                                     </Grid>
                                 </Grid>
@@ -121,8 +113,8 @@ export const Configuracion = () => {
                                     <Grid item xs='auto'>
                                         <TextField 
                                             size='small' 
-                                            value={dataEdit.interval}
-                                            onChange={e=>{setDataEdit({...dataEdit,interval:e.target.value})}}
+                                            value={dataEdit.intervalBackups}
+                                            onChange={e=>{setDataEdit({...dataEdit,intervalBackups:e.target.value})}}
                                         />
                                     </Grid>
                                 </Grid>
@@ -144,8 +136,8 @@ export const Configuracion = () => {
                                         <label>Estado:</label>
                                     </Grid>
                                     <Grid item xs>
-                                        <Button disabled className={data.status?'activo':'inactivo'}>
-                                            {data.status?'Habilitado':'Suspendido'}
+                                        <Button disabled className={data.statusBackups?'activo':'inactivo'}>
+                                            {data.statusBackups?'Habilitado':'Suspendido'}
                                         </Button>
                                     </Grid>
                                 </Grid>
@@ -155,7 +147,7 @@ export const Configuracion = () => {
                                         <label>Frecuencia en dias:</label>
                                     </Grid>
                                     <Grid item xs='auto'>
-                                        <TextField disabled size='small' value={data.interval}/>
+                                        <TextField disabled size='small' value={data.intervalBackups}/>
                                     </Grid>
                                 </Grid>
                             </Grid>

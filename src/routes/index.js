@@ -52,30 +52,23 @@ import { Direccion } from '../pages/direccion';
 import { ConfigEmail } from '../pages/admin/mensajeria/configEmail';
 import { decodeToken } from 'react-jwt';
 
-const token = localStorage.token;
-let isSuperUser = false;
-let decode;
-if(token !== undefined){
-    decode = decodeToken(token);
-    if(decode.data.role === 'SuperUsuario')
-        isSuperUser = true
-}
+
 
 export const routes = createBrowserRouter(createRoutesFromElements(
     
     <Route path='' element={<Root/>}>
-        <Route path='/login' element={<Login/>}/>
-        <Route path='/cliente' element={<Cliente isSuperUser={isSuperUser} role={decode.data.role}/>}>
+        <Route path='/login' element={<Login />}/>
+        <Route path='/cliente' element={<Cliente/>}>
             <Route path='pedidos' element={<PedidosCliente/>}/>
             <Route path='pedidos/:id' element={<Details/>}/>
             <Route path='pedidos/nuevo' element={<SolicitarCliente/>}/>
         </Route>
-        <Route path='/direccion' element={<Direccion isSuperUser={isSuperUser} role={decode.data.role}/>}>
+        <Route path='/direccion' element={<Direccion/>}>
             <Route path='reporteMaterial' element={<ReporteMaterial/>}/>
             <Route path='cronograma' element={<Cronograma direction={true}/>}/>
 
         </Route>
-        <Route path='/recepcion' element={<Recepcion isSuperUser={isSuperUser} role={decode.data.role}/>}>
+        <Route path='/recepcion' element={<Recepcion/>}>
             <Route path='clientes' element={<ClientesRecepcion/>}/>
             <Route path='clientes/:id' element={<DetailsClientRecepcion/>}/>
             <Route path='clientes/crear' element={<CreateClientRecepcion/>}/>
@@ -89,7 +82,7 @@ export const routes = createBrowserRouter(createRoutesFromElements(
             <Route path='material/recepcionar' element={<Recepcionar/>}/>
             <Route path='material/recepcionar/:id' element={<ConfirmOrder/>}/>
         </Route>
-        <Route path='/area' element={<Area isSuperUser={isSuperUser} role={decode.data.role}/>}>
+        <Route path='/area' element={<Area/>}>
             <Route path='trabajos' element={<Trabajos/>}/>
             <Route path='trabajos/:id' element={<DetalleTrabajo/>}/>
             <Route path='trabajos/cronograma' element={<Cronograma direction={false}/>}/>
@@ -103,7 +96,7 @@ export const routes = createBrowserRouter(createRoutesFromElements(
             <Route path='reporteMaterial' element={<ReporteMaterial/>}/>
             <Route path='reportePedidos' element={<ReportePedidos/>}/>
         </Route>
-        <Route path='/admin' element={<Admin isSuperUser={isSuperUser} role={decode.data.role}/>}>
+        <Route path='/admin' element={<Admin/>}>
             <Route path='configWhatsapp' element={<ConfigWhatsapp/>}/>
             <Route path='configEmail' element={<ConfigEmail/>}/>
             <Route path='cuentaUsuarios' element={<Cuentas/>}/>

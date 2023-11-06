@@ -323,10 +323,13 @@ export const getAllUsers = async () => {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token},
-    }
-    )
-    let data = await response.json();
-    return (data);
+    })
+    if(response.status !== 204){
+        let data = await response.json();
+        return (data);
+    }else
+        return (204);
+    
 }
 
 export const getAllUsersComplete = async() => {

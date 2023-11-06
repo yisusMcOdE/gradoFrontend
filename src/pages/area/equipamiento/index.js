@@ -31,7 +31,11 @@ export const EquipmentArea = () => {
 
     const loadData = async() => {
         const response = await getAllEquipment();
-        setData( response);
+        if(response !== 204){
+            setData(response);
+        }else{
+            setData(204)
+        }
     }
 
     console.log(data);
@@ -61,6 +65,7 @@ export const EquipmentArea = () => {
                         <Grid container direction='column' rowSpacing={2}>
                             
                             <Grid item>
+                                {data!==204?
                                     <DataGrid
                                     onRowClick={(e)=>{navigator(`${e.row._id}`)}}
                                     rows={data.filter(item=>{
@@ -71,6 +76,9 @@ export const EquipmentArea = () => {
                                         params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
                                     }
                                     />
+                                :
+                                    <h3 style={{textAlign:'center'}}>No Existe Ningun Equipo Registrado</h3>
+                                }
                             </Grid>
                             
                         </Grid>

@@ -1,4 +1,5 @@
 import { Button, Card, Dialog, Grid, Switch, TextField, Autocomplete, Backdrop, CircularProgress, Snackbar, Alert } from "@mui/material";
+import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Main } from "../../../components/main";
@@ -9,8 +10,10 @@ export const DetailsMaterialAdmin = () => {
 
     const {id} = useParams();
 
+    const { enqueueSnackbar } = useSnackbar();
+
+
     const [loading, setLoading] = useState(false);
-    const [alert, setAlert] = useState({open:false, severity:'', message:''});
 
     const [data, setData] = useState();
     const [status, setStatus] = useState();
@@ -20,18 +23,18 @@ export const DetailsMaterialAdmin = () => {
 
     const handleResponse = async(response) => {
         if(response.status === 202){
-            setAlert({open:true, severity:'success', message:'202: Actualizado'});
+            enqueueSnackbar('202: Actualizado',{variant:'success'});            
             setEditionMode(false);
             loadData();
         }
         if(response.status === 404){
-            setAlert({open:true, severity:'error', message:'404: No encontrado'});
+            enqueueSnackbar('404: No encontrado',{variant:'error'});            
         }
         if(response.status === 409){
-            setAlert({open:true, severity:'warning', message:'409: Conflicto'});
+            enqueueSnackbar('409: Conflicto',{variant:'warning'});            
         }
         if(response.status === 304){
-            setAlert({open:true, severity:'warning', message:'304: No Modificado'})
+            enqueueSnackbar('304: No Modificado',{variant:'warning'});            
         }
     }
 
@@ -76,17 +79,6 @@ export const DetailsMaterialAdmin = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                open={alert.open}
-                onClose={()=>{setAlert({...alert, open:false})}}
-                autoHideDuration={3000}
-            >
-                <Alert variant='filled' severity={alert.severity}>
-                    {alert.message}
-                </Alert>
-            </Snackbar>
-
             <Dialog open={dialog} onClose={()=>{setDialog(false)}}>
                 <Card>
                     <h2>¿Esta seguro de editar los valores?</h2>

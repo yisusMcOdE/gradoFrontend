@@ -132,8 +132,8 @@ export const Backup = () => {
                                     :
                                     <h3 style={{textAlign:'center'}}>No existen backups generados</h3>
                                 }
-                                <Dialog open={modal} onClose={()=>{setModal(false)}}>
-                                    <Card>
+                                <Dialog open={modal} onClose={()=>{setModal(false)}} >
+                                    <Card style={{overflow:'auto'}}>
                                         <Grid container direction='column' rowSpacing={3}>
                                             <Grid item>
                                                 <h1 className={classes.titlePage}>Archivo de Respaldo</h1>

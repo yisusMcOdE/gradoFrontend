@@ -69,18 +69,23 @@ export const Trabajos = () => {
 
     const loadData = async() => {
         let response = await getOrderDetailsConfirmed();
-        response = response.map(item => {
-            if(item.steps.length === 3){
-                return {...item, state:'En Cola'}
-            }
-            if(-1 === item.steps.findIndex(item => item.type === 'finished')){
-                return {...item, state:'En Proceso'}
-            }
-            if(-1 !== item.steps.findIndex(item => item.type === 'finished')){
-                return {...item, state:'Finalizado'}
-            }
-        })
-        setData(response);
+        if(response !== 204){
+            response = response.map(item => {
+                if(item.steps.length === 3){
+                    return {...item, state:'En Cola'}
+                }
+                if(-1 === item.steps.findIndex(item => item.type === 'finished')){
+                    return {...item, state:'En Proceso'}
+                }
+                if(-1 !== item.steps.findIndex(item => item.type === 'finished')){
+                    return {...item, state:'Finalizado'}
+                }
+            })
+            setData(response);
+        }else{
+            setData(204)
+        }
+        
     }
 
 

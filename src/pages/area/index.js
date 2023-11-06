@@ -5,14 +5,16 @@ import WidgetsIcon from '@mui/icons-material/Widgets';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import AdfScannerIcon from '@mui/icons-material/AdfScanner';
 import { Grid } from "@mui/material";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { BackgroundPage } from "../../components/background";
 import { SuperUserBar } from "../../components/superUserBar";
 import { useEffect } from "react";
-import { redirectRole } from "../../utilities/pdfMake/redirectRole";
+import { redirectRole, verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
 
 
 export const Area = ({isSuperUser, role}) => {
+
+    const navigator = useNavigate();
 
     const classes = useStyles();
 
@@ -38,10 +40,7 @@ export const Area = ({isSuperUser, role}) => {
     const icons= [<AutoAwesomeMotionIcon/>,<WidgetsIcon/>,<AdfScannerIcon/>,<FindInPageIcon/>,]
 
     useEffect(()=>{
-        if(role!=='Area'){
-            if(!isSuperUser)
-                redirectRole(role, navigator);
-        }
+        verifyTokenWithPath('Area',navigator);
     },[])
 
     return (

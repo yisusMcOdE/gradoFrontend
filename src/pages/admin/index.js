@@ -12,10 +12,12 @@ import { useStyles } from "./admin.styles";
 import { useEffect } from "react";
 import { BackgroundPage } from "../../components/background";
 import { SuperUserBar } from "../../components/superUserBar";
-import { redirectRole } from "../../utilities/pdfMake/redirectRole";
+import { redirectRole, verifyToken, verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
 
 
-export const Admin = ({isSuperUser, role}) => {
+export const Admin = () => {
+
+    const isSuperUser = true;
 
     const navigator = useNavigate();
 
@@ -62,12 +64,7 @@ export const Admin = ({isSuperUser, role}) => {
     const classes=useStyles();
 
     useEffect(()=>{
-        console.log(role);
-        console.log(isSuperUser);
-        if(role!=='Administrador'){
-            if(!isSuperUser)
-                redirectRole(role, navigator);
-        }
+        verifyTokenWithPath('Administrado',navigator);
     },[])
 
     return (

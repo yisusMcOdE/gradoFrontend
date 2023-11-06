@@ -9,7 +9,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { BackgroundPage } from "../../components/background";
 import { SuperUserBar } from "../../components/superUserBar";
 import { useEffect } from "react";
-import { redirectRole } from "../../utilities/pdfMake/redirectRole";
+import { redirectRole, verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
 
 export const Recepcion = ({isSuperUser, role}) => {
     
@@ -39,10 +39,7 @@ export const Recepcion = ({isSuperUser, role}) => {
     const icons= [<ContactPageIcon/>, <BallotIcon/>,<WidgetsIcon/>,<FindInPageIcon/>]
 
     useEffect(()=>{
-        if(role!=='Direccion'){
-            if(!isSuperUser)
-                redirectRole(role, navigator);
-        }
+        verifyTokenWithPath('Recepcion',navigator);
     },[])
 
     return (
