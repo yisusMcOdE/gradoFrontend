@@ -1,4 +1,5 @@
-import { Button, Card, Dialog, Grid, Switch, TextField, Autocomplete, Backdrop, CircularProgress, Snackbar, Alert } from "@mui/material";
+import { Button, Card, Dialog, Grid, Switch, TextField, Autocomplete, Backdrop, CircularProgress, Snackbar} from "@mui/material";
+import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Main } from "../../../components/main";
@@ -7,11 +8,11 @@ import { updateClientInternal, updateEmployee } from "../../../utilities/allPutF
 import { useStyles } from "../admin.styles";
 export const DetailsClient = () => {
 
+    const { enqueueSnackbar } = useSnackbar();
+
     const {id} = useParams();
-    const initialInput = {error:false, value:''}
 
     const [loading, setLoading] = useState(false);
-    const [alert,setAlert] = useState({open:false, severity:'', message:''});
 
     const [data, setData] = useState();
     const [dataEdition, setDataEdition] = useState();
@@ -23,18 +24,20 @@ export const DetailsClient = () => {
 
     const handleResponse = async(response) => {
         if(response.status === 202){
-            setAlert({open:true, severity:'success', message:'202: Actualizado'});
+            enqueueSnackbar('Valores actualizados correctamente',{variant:'success'});            
             setEditionMode(false);
             loadData();
         }
         if(response.status === 404){
-            setAlert({open:true, severity:'error', message:'404: No encontrado'});
+            enqueueSnackbar('No encontrado',{variant:'error'});            
+
         }
         if(response.status === 409){
-            setAlert({open:true, severity:'warning', message:'409: Conflicto'});
+            enqueueSnackbar('Conflicto encontrado',{variant:'error'});            
+
         }
         if(response.status === 304){
-            setAlert({open:true, severity:'warning', message:'304: No Modificado'})
+            enqueueSnackbar('Error - Valores no modificados',{variant:'error'});            
         }
     }
 
@@ -73,15 +76,18 @@ export const DetailsClient = () => {
         if(institution){
             if(dataEdition.institution.value===''){
                 setDataEdition({...dataEdition, institution:{error:true, value:''}})
+                enqueueSnackbar('Ingresa la institucion',{variant:'error'});            
                 error=true;
             }
             if(dataEdition.courier.value===''){
                 setDataEdition({...dataEdition, courier:{error:true, value:''}})
+                enqueueSnackbar('Ingresa el nombre del mensajero',{variant:'error'});            
                 error=true;
             }
         }else{
             if(dataEdition.name.value===''){
                 setDataEdition({...dataEdition, name:{error:true, value:''}})
+                enqueueSnackbar('Ingresa el nombre',{variant:'error'});            
                 error=true;
             }
         }
@@ -114,8 +120,6 @@ export const DetailsClient = () => {
                 handleResponse(response);
             }
             
-        }else{
-            setAlert({open:true, severity:'error', message:'Formulario Invalido * '});
         }
     }
 
@@ -135,16 +139,6 @@ export const DetailsClient = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                open={alert.open}
-                onClose={()=>{setAlert({...alert, open:false})}}
-                autoHideDuration={3000}
-            >
-                <Alert variant='filled' severity={alert.severity}>
-                    {alert.message}
-                </Alert>
-            </Snackbar>
 
             <Dialog open={dialog} onClose={()=>{setDialog(false)}}>
                 <Card>

@@ -10,7 +10,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <SnackbarProvider
-        maxSnack={5}
+        maxSnack={10}
         anchorOrigin={{ horizontal: "right", vertical: "top" }}
       >
         <CssBaseline/>

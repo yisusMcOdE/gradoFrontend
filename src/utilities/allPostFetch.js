@@ -39,7 +39,7 @@ export const createEmployee = async(data) => {
 }
 
 export const createMaterial = async(data) => {
-    const url = `http://192.168.100.111:5000/api/material`;
+    const url = `http://localhost:5000/api/material`;
     return (myPost(url,data));
 }
 

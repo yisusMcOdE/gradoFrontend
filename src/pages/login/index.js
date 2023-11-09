@@ -1,4 +1,4 @@
-import { Button, Card, Dialog, FormLabel, Grid, TextField } from "@mui/material";
+import { Button, Card, Dialog, FormLabel, Grid, InputAdornment, TextField } from "@mui/material";
 import { useStyles } from "./index.styles";
 import logoUatf from '../../assets/images/uatf.png';
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,8 @@ import { decodeToken } from "react-jwt";
 import { useEffect, useState } from "react";
 import { getAllUsers } from "../../utilities/allGetFetch";
 import { createUser } from "../../utilities/allPostFetch";
+import { AccountCircle } from "@mui/icons-material";
+import { Lock } from "@mui/icons-material";
 
 export const Login = () => {
 
@@ -85,7 +87,7 @@ export const Login = () => {
     }
 
     useEffect(()=>{
-        verifyTokenWithPath('noToken',navigator);
+        verifyTokenWithPath('Login',navigator);
         verifyNew();
     })
 
@@ -122,7 +124,8 @@ export const Login = () => {
                                 <label>Contraseña:</label>
                             </Grid>
                             <Grid item xs>
-                                <TextField 
+                                <TextField
+                                    type='password'
                                     size='small'
                                     value={password.value}
                                     onChange={(e)=>{setPassword({error:false, value:e.target.value})}}
@@ -141,9 +144,13 @@ export const Login = () => {
                 </Card>
             </Dialog>
             <Grid container>
-                <Grid item xs={6} className={classes.logoArea}>
-                    <img src={logoUatf}/>
-                    <h1>Universidad Autonoma Tomas Frias</h1>
+                <Grid item container xs={6} columnSpacing={3} className={classes.logoArea}>
+                    <Grid item xs={5}>
+                        <img src={logoUatf}/>
+                    </Grid>
+                    <Grid item xs>
+                        <h1>Universidad Autonoma Tomas Frias</h1>
+                    </Grid>
                 </Grid>
                 <Grid item xs={6} className={classes.formArea}>
                     <Card className={classes.cardLogin}>
@@ -151,26 +158,53 @@ export const Login = () => {
                             <Grid item>
                                 <h1>Inicio de Sesion</h1>
                             </Grid>
+                            
                             <Grid item container direction="column" alignItems="center" spacing={2}>
-                                <Grid item>
-                                    <TextField 
-                                        size='small'
-                                        value={userLogin.value}
-                                        onChange={(e)=>{setUserLogin({error:false, value:e.target.value})}}
-                                        error={userLogin.error}
-                                        required
-                                        label='Requerido'
-                                    />
+                                <Grid item container direction='column' rowSpacing={1}>
+                                    <Grid item>
+                                        <label>Usuario: </label>
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            size='small'
+                                            value={userLogin.value}
+                                            onChange={(e)=>{setUserLogin({error:false, value:e.target.value})}}
+                                            error={userLogin.error}
+                                            required
+                                            label='Requerido'
+                                            InputProps={{
+                                                startAdornment: (
+                                                  <InputAdornment position="start">
+                                                    <AccountCircle />
+                                                  </InputAdornment>
+                                                ),
+                                              }}
+                                        />
+                                    </Grid>
+                                    
                                 </Grid>
-                                <Grid item>
-                                    <TextField
-                                        size='small'
-                                        value={passwordLogin.value}
-                                        onChange={(e)=>{setPasswordLogin({error:false, value:e.target.value})}}
-                                        error={passwordLogin.error}
-                                        required
-                                        label='Requerido'
-                                    />
+                                <Grid item container direction='column' rowSpacing={1}>
+                                    <Grid item>
+                                        <label>Contraseña: </label>
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            type='password'
+                                            size='small'
+                                            value={passwordLogin.value}
+                                            onChange={(e)=>{setPasswordLogin({error:false, value:e.target.value})}}
+                                            error={passwordLogin.error}
+                                            required
+                                            label='Requerido'
+                                            InputProps={{
+                                                startAdornment: (
+                                                  <InputAdornment position="start">
+                                                    <Lock />
+                                                  </InputAdornment>
+                                                ),
+                                              }}
+                                        />
+                                    </Grid>
                                 </Grid>
                             </Grid>
                             <Grid item>

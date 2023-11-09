@@ -1,4 +1,4 @@
-import { Card, Grid, Autocomplete, TextField, Box, RadioGroup, FormControlLabel, Radio, IconButton, Button, Snackbar, Alert, Backdrop, CircularProgress, DialogTitle, DialogContent, Typography, DialogActions, Dialog } from "@mui/material";
+import { Card, Grid, Autocomplete, TextField, Box, RadioGroup, FormControlLabel, Radio, IconButton, Button, Snackbar, Backdrop, CircularProgress, DialogTitle, DialogContent, Typography, DialogActions, Dialog } from "@mui/material";
 import { useStyles } from "./pedidos.styles";
 import { useDebugValue, useEffect, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
@@ -11,6 +11,7 @@ import { Main } from "../../../components/main";
 import { generateTicketPay } from "../../../utilities/pdfMake/checkPay";
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
+import { useSnackbar } from "notistack";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -26,6 +27,8 @@ export const Crear = () => {
 
     const initialInput = {error:false, value:''}
 
+    const { enqueueSnackbar } = useSnackbar();
+
     const detalleInicial = {
         job: {...initialInput},
         detail: {...initialInput},
@@ -34,7 +37,6 @@ export const Crear = () => {
     }
 
     const [loading, setLoading] = useState(false);
-    const [alert,setAlert] = useState({open:false, severity:'', message:''});
     const [dialog, setDialog] = useState({open:false, message:''});
 
 
@@ -65,11 +67,12 @@ export const Crear = () => {
 
     const loadData = async() => {
         let data = await allClientsInternalActive();
-        setInstitutions(data.map(item=>item.institution));
+
+        setInstitutions(data===204?[]:data.map(item=>item.institution));
         data = await allClientsExternalActive();
-        setExternals(data.map(item=>{return{name: item.name, ci: item.ci}}));
+        setExternals(data===204?[]:data.map(item=>{return{name: item.name, ci: item.ci}}));
         data = await allJobsActive();
-        setJobs(data);
+        setJobs(data===204?[]:data);
     }
 
     const handleChange = (e, field, index) => {
@@ -114,33 +117,44 @@ export const Crear = () => {
 
         if(client.value===''){
             setClient({error:true, value:''})
+            enqueueSnackbar('Ingresar el cliente',{variant:'error'});
             error = true
         }
         if(ci.value==='' && !institution){
             setCi({error:true, value:''})
+            enqueueSnackbar('Ingresar CI',{variant:'error'});
             error = true
         }
         if(funds.value==='' && institution){
+            enqueueSnackbar('Selecciona el tipo de fondo',{variant:'error'});
             setFunds({error:true, value:''})
             error = true
         }
         let detailsAux = [...details];
+        let errorDetail = false;
+
         detailsAux = detailsAux.map(item=>{
 
             if(item.job.value===''){
                 item.job.error = true
-                error = true
+                errorDetail = true
             }
             if(item.requiredQuantity.value==='' || item.requiredQuantity.value===0){
                 item.requiredQuantity.error = true
-                error = true
+                errorDetail = true
             }
             if(item.cost.value==='' || item.cost.value===0){
                 item.cost.error = true
-                error = true
+                errorDetail = true
             }
             return item
         })
+        if(errorDetail){
+            enqueueSnackbar('Revisar los valores de los detalles',{variant:'error'});
+            error = true;
+        }
+
+        setDetails([...detailsAux]);
 
         if(!error){
             const detailsFormated = details.map(item=>{
@@ -168,12 +182,12 @@ export const Crear = () => {
                 body.ci=ci.value;
                 setLoading(true);
                 const response = await createOrderExternal(body);
+                let {data} = await response.json();
+                console.log(data);
                 handleResponse(response);
                 setLoading(false);
-                generateTicketPay(response, detailsFormated);
+                generateTicketPay(data, detailsFormated);
             }
-        }else{
-            setAlert({open:true, severity:'error', message:'Formulario Invalido * '});
         }
     }
     
@@ -197,12 +211,12 @@ export const Crear = () => {
                 </>
                 setDialog({open:true, message:mess});
             }else
-                setAlert({open:true, severity:'success', message:'201: Pedido creado existosamente'});
+                enqueueSnackbar('Pedido creado correctamente',{variant:'success'});
 
             clearInputs();
         }
         if(response.status === 501){
-            setAlert({open:true, severity:'warning', message: `501: ${(data.reason || data.message)}`})
+            enqueueSnackbar(`${(data.reason || data.message)}`,{variant:'warning'});
         }
     }
 
@@ -232,21 +246,11 @@ export const Crear = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                open={alert.open}
-                onClose={()=>{setAlert({...alert, open:false})}}
-                autoHideDuration={alert.time || 3000}
-            >
-                <Alert variant='filled' severity={alert.severity}>
-                    {alert.message}
-                </Alert>
-            </Snackbar>
 
             <BootstrapDialog
                 onClose={()=>{
                     setDialog({...dialog, open:false});
-                    setAlert({open:true, severity:'success', message:'201: Pedido creado existosamente'});
+                    enqueueSnackbar('Pedido creado correctamente',{variant:'success'});
                 }}
                 open={dialog.open}
                 
@@ -258,7 +262,7 @@ export const Crear = () => {
                 <IconButton
                     onClick={()=>{
                         setDialog({...dialog, open:false});
-                        setAlert({open:true, severity:'success', message:'201: Pedido creado existosamente'});
+                        enqueueSnackbar('Pedido creado correctamente',{variant:'success'});
                     }}
                     sx={{
                         position: 'absolute',
@@ -275,7 +279,7 @@ export const Crear = () => {
                 <DialogActions>
                 <Button variant="contained" autoFocus onClick={()=>{
                     setDialog({...dialog, open:false});
-                    setAlert({open:true, severity:'success', message:'201: Pedido creado existosamente'});
+                    enqueueSnackbar('Pedido creado correctamente',{variant:'success'});
                 }}>
                     Entendido
                 </Button>

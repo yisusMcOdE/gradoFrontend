@@ -1,4 +1,5 @@
-import { Alert, Autocomplete, Backdrop, Box, Button, Card, CircularProgress, FormControlLabel, Grid, Radio, RadioGroup, Snackbar, TextField } from "@mui/material"
+import {Autocomplete, Backdrop, Box, Button, Card, CircularProgress, FormControlLabel, Grid, Radio, RadioGroup, Snackbar, TextField } from "@mui/material"
+import { useSnackbar } from "notistack"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Main } from "../../../components/main"
@@ -9,8 +10,9 @@ export const CreateClientRecepcion = () => {
 
     const initialInput = {error:false, value:''}
 
+    const { enqueueSnackbar } = useSnackbar();
+
     const [loading, setLoading] = useState(false);
-    const [alert,setAlert] = useState({open:false, severity:'', message:''});
 
     const [titleForm, setTitleForm] = useState(initialInput);
     const [ciForm, setCiForm] = useState(initialInput);
@@ -25,18 +27,22 @@ export const CreateClientRecepcion = () => {
         let error=false
         if(ciForm.value === ''){
             setCiForm({error:true, value:''})
+            enqueueSnackbar('Ingrese el CI',{variant:'error'});
             error=true
         }
         if(ciForm.value.length < 8){
             setCiForm({error:true, value:ciForm.value})
+            enqueueSnackbar('El CI no es correcto',{variant:'error'});
             error=true
         }
         if(nameForm.value === ''){
             setNameForm({error:true, value:''})
+            enqueueSnackbar('Ingresa el nombre',{variant:'error'});
             error=true
         }
         if(titleForm.value === ''){
             setTitleForm({error:true, value:''})
+            enqueueSnackbar('Ingrese el titulo de cortesia',{variant:'error'});
             error=true
         }
 
@@ -51,19 +57,17 @@ export const CreateClientRecepcion = () => {
             });
             setLoading(false);
             handleResponse(response);
-        }else{
-            setAlert({open:true, severity:'error', message:'Formulario Invalido * '});
         }
     }
 
     const handleResponse = async(response) => {
         if(response.status === 201){
-            setAlert({open:true, severity:'success', message:'201: Creado'});
+            enqueueSnackbar('Cliente creado correctamente',{variant:'success'});
             clearInputs();
         }
         if(response.status === 501){
             const data = await response.json();
-            setAlert({open:true, severity:'warning', message: `501: ${(data.reason || data.message)}`})
+            enqueueSnackbar(`${(data.reason || data.message)}`,{variant:'error'});
         }
     }
 
@@ -83,16 +87,7 @@ export const CreateClientRecepcion = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                open={alert.open}
-                onClose={()=>{setAlert({...alert, open:false})}}
-                autoHideDuration={3000}
-            >
-                <Alert variant='filled' severity={alert.severity}>
-                    {alert.message}
-                </Alert>
-            </Snackbar>
+            
             <Grid container justifyContent='center'>
                 <Grid item>
                     <Card>

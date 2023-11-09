@@ -1,4 +1,5 @@
-import { Alert, Autocomplete, Backdrop, Box, Button, Card, CircularProgress, FormControlLabel, Grid, Radio, RadioGroup, Snackbar, TextField } from "@mui/material"
+import { Autocomplete, Backdrop, Box, Button, Card, CircularProgress, FormControlLabel, Grid, Radio, RadioGroup, Snackbar, TextField } from "@mui/material"
+import { useSnackbar } from "notistack"
 import { useState } from "react"
 import { Main } from "../../../components/main"
 import { createClient, createEmployee } from "../../../utilities/allPostFetch"
@@ -7,9 +8,9 @@ import { useStyles } from "../admin.styles"
 export const CreateUser = () => {
 
     const initialInput = {error:false, value:''}
+    const { enqueueSnackbar } = useSnackbar();
 
     const [loading, setLoading] = useState(false);
-    const [alert,setAlert] = useState({open:false, severity:'', message:''});
 
     const [client, setClient] = useState(true);
     const [userForm, setUserForm] = useState(initialInput);
@@ -30,31 +31,39 @@ export const CreateUser = () => {
 
         if(client){
             if((courierForm.value==='')){
-                setCourierForm({error:true, value:''})
-                error=true
+                setCourierForm({error:true, value:''});
+                error=true;
+                enqueueSnackbar('Ingresa el nombre del cliente',{variant:'error'});            
+
             }
             if((!(/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(emailForm.value)))){
-                setEmailForm({error:true, value:emailForm.value})
-                error=true
+                setEmailForm({error:true, value:emailForm.value});
+                error=true;
+                enqueueSnackbar('Ingresa un email valido',{variant:'error'});            
             }
         }else{
             if((roleForm.value==='')){
-                setRoleForm({error:true, value:''})
-                error=true
+                setRoleForm({error:true, value:''});
+                error=true;
+                enqueueSnackbar('Ingresar el rol del cliente',{variant:'error'});            
             }
         }
 
         if(userForm.value===''){
-            setUserForm({error:true, value:''})
-            error=true
+            setUserForm({error:true, value:''});
+            error=true;
+            enqueueSnackbar('Ingresar el usuario del cliente',{variant:'error'});            
         }
         if(passwordForm.value.length<6){
-            setPasswordForm({error:true, value:passwordForm.value})
-            error=true
+            setPasswordForm({error:true, value:passwordForm.value});
+            error=true;
+            enqueueSnackbar('Ingresar la contraseña del cliente',{variant:'error'});            
+
         }
         if((institutionForm.value==='')){
-            setInstitutionForm({error:true, value:''})
-            error=true
+            setInstitutionForm({error:true, value:''});
+            error=true;
+            enqueueSnackbar('Ingresar la institucion',{variant:'error'});            
         }
         
         
@@ -102,12 +111,12 @@ export const CreateUser = () => {
 
     const handleResponse = async(response) => {
         if(response.status === 201){
-            setAlert({open:true, severity:'success', message:'201: Creado'});
+            enqueueSnackbar('Usuario creado correctamente',{variant:'success'});            
             clearInputs();
         }
         if(response.status === 501){
             const data = await response.json();
-            setAlert({open:true, severity:'warning', message: `501: ${(data.reason || data.message)}`})
+            enqueueSnackbar(`${(data.reason || data.message)}`,{variant:'warning'});            
         }
     }
 
@@ -120,18 +129,6 @@ export const CreateUser = () => {
         >
             <CircularProgress color="inherit" />
         </Backdrop>
-        <Snackbar
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            open={alert.open}
-            onClose={()=>{setAlert({...alert, open:false})}}
-            autoHideDuration={3000}
-        >
-            <Alert variant='filled' severity={alert.severity}>
-                {alert.message}
-            </Alert>
-        </Snackbar>
-
-
         <Grid container direction={'column'} alignItems={'center'}>
             <Grid item>
                 <Card>
@@ -168,7 +165,7 @@ export const CreateUser = () => {
                                 <Grid item xs>
                                     <TextField
                                         value={userForm.value}
-                                        onChange={({target})=>{setUserForm({...userForm, value:target.value})}}
+                                        onChange={({target})=>{setUserForm({error:false, value:target.value})}}
                                         required
                                         error={userForm.error}
                                         label="Requerido" 
@@ -183,7 +180,7 @@ export const CreateUser = () => {
                                 <Grid item xs>
                                     <TextField 
                                         value={passwordForm.value}
-                                        onChange={({target})=>{setPasswordForm({...passwordForm, value:target.value})}}
+                                        onChange={({target})=>{setPasswordForm({error:false, value:target.value})}}
                                         error={passwordForm.error}
                                         required
                                         type='password'
@@ -199,7 +196,7 @@ export const CreateUser = () => {
                                 <Grid item xs>
                                     <TextField
                                         value={institutionForm.value}
-                                        onChange={({target})=>{setInstitutionForm({...institutionForm, value:target.value})}}
+                                        onChange={({target})=>{setInstitutionForm({error:false, value:target.value})}}
                                         required
                                         error={institutionForm.error}
                                         label="Requerido" 
@@ -214,7 +211,7 @@ export const CreateUser = () => {
                                 <Grid item xs>
                                     <TextField
                                         value={courierForm.value}
-                                        onChange={({target})=>{setCourierForm({...courierForm, value:target.value})}}
+                                        onChange={({target})=>{setCourierForm({error:false, value:target.value})}}
                                         required
                                         error={courierForm.error}
                                         label="Requerido" 
@@ -230,7 +227,7 @@ export const CreateUser = () => {
                                 <Grid item xs>
                                     <TextField
                                         value={emailForm.value}
-                                        onChange={({target})=>{setEmailForm({...emailForm, value:target.value})}}
+                                        onChange={({target})=>{setEmailForm({error:false, value:target.value})}}
                                         type={'email'}
                                         error={emailForm.error}
                                         label={emailForm.error?'Correo no valido':'Opccional'}
@@ -246,7 +243,7 @@ export const CreateUser = () => {
                                 <Grid item xs>
                                     <TextField
                                         value={addressForm.value}
-                                        onChange={({target})=>{setAddressForm({...addressForm, value:target.value})}}
+                                        onChange={({target})=>{setAddressForm({error:false, value:target.value})}}
                                         id='addressForm'  
                                         size='small'
                                         label='Opccional'
@@ -259,7 +256,7 @@ export const CreateUser = () => {
                                 </Grid>
                                 <Grid item xs>
                                     <TextField
-                                        onChange={({target})=>{setPhoneForm({...phoneForm, value:target.value})}}
+                                        onChange={({target})=>{setPhoneForm({error:false, value:target.value})}}
                                         value={phoneForm.value}
                                         id='phoneForm'  
                                         size='small'
@@ -273,7 +270,7 @@ export const CreateUser = () => {
                                 </Grid>
                                 <Grid item xs>
                                     <Autocomplete
-                                        onChange={({target})=>{setRoleForm({...roleForm, value:target.textContent})}}
+                                        onChange={({target})=>{setRoleForm({error:false, value:target.textContent})}}
                                         value={roleForm.value}
                                         size='small'
                                         id="roleForm"

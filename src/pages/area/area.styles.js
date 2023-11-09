@@ -2,10 +2,11 @@ import { makeStyles } from "@mui/styles";
 import { theme } from "../../theme/theme";
 
 export const useStyles = makeStyles({
+    
     containerPage:{
         backgroundColor:'transparent',
-        backdropFilter: 'blur(5px)',
-
+        backdropFilter: 'blur(0px)',
+        minHeight:'100vh'
     },
     areaContainer:{
         placeContent: 'center',
@@ -23,8 +24,7 @@ export const useStyles = makeStyles({
         width: '50rem'
     },
     ganttContainer:{
-        width:'100%',
-        margin:'auto !important'
+        width:'100%'
     },
     tableHeader:{
         background:'#464646',

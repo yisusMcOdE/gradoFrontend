@@ -118,15 +118,19 @@ export const ReporteArea = () => {
                                     </Grid>
                                 </Grid>
                                 <Grid item>
-                                    <DataGrid
-                                        localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-                                        apiRef={apiref}
-                                        rows= {data}
-                                        columns={columns}
-                                        getRowClassName={(params) =>
-                                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                                        }
-                                    />
+                                    {(data!==204)?
+                                        <DataGrid
+                                            localeText={esES.components.MuiDataGrid.defaultProps.localeText}
+                                            apiRef={apiref}
+                                            rows= {data}
+                                            columns={columns}
+                                            getRowClassName={(params) =>
+                                                params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                                            }
+                                        />
+                                        :
+                                        <h3 style={{textAlign:'center'}}>No existen registros obtenidos</h3>
+                                    }
                                 </Grid>
                             </Grid>
                         </Card>

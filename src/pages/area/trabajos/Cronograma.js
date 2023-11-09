@@ -11,8 +11,8 @@ export const Cronograma = ({direction}) => {
     const classes = useStyles();
 
     return (<>
-        <Main>
-            <Grid container justifyContent='center'>
+        <Main >
+            <Grid container justifyContent='center' style={{maxWidth:'100vw', minWidth:'0vw'}}>
                 <Grid item style={{width:'80%'}}>
                     <Card>
                         <Grid container direction='column' rowSpacing={2}>

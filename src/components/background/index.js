@@ -6,7 +6,7 @@ export const BackgroundPage = () => {
 
     return (
         <div className={classes.container}>
-            <img src={logoUatf}/>
+            <img src={logoUatf} />
         </div>
     )
 }

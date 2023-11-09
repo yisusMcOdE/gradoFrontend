@@ -59,14 +59,18 @@ export const DetalleTrabajo = () => {
                                 </Grid>
                             </Grid>
                             <Grid item>
-                                <DataGrid
-                                    onRowClick={(e)=>{openModal(e)}}
-                                    rows={data.detalle}
-                                    columns={columns}
-                                    getRowClassName={(params) =>
-                                        params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                                    }
-                                />
+                                {(data!==204)?
+                                    <DataGrid
+                                        onRowClick={(e)=>{openModal(e)}}
+                                        rows={data.detalle}
+                                        columns={columns}
+                                        getRowClassName={(params) =>
+                                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                                        }
+                                    />
+                                    :
+                                        <h3 style={{textAlign:'center'}}>No existen detalles para mostrar</h3>
+                                }
                             </Grid>
                         </Grid>
                     </Card>

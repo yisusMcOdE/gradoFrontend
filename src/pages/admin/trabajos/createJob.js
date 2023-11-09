@@ -1,4 +1,4 @@
-import { IconButton, Autocomplete, Box, Button, Card, FormControlLabel, Grid, Radio, RadioGroup, TextField, FilledInput, InputAdornment, Backdrop, CircularProgress, Snackbar, Alert } from "@mui/material"
+import { IconButton, Autocomplete, Box, Button, Card, FormControlLabel, Grid, Radio, RadioGroup, TextField, FilledInput, InputAdornment, Backdrop, CircularProgress, Snackbar } from "@mui/material"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Main } from "../../../components/main"
@@ -7,6 +7,7 @@ import { useStyles } from "../admin.styles"
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { allMaterials } from "../../../utilities/allGetFetch"
+import { useSnackbar } from "notistack"
 
 export const CreateJob = () => {
 
@@ -21,9 +22,9 @@ export const CreateJob = () => {
         produced : {...initialInput}
     }
 
+    const { enqueueSnackbar } = useSnackbar();
 
     const [loading, setLoading] = useState(false);
-    const [alert,setAlert] = useState({open:false, severity:'', message:''});
 
 
     const [nameForm,setNameForm] = useState({...initialInput});
@@ -31,7 +32,7 @@ export const CreateJob = () => {
     const [areaForm,setAreaForm] = useState({...initialInput});
     const [costDetails, setCostDetails] = useState([costInitial]);
     const [materialDetails, setMaterialDetails] = useState([materialInitial]);
-    const [materials, setMaterials] = useState();
+    const [materials, setMaterials] = useState([]);
 
     const classes = useStyles();
 
@@ -58,13 +59,6 @@ export const CreateJob = () => {
         }
     }
 
-    const removeMaterial = () => {
-        const material = [...materialDetails];
-        if(material.length>1){
-            material.pop();
-        }
-        setMaterialDetails([...material]);
-    }
 
     const clearInputs = () => {
         setNameForm(initialInput);
@@ -76,12 +70,13 @@ export const CreateJob = () => {
 
     const handleResponse = async(response) => {
         if(response.status === 201){
-            setAlert({open:true, severity:'success', message:'201: Creado'});
+            enqueueSnackbar('Trabajo creado correctamente',{variant:'success'});
             clearInputs();
         }
         if(response.status === 501){
             const data = await response.json();
-            setAlert({open:true, severity:'warning', message: `501: ${(data.reason || data.message)}`})
+            enqueueSnackbar(`${(data.reason || data.message)}`,{variant:'warning'});
+
         }
     }
 
@@ -92,45 +87,60 @@ export const CreateJob = () => {
 
             if((nameForm.value==='')){
                 setNameForm({error:true, value:''})
+                enqueueSnackbar('Ingresa el nombre del trabajo',{variant:'error'});
                 error=true
             }
             if((areaForm.value==='')){
                 setAreaForm({error:true, value:''})
+                enqueueSnackbar('Ingresa el area del trabajo',{variant:'error'});
                 error=true
             }
             
             let costDetailsAux = [...costDetails];
+            let errorCost = false;
             costDetailsAux = costDetailsAux.map(item=>{
                 let itemAux = {...item}
                 if(item.lot.value===''){
                     itemAux.lot.error=true
-                    error=true
+                    errorCost=true
                 }
                 if(item.price.value===''){
                     itemAux.price.error=true
-                    error=true
+                    errorCost=true
                 }
                 return {...itemAux}
             })
             setCostDetails([...costDetailsAux]);
+            if (errorCost){
+                error=true;
+                enqueueSnackbar('Revisa los valores de los costos',{variant:'error'});
+
+            }
 
             let materialDetailsAux = [...materialDetails];
+            let errorMaterial = false;
+
             materialDetailsAux = materialDetailsAux.map(item=>{
                 let itemAux = {...item}
                 if(item.name.value===''){
                     itemAux.name.error=true
-                    error=true
+                    errorMaterial=true
                 }
                 if(item.required.value===''){
                     itemAux.required.error=true
-                    error=true
+                    errorMaterial=true
                 }
                 if(item.produced.value===''){
                     itemAux.produced.error=true
-                    error=true
+                    errorMaterial=true
                 }
                 return {...itemAux}
             })
+            if (errorMaterial){
+                error=true;
+                enqueueSnackbar('Revisa los valores de los materiales',{variant:'error'});
+
+            }
             setMaterialDetails([...materialDetailsAux]);
 
         if(!error){
@@ -163,8 +173,6 @@ export const CreateJob = () => {
             setLoading(false);
 
             handleResponse(response);
-        }else{
-            setAlert({open:true, severity:'error', message:'Formulario Invalido * '});
         }
     }
 
@@ -185,7 +193,7 @@ export const CreateJob = () => {
                     values[index][field].value = name;
                 else{
                     values[index][field].value = '';
-                    setAlert({open:true, severity:'error', message:`${name} ya fue seleccionado`});
+                    enqueueSnackbar(`${name} ya fue seleccionado`,{variant:'error'});
                 }
             }else{
                 if(Number(e.target.value)>=1)
@@ -197,8 +205,10 @@ export const CreateJob = () => {
 
     const loadData  = async() => {
         const data = await allMaterials();
-        const names = data.map(item=>item.name);
-        setMaterials(names);
+        if(data!==204){
+            const names = data.map(item=>item.name);
+            setMaterials(names);
+        }
     }
 
     useEffect(()=>{loadData()},[]);
@@ -212,16 +222,6 @@ export const CreateJob = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                open={alert.open}
-                onClose={()=>{setAlert({...alert, open:false})}}
-                autoHideDuration={3000}
-            >
-                <Alert variant='filled' severity={alert.severity}>
-                    {alert.message}
-                </Alert>
-            </Snackbar>
 
             <Grid container direction={'column'} alignItems='center'>
                 <Grid item style={{width:'80%'}}>

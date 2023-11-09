@@ -71,19 +71,22 @@ export const Entregar = () => {
                                 </Grid>
                             </Grid>
                             {data&&<Grid item>
-                                <DataGrid 
-                                    style={{width:'95%'}}
-                                    onRowClick={(e)=>{
-                                        document.getElementById('id_form').value=e.row._id
-                                        document.getElementById('client_form').value=e.row.client
-
-                                    }}
-                                    rows={data} 
-                                    columns={columns}
-                                    getRowClassName={(params) =>
-                                        params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                                    }
-                                />
+                                {(data!==204)?
+                                    <DataGrid 
+                                        style={{width:'95%'}}
+                                        onRowClick={(e)=>{
+                                            document.getElementById('id_form').value=e.row._id
+                                            document.getElementById('client_form').value=e.row.client
+                                        }}
+                                        rows={data} 
+                                        columns={columns}
+                                        getRowClassName={(params) =>
+                                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                                        }
+                                    />
+                                    :
+                                    <h3 style={{textAlign:'center'}}>No existen backups generados</h3>
+                                }
                             </Grid>}
                             <Grid item display='flex' justifyContent='center'>
                                 <Button 

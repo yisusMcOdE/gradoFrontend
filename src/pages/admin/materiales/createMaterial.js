@@ -1,4 +1,5 @@
-import { Alert, Autocomplete, Backdrop, Box, Button, Card, CircularProgress, FormControlLabel, Grid, Radio, RadioGroup, Snackbar, TextField } from "@mui/material"
+import { Autocomplete, Backdrop, Box, Button, Card, CircularProgress, FormControlLabel, Grid, Radio, RadioGroup, Snackbar, TextField } from "@mui/material"
+import { useSnackbar } from "notistack"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Main } from "../../../components/main"
@@ -7,11 +8,11 @@ import { useStyles } from "../admin.styles"
 
 export const CreateMaterial = () => {
 
-    const navigator = useNavigate();
-    const initialInput = {error:false, value:''}
+    const initialInput = {error:false, value:''};
+    const { enqueueSnackbar } = useSnackbar();
+
 
     const [loading, setLoading] = useState(false);
-    const [alert,setAlert] = useState({open:false, severity:'', message:''});
 
     const [nameForm, setNameForm] = useState(initialInput);
     const [unitForm, setUnitForm] = useState(initialInput);
@@ -25,10 +26,12 @@ export const CreateMaterial = () => {
 
         if((nameForm.value==='')){
             setNameForm({error:true, value:''})
+            enqueueSnackbar('Ingresa el nombre del material',{variant:'error'});            
             error=true
         }
         if((unitForm.value==='')){
             setUnitForm({error:true, value:''})
+            enqueueSnackbar('Ingresa la unidad de medida',{variant:'error'});            
             error=true
         }
 
@@ -45,12 +48,14 @@ export const CreateMaterial = () => {
 
     const handleResponse = async(response) => {
         if(response.status === 201){
-            setAlert({open:true, severity:'success', message:'201: Creado'});
+            enqueueSnackbar('Material creado correctamente',{variant:'success'});            
+
             clearInputs();
         }
         if(response.status === 501){
             const data = await response.json();
-            setAlert({open:true, severity:'warning', message: `501: ${(data.reason || data.message)}`})
+            enqueueSnackbar(`${(data.reason || data.message)}`,{variant:'warning'});            
+
         }
     }
 
@@ -67,16 +72,6 @@ export const CreateMaterial = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                open={alert.open}
-                onClose={()=>{setAlert({...alert, open:false})}}
-                autoHideDuration={3000}
-            >
-                <Alert variant='filled' severity={alert.severity}>
-                    {alert.message}
-                </Alert>
-            </Snackbar>
             <Grid container direction={'column'} rowGap={2} alignItems={'center'}>
                 <Grid item>
                     <Card>

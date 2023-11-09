@@ -8,13 +8,15 @@ import { Grid } from "@mui/material";
 import { Outlet, useNavigate } from "react-router-dom";
 import { BackgroundPage } from "../../components/background";
 import { SuperUserBar } from "../../components/superUserBar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { redirectRole, verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
 
 
-export const Area = ({isSuperUser, role}) => {
+export const Area = () => {
 
     const navigator = useNavigate();
+
+    const [isSuperUser, setIsSuperUser] = useState(false);
 
     const classes = useStyles();
 
@@ -40,7 +42,7 @@ export const Area = ({isSuperUser, role}) => {
     const icons= [<AutoAwesomeMotionIcon/>,<WidgetsIcon/>,<AdfScannerIcon/>,<FindInPageIcon/>,]
 
     useEffect(()=>{
-        verifyTokenWithPath('Area',navigator);
+        setIsSuperUser(verifyTokenWithPath('Area',navigator));
     },[])
 
     return (
@@ -52,11 +54,11 @@ export const Area = ({isSuperUser, role}) => {
             <Grid item container direction='column' xs className={classes.containerPage}>
                 {
                 isSuperUser&&
-                    <Grid item>
+                    <Grid item xs='auto' style={{margin:'auto', display:'block', marginTop:'0.5rem'}}>
                         <SuperUserBar/>
                     </Grid>
                 }
-                <Grid item>
+                <Grid item xs>
                     <Outlet/>
                 </Grid>
             </Grid>

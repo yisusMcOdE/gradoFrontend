@@ -1,4 +1,4 @@
-import { Button, Card, Grid, TextField, Autocomplete, Dialog, IconButton, Collapse, Snackbar, Alert, Backdrop, CircularProgress, Typography, DialogTitle, DialogContent, DialogActions } from "@mui/material"
+import { Button, Card, Grid, TextField, Autocomplete, Dialog, IconButton, Collapse, Snackbar, Backdrop, CircularProgress, Typography, DialogTitle, DialogContent, DialogActions } from "@mui/material"
 import { DataGrid, GridRemoveIcon } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { Main } from "../../../components/main";
@@ -8,6 +8,7 @@ import { useStyles } from "./pedidos.styles";
 import { styled } from '@mui/material/styles';
 import WarningIcon from '@mui/icons-material/Warning';
 import CloseIcon from '@mui/icons-material/Close';
+import { useSnackbar } from "notistack";
 
 
 
@@ -24,6 +25,9 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 export const Confirmar = () => {
 
+    const { enqueueSnackbar } = useSnackbar();
+
+
     const initialInput = {error:false, value:''}
 
     const classes = useStyles();
@@ -35,7 +39,6 @@ export const Confirmar = () => {
     ];
 
     const [loading, setLoading] = useState(false);
-    const [alert,setAlert] = useState({open:false, severity:'', message:''});
     const [dialog, setDialog] = useState({open:false, message:''});
 
     const [modal, setModal] = useState(false);
@@ -46,8 +49,6 @@ export const Confirmar = () => {
     const [cancel, setCancel] = useState(false);
     const [openSnack, setOpenSnack] = useState(false);
     const [numberCheck, setNumberCheck] = useState(initialInput);
-
-    console.log(data);
 
     const loadData = async() => {
         setData(await getOrderNoConfirmed());
@@ -82,11 +83,11 @@ export const Confirmar = () => {
         const response = await cancelOrderById(id);
         setLoading(false);
         if(response.status===202)
-            setAlert({open:true, severity:'success', message:'202: Trabajo cancelado exitosamente'});
+            enqueueSnackbar('Trabajo cancelado correctamente',{variant:'success'});            
         if(response.status===404)
-            setAlert({open:true, severity:'warning', message:'404: Trabajo no encontrado'});
+            enqueueSnackbar('Trabajo no encontrado',{variant:'error'});            
         if(response.status===304)
-            setAlert({open:true, severity:'success', message:'304: Conflicto'});
+            enqueueSnackbar('Error - Conflicto',{variant:'error'});            
     }
 
     const confirmOrderHandler = async() => {
@@ -96,18 +97,24 @@ export const Confirmar = () => {
         if(order.fundsOrigin===undefined){
             if(order.numberCheck.value===0){
                 setOrder({...order, numberCheck:{error:true, value:0}})
+                enqueueSnackbar('Ingresar el codigo de boleta de pago',{variant:'error'});            
                 error=true
             }
         }
         const detailsAux = [...order.details];
+        let errorDetails = false;
         for (let index = 0; index < detailsAux.length; index++) {
             const element = detailsAux[index];
             if(element.seconds.value<=0){
                 detailsAux[index].seconds.error=true;
-                error=true
+                errorDetails=true
             }
         }
         setOrder({...order, details:detailsAux});
+        if(errorDetails){
+            error = true;
+            enqueueSnackbar('Revisar los valores de los detalles',{variant:'error'});            
+        }
 
         if(!error){
             let details = order.details.map(item=>{
@@ -126,11 +133,7 @@ export const Confirmar = () => {
             const response = await confirmOrder(order._id, body);
             handleResponse(response);
             setLoading(false);
-
-        }else{
-            setAlert({open:true, severity:'error', message:'Formulario Invalido * '});
         }
-        
     }
 
     const handleResponse = async(response) => {
@@ -153,23 +156,20 @@ export const Confirmar = () => {
                 </>
                 setDialog({open:true, message:mess});
             }else
-                setAlert({open:true, severity:'success', message:'202: Trabajos confirmados exitosamente'});
+                enqueueSnackbar('Trabajos confirmados correctamente',{variant:'success'});            
             loadData();
             setModal(false);
         }
         if(response.status === 304){
-            setAlert({open:true, severity:'warning', message: `304: ${(data.reason || data.message)}`})
+            enqueueSnackbar(`${(data.reason || data.message)}`,{variant:'error'});            
         }
     }
 
     const handleDays = (e, index) => {
-
         let det = [...order.details];
         det[index].seconds.value = e.target.value;
         setOrder({...order, details: [...det]});
     }
-
-    console.log(order);
 
     useEffect(()=>{
         loadData()
@@ -184,21 +184,11 @@ export const Confirmar = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                open={alert.open}
-                onClose={()=>{setAlert({...alert, open:false})}}
-                autoHideDuration={alert.time || 3000}
-            >
-                <Alert variant='filled' severity={alert.severity}>
-                    {alert.message}
-                </Alert>
-            </Snackbar>
 
             <BootstrapDialog
                 onClose={()=>{
                     setDialog({...dialog, open:false});
-                    setAlert({open:true, severity:'success', message:'202: Trabajos confirmados exitosamente'});
+                    enqueueSnackbar('Trabajos confirmados correctamente',{variant:'success'});
                 }}
                 open={dialog.open}
                 
@@ -210,7 +200,7 @@ export const Confirmar = () => {
                 <IconButton
                     onClick={()=>{
                         setDialog({...dialog, open:false});
-                        setAlert({open:true, severity:'success', message:'202: Trabajos confirmados exitosamente'});
+                        enqueueSnackbar('Trabajos confirmados correctamente',{variant:'success'});
                     }}
                     sx={{
                         position: 'absolute',
@@ -227,7 +217,7 @@ export const Confirmar = () => {
                 <DialogActions>
                 <Button variant="contained" autoFocus onClick={()=>{
                     setDialog({...dialog, open:false});
-                    setAlert({open:true, severity:'success', message:'202: Trabajos confirmados exitosamente'});
+                    enqueueSnackbar('Trabajos confirmados correctamente',{variant:'success'});
                 }}>
                     Entendido
                 </Button>
@@ -247,7 +237,6 @@ export const Confirmar = () => {
                                         <DataGrid 
                                             style={{width:'95%'}}
                                             onRowClick={(e)=>{
-                                                
                                                 setModal(prev => !prev);
                                                 findOrder(e.row._id);
                                             }}
@@ -326,7 +315,6 @@ export const Confirmar = () => {
                                             <Grid item xs={5}>
                                                 <TextField
                                                     type='number'
-                                                    disabled={order.numberCheck.value!==0}
                                                     value={order.numberCheck.value} 
                                                     onChange={(e)=>{
                                                         setOrder({...order, numberCheck:{error:false, value:e.target.value}})

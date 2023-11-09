@@ -8,6 +8,7 @@ export const useStyles = makeStyles({
         right:'3vw',
         '& img': {
             height : '70vh',
+            filter: 'blur(5px)'
         }
     }
 })

@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Drawer, Grid } from "@mui/material";
 import { SideBar } from "../../components/SideBar"
 import { Outlet, useNavigate } from "react-router-dom";
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
@@ -9,7 +9,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import MarkUnreadChatAltIcon from '@mui/icons-material/MarkUnreadChatAlt';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import { useStyles } from "./admin.styles";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BackgroundPage } from "../../components/background";
 import { SuperUserBar } from "../../components/superUserBar";
 import { redirectRole, verifyToken, verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
@@ -17,9 +17,9 @@ import { redirectRole, verifyToken, verifyTokenWithPath } from "../../utilities/
 
 export const Admin = () => {
 
-    const isSuperUser = true;
-
     const navigator = useNavigate();
+
+    const [isSuperUser, setIsSuperUser] = useState(false);
 
     const menu= ['Usuarios', 'Materiales', 'Trabajos','Mensajeria', 'Backups', 'Bitacora', 'Reportes'];
     const subMenu= {
@@ -64,23 +64,23 @@ export const Admin = () => {
     const classes=useStyles();
 
     useEffect(()=>{
-        verifyTokenWithPath('Administrado',navigator);
+        setIsSuperUser(verifyTokenWithPath('Administracion',navigator));
     },[])
 
     return (
-    <Grid container wrap='nowrap'>
+    <Grid container>
         <BackgroundPage/>
         <Grid item xs='auto'>
             <SideBar role='Administrador' menu={menu} icons={icons} subMenu={subMenu}/>
         </Grid>
-        <Grid item container direction='column' xs className={classes.containerPage}>
+        <Grid item container direction='column' xs className={classes.containerPage} >
             {
-            isSuperUser&&
-                <Grid item>
-                    <SuperUserBar/>
-                </Grid>
-            }
-            <Grid item>
+                isSuperUser&&
+                    <Grid item xs='auto' style={{margin:'auto', display:'block', marginTop:'0.5rem'}}>
+                        <SuperUserBar/>
+                    </Grid>
+                }
+            <Grid item xs>
                 <Outlet/>
             </Grid>
         </Grid>

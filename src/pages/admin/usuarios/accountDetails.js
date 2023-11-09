@@ -1,4 +1,5 @@
-import { Button, Card, Dialog, Grid, Switch, TextField, Autocomplete, Backdrop, CircularProgress, Snackbar, Alert } from "@mui/material";
+import { Button, Card, Dialog, Grid, Switch, TextField, Autocomplete, Backdrop, CircularProgress, Snackbar } from "@mui/material";
+import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Main } from "../../../components/main";
@@ -10,10 +11,10 @@ import { useStyles } from "../admin.styles";
 export const AccountDetails = () => {
 
     const {id} = useParams();
-    const initialInput = {error:false, value:''}
+    const { enqueueSnackbar } = useSnackbar();
+
 
     const [loading, setLoading] = useState(false);
-    const [alert,setAlert] = useState({open:false, severity:'', message:''});
 
     const [data, setData] = useState();
     const [dataEdit, setDataEdit] = useState();
@@ -23,18 +24,18 @@ export const AccountDetails = () => {
 
     const handleResponse = async(response) => {
         if(response.status === 202){
-            setAlert({open:true, severity:'success', message:'202: Actualizado'});
+            enqueueSnackbar('Valores actualizados correctamente',{variant:'success'});            
             setEditionMode(false);
             loadData();
         }
         if(response.status === 404){
-            setAlert({open:true, severity:'error', message:'404: No encontrado'});
+            enqueueSnackbar('No encontrado',{variant:'error'});            
         }
         if(response.status === 409){
-            setAlert({open:true, severity:'warning', message:'409: Conflicto'});
+            enqueueSnackbar('Conflicto encontrdo',{variant:'error'});            
         }
         if(response.status === 304){
-            setAlert({open:true, severity:'warning', message:'304: No Modificado'})
+            enqueueSnackbar('Error - Valores no modificados',{variant:'error'});            
         }
     }
 
@@ -54,8 +55,6 @@ export const AccountDetails = () => {
         }
     }
 
-    console.log(dataEdit);
-
     const editUser = async () => {
 
         ///Validacion
@@ -63,14 +62,17 @@ export const AccountDetails = () => {
 
         if(dataEdit.user.value===''){
             setDataEdit({...dataEdit, user:{error:true, value:''}})
+            enqueueSnackbar('Ingresa el usuario',{variant:'error'});            
             error = true
         }
         if(dataEdit.password.value===''){
             setDataEdit({...dataEdit, password:{error:true, value:''}})
+            enqueueSnackbar('Ingresa la contraseña',{variant:'error'});            
             error = true
         }
         if(dataEdit.role.value===''){
             setDataEdit({...dataEdit, role:{error:true, value:''}})
+            enqueueSnackbar('Ingresa el rol',{variant:'error'});            
             error = true
         }
 
@@ -86,8 +88,6 @@ export const AccountDetails = () => {
             const response = await updateUser(id, newData, data);
             setLoading(false);
             handleResponse(response);
-        }else{
-            setAlert({open:true, severity:'error', message:'Formulario Invalido*'})
         }
     }
 
@@ -107,16 +107,6 @@ export const AccountDetails = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                open={alert.open}
-                onClose={()=>{setAlert({...alert, open:false})}}
-                autoHideDuration={3000}
-            >
-                <Alert variant='filled' severity={alert.severity}>
-                    {alert.message}
-                </Alert>
-            </Snackbar>
 
             <Dialog open={dialog} onClose={()=>{setDialog(false)}}>
                 <Card>

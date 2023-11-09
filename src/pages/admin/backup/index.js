@@ -1,4 +1,4 @@
-import { Box, RadioGroup, FormControlLabel, Radio, IconButton, Button, Dialog, Backdrop, CircularProgress, Snackbar, Alert } from "@mui/material";
+import { Box, RadioGroup, FormControlLabel, Radio, IconButton, Button, Dialog, Backdrop, CircularProgress, Snackbar } from "@mui/material";
 import { Card, Grid, TextField, Autocomplete } from "@mui/material";
 import { Main } from "../../../components/main";
 import AddIcon from '@mui/icons-material/Add';
@@ -14,11 +14,13 @@ import { useNavigate } from "react-router-dom";
 import { useStyles } from "../admin.styles";
 import { allClients, allEmployees, allMaterials, getBackupFiles } from "../../../utilities/allGetFetch";
 import { addBackUp, restoreBackup } from "../../../utilities/allPostFetch";
+import { useSnackbar } from "notistack";
 
 export const Backup = () => {
 
+    const { enqueueSnackbar } = useSnackbar();
+
     const [loading, setLoading] = useState(false);
-    const [alert,setAlert] = useState({open:false, severity:'', message:''});
 
     const [search, setSearch] = useState('');
     const [modal, setModal] = useState(false);
@@ -43,15 +45,16 @@ export const Backup = () => {
 
     const handleResponse = async(response) => {
         if(response.status === 201){
-            setAlert({open:true, severity:'success', message:'201: Backup creado'});
+            enqueueSnackbar('Backup creado',{variant:'success'});            
+
         }
         if(response.status === 202){
             setModal(false);
-            setAlert({open:true, severity:'success', message:'202: Restauracion Completa'});
+            enqueueSnackbar('Restauracion Completa',{variant:'success'});            
         }
         if(response.status === 501){
             const data = await response.json();
-            setAlert({open:true, severity:'warning', message: `501: ${(data.reason || data.message)}`})
+            enqueueSnackbar(`${(data.reason || data.message)}`,{variant:'warning'});            
         }
     }
 
@@ -84,17 +87,7 @@ export const Backup = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                open={alert.open}
-                onClose={()=>{setAlert({...alert, open:false})}}
-                autoHideDuration={3000}
-            >
-                <Alert variant='filled' severity={alert.severity}>
-                    {alert.message}
-                </Alert>
-            </Snackbar>
-
+            
             <Grid container direction='column' rowGap={3} alignItems='center'>
                 <Grid item style={{width:'80%'}}>
                     <Card raised>

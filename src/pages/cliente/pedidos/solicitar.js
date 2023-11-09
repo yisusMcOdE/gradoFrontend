@@ -1,4 +1,4 @@
-import { Card, Grid, Autocomplete, TextField, Box, RadioGroup, FormControlLabel, Radio, IconButton, Button, Snackbar, Alert, Backdrop, CircularProgress, DialogTitle, DialogContent, Typography, DialogActions, Dialog } from "@mui/material";
+import { Card, Grid, Autocomplete, TextField, Box, RadioGroup, FormControlLabel, Radio, IconButton, Button, Snackbar, Backdrop, CircularProgress, DialogTitle, DialogContent, Typography, DialogActions, Dialog } from "@mui/material";
 import { useStyles } from "../cliente.styles";
 import { useDebugValue, useEffect, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
@@ -11,6 +11,7 @@ import { Main } from "../../../components/main";
 import { generateTicketPay } from "../../../utilities/pdfMake/checkPay";
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
+import { useSnackbar } from "notistack";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -24,7 +25,8 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 export const SolicitarCliente = () => {
 
-    console.log('im here');
+
+    const { enqueueSnackbar } = useSnackbar();
 
     const initialInput = {error:false, value:''}
 
@@ -36,7 +38,6 @@ export const SolicitarCliente = () => {
     }
 
     const [loading, setLoading] = useState(false);
-    const [alert,setAlert] = useState({open:false, severity:'', message:''});
     const [dialog, setDialog] = useState({open:false, message:''});
 
 
@@ -105,25 +106,32 @@ export const SolicitarCliente = () => {
 
         if(funds.value===''){
             setFunds({error:true, value:''})
+            enqueueSnackbar('Seleccion el tipo de fondo',{variant:'error'});
             error = true
         }
         let detailsAux = [...details];
+        let errorDetails = false;
         detailsAux = detailsAux.map(item=>{
 
             if(item.job.value===''){
                 item.job.error = true
-                error = true
+                errorDetails = true
             }
             if(item.requiredQuantity.value==='' || item.requiredQuantity.value===0){
                 item.requiredQuantity.error = true
-                error = true
+                errorDetails = true
             }
             if(item.cost.value==='' || item.cost.value===0){
                 item.cost.error = true
-                error = true
+                errorDetails = true
             }
             return item
         })
+        if(errorDetails){
+            error = true;
+            enqueueSnackbar('Revisar los detalles del pedido',{variant:'error'});
+            setDetails([...detailsAux]);
+        }
 
         if(!error){
             const detailsFormated = details.map(item=>{
@@ -143,8 +151,6 @@ export const SolicitarCliente = () => {
             const response = await createOrderInternal(body);
             setLoading(false);
             handleResponse(response);
-        }else{
-            setAlert({open:true, severity:'error', message:'Formulario Invalido * '});
         }
     }
     
@@ -168,12 +174,12 @@ export const SolicitarCliente = () => {
                 </>
                 setDialog({open:true, message:mess});
             }else
-                setAlert({open:true, severity:'success', message:'201: Pedido creado existosamente'});
+                enqueueSnackbar('Pedido creado correctamente',{variant:'success'});
 
             clearInputs();
         }
         if(response.status === 501){
-            setAlert({open:true, severity:'warning', message: `501: ${(data.reason || data.message)}`})
+            enqueueSnackbar(`${(data.reason || data.message)}`,{variant:'warning'});
         }
     }
 
@@ -195,21 +201,11 @@ export const SolicitarCliente = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                open={alert.open}
-                onClose={()=>{setAlert({...alert, open:false})}}
-                autoHideDuration={alert.time || 3000}
-            >
-                <Alert variant='filled' severity={alert.severity}>
-                    {alert.message}
-                </Alert>
-            </Snackbar>
 
             <BootstrapDialog
                 onClose={()=>{
                     setDialog({...dialog, open:false});
-                    setAlert({open:true, severity:'success', message:'201: Pedido creado existosamente'});
+                    enqueueSnackbar('Pedido creado correctamente',{variant:'success'});
                 }}
                 open={dialog.open}
                 
@@ -221,7 +217,7 @@ export const SolicitarCliente = () => {
                 <IconButton
                     onClick={()=>{
                         setDialog({...dialog, open:false});
-                        setAlert({open:true, severity:'success', message:'201: Pedido creado existosamente'});
+                        enqueueSnackbar('Pedido creado correctamente',{variant:'success'});
                     }}
                     sx={{
                         position: 'absolute',
@@ -238,7 +234,7 @@ export const SolicitarCliente = () => {
                 <DialogActions>
                 <Button variant="contained" autoFocus onClick={()=>{
                     setDialog({...dialog, open:false});
-                    setAlert({open:true, severity:'success', message:'201: Pedido creado existosamente'});
+                    enqueueSnackbar('Pedido creado correctamente',{variant:'success'});
                 }}>
                     Entendido
                 </Button>

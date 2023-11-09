@@ -75,7 +75,7 @@ export const ReporteMaterial = () => {
                                     <Autocomplete
                                         id='FormMaterial'
                                         size='small'
-                                        options={materials.map(item=>item.name)}
+                                        options={materials===204?[]:materials.map(item=>item.name)}
                                         fullWidth
                                         renderInput={(params) => <TextField {...params}/>}
                                     />
@@ -122,15 +122,19 @@ export const ReporteMaterial = () => {
                                     </Grid>
                                 </Grid>
                                 <Grid item>
-                                    <DataGrid
-                                        localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-                                        apiRef={apiref}
-                                        rows= {data}
-                                        columns={columns}
-                                        getRowClassName={(params) =>
-                                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                                        }
-                                    />
+                                    {(data!==204)?
+                                        <DataGrid
+                                            localeText={esES.components.MuiDataGrid.defaultProps.localeText}
+                                            apiRef={apiref}
+                                            rows= {data}
+                                            columns={columns}
+                                            getRowClassName={(params) =>
+                                                params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                                            }
+                                        />
+                                        :
+                                        <h3 style={{textAlign:'center'}}>No existen backups generados</h3>
+                                    }
                                 </Grid>
                             </Grid>
                         </Card>

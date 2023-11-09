@@ -81,15 +81,19 @@ export const Binnacle = () => {
                             </Grid>
                         </Grid>
                         <Grid item>
-                            <DataGrid
-                            style={{width:'95%'}}
-                            onRowClick={(e)=>{navigator(`detail/${e.row._id}`)}}
-                            rows={data} 
-                            columns={columns}
-                            getRowClassName={(params) =>
-                                params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                            {(data!==204)?
+                                <DataGrid
+                                style={{width:'95%'}}
+                                onRowClick={(e)=>{navigator(`detail/${e.row._id}`)}}
+                                rows={data} 
+                                columns={columns}
+                                getRowClassName={(params) =>
+                                    params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                                }
+                                />
+                                :
+                                <h3 style={{textAlign:'center'}}>No existen registros de bitacora</h3>
                             }
-                            />
                         </Grid>
                     </Grid>
                 </Card>

@@ -6,7 +6,7 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 
 
-export const generateTicketPay = (data,details) => {
+export const generateTicketPay = async(data,details) => {
 
     numbers().Config._setSingular('BOLIVIANO');
     numbers().Config._setPlural('BOLIVIANOS');

@@ -28,22 +28,31 @@ export const redirectRole = (role, navigator) => {
 }
 
 export const verifyTokenWithPath = (path,navigator) => {
+    console.log('entra')
     const token = localStorage.token;
-    let decode;
-    let result;
-    if(token === undefined){
-        result = 'noToken'
-    }else{
+    if(token!==undefined){
+        let decode;
+        let result;
         decode = decodeToken(token);
         if(decode.data.role==='SuperUsuario' && path!=='Cliente'){
             result = path
         }else{
             result = decode.data.role
         }
-        
-    }
 
-    if(result!==path){
-        redirectRole(result, navigator);
+        console.log('result', result);
+        console.log('path', path);
+
+        if(result!==path){
+            redirectRole(result, navigator);
+        }else{
+            if(decode.data.role==='SuperUsuario')
+                if(path==='Login')
+                    redirectRole('SuperUsuario', navigator);
+                else
+                    return true
+            else
+                return false
+        }
     }
 }

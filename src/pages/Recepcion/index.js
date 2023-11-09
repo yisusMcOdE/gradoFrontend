@@ -8,13 +8,15 @@ import ContactPageIcon from '@mui/icons-material/ContactPage';
 import { Outlet, useNavigate } from "react-router-dom";
 import { BackgroundPage } from "../../components/background";
 import { SuperUserBar } from "../../components/superUserBar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { redirectRole, verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
 
-export const Recepcion = ({isSuperUser, role}) => {
+export const Recepcion = () => {
     
     const classes = useStyles();
     const navigator = useNavigate();
+
+    const [isSuperUser, setIsSuperUser] = useState(false);
 
     const menu= ['Clientes','Pedidos', 'Materiales', 'Reportes'];
     const subMenu= {
@@ -39,7 +41,7 @@ export const Recepcion = ({isSuperUser, role}) => {
     const icons= [<ContactPageIcon/>, <BallotIcon/>,<WidgetsIcon/>,<FindInPageIcon/>]
 
     useEffect(()=>{
-        verifyTokenWithPath('Recepcion',navigator);
+        setIsSuperUser(verifyTokenWithPath('Recepcion',navigator));
     },[])
 
     return (
@@ -51,11 +53,11 @@ export const Recepcion = ({isSuperUser, role}) => {
             <Grid item container direction='column' xs className={classes.containerPage}>
                 {
                 isSuperUser&&
-                    <Grid item>
+                    <Grid item xs='auto' style={{margin:'auto', display:'block', marginTop:'0.5rem'}}>
                         <SuperUserBar/>
                     </Grid>
                 }
-                <Grid item>
+                <Grid item xs>
                     <Outlet/>
                 </Grid>
             </Grid>

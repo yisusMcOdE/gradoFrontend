@@ -1,4 +1,4 @@
-import { Box, RadioGroup, FormControlLabel, Radio, IconButton, Button, Backdrop, CircularProgress, Snackbar, Alert } from "@mui/material";
+import { Box, RadioGroup, FormControlLabel, Radio, IconButton, Button, Backdrop, CircularProgress, Snackbar} from "@mui/material";
 import { Card, Grid, TextField, Autocomplete } from "@mui/material";
 import { Main } from "../../../components/main";
 import { useStyles } from "./materials.style";
@@ -7,11 +7,11 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { useEffect, useState } from "react";
 import { allMaterials } from "../../../utilities/allGetFetch";
 import { createOrderMaterial } from "../../../utilities/allPostFetch";
-
-
+import { useSnackbar } from "notistack";
 
 export const Solicitar = () => {
 
+    const { enqueueSnackbar } = useSnackbar();
 
     const detalleInicial = {
         idMaterial :'',
@@ -23,8 +23,6 @@ export const Solicitar = () => {
     }
 
     const [loading, setLoading] = useState(false);
-    const [alert,setAlert] = useState({open:false, severity:'', message:''});
-
 
     const [dataMaterial, setDataMaterial] = useState();
     const [form, setForm] = useState({
@@ -67,19 +65,25 @@ export const Solicitar = () => {
         let details = [...form.detalle];
         let error = false;
 
+        let errorDetails = false
         details = details.map(item => {
-            
+
             if(item.requiredQuantity.value===0){
                 item.requiredQuantity.error = true;
-                error=true;
+                errorDetails=true;
             }
             if(item.descripcion.value===''){
                 item.descripcion.error = true;
-                error=true;
+                errorDetails=true;
             }
             return item
         })
         setForm({...form, detalle:details})
+
+        if(errorDetails){
+            enqueueSnackbar('Revisar los valores de los detalles',{variant:'error'});            
+            error = true
+        }
 
         if(!error){
             let details = [...form.detalle];
@@ -96,20 +100,16 @@ export const Solicitar = () => {
             };
             const response = await createOrderMaterial(data);
             handleResponse(response);
-        }else{
-            setAlert({open:true, severity:'error', message:'Formulario Invalido * '});
         }
-
     }
 
     const handleResponse = async(response) => {
         if(response.status === 201){
-            setAlert({open:true, severity:'success', message:'201: Creado'});
+            enqueueSnackbar('Pedido creado correctamente',{variant:'success'});            
             clearInputs();
         }
         if(response.status === 304){
-            const data = await response.json();
-            setAlert({open:true, severity:'warning', message: `501: No Implementado`})
+            enqueueSnackbar('Error - No implementado',{variant:'error'});            
         }
     }
 
@@ -124,7 +124,7 @@ export const Solicitar = () => {
 
     const loadData = async() => {
         const response = await allMaterials();
-        if(response != 204)
+        if(response !== 204)
             setDataMaterial(response);
         else
             setDataMaterial(204);
@@ -145,17 +145,6 @@ export const Solicitar = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                open={alert.open}
-                onClose={()=>{setAlert({...alert, open:false})}}
-                autoHideDuration={3000}
-            >
-                <Alert variant='filled' severity={alert.severity}>
-                    {alert.message}
-                </Alert>
-            </Snackbar>
-
             <Grid container justifyContent='center'>
                 <Grid item style={{width:'80%'}}>
                     <Card raised >
@@ -253,9 +242,11 @@ export const Solicitar = () => {
                                                     variant="filled" 
                                                     size='small'
                                                     value={
-                                                        (dataMaterial.find(material=>
-                                                            material.name===item.descripcion.value
-                                                        )?.unit) || ''}
+                                                        dataMaterial===204?'':
+                                                            (dataMaterial.find(material=>
+                                                                material.name===item.descripcion.value
+                                                            )?.unit) || ''
+                                                        }
                                                 />
                                             </Grid>
                                             <Grid item xs={4}>
@@ -264,7 +255,7 @@ export const Solicitar = () => {
                                                     onChange={(e)=>{handleChange(e,'descripcion',index)}}
                                                     size='small'
                                                     fullWidth
-                                                    options={dataMaterial.map(item=>item.name)}
+                                                    options={dataMaterial===204?[]:dataMaterial.map(item=>item.name)}
                                                     renderInput={(params) =><TextField
                                                                                 error={item.requiredQuantity.error}
                                                                                 required

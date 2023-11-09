@@ -49,8 +49,14 @@ export const Cuentas = () => {
                 institution : data.institution.map(item=>{return{...item, status:item.status?'ACTIVO':'SUSPENDIDO'}}),
                 employee : data.employee.map(item=>{return{...item, status:item.status?'ACTIVO':'SUSPENDIDO'}})
             }
-            setDataClient(data.institution);
-            setDataEmployee(data.employee)
+            if(data.institution.length!==0)
+                setDataClient(data.institution);
+            else
+                setDataClient(204);
+            if(data.employee.length!==0)
+                setDataEmployee(data.employee)
+            else
+                setDataEmployee(204);
         }else{
             setDataClient(204);
             setDataEmployee(204);

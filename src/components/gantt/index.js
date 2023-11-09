@@ -247,7 +247,7 @@ export const MyGantt =  ({type, direction}) => {
 
   return tasks && 
     <div 
-        className={`cont ${classes.container}`}
+        
     >
         {
             
@@ -256,7 +256,7 @@ export const MyGantt =  ({type, direction}) => {
 
         {tasks.Todos?.length > 0 ?
             tasks[type]?.length > 0 ?
-                    <Gantt 
+                    <Gantt
                         locale="spa" 
                         tasks={tasks[type]} 
                         onDoubleClick={task => {
@@ -265,9 +265,10 @@ export const MyGantt =  ({type, direction}) => {
                         onDateChange={(task)=>{
                             changeDate(task.id, task.start, task.end, task.steps);
                         }}
-                        listCellWidth={null}
+                        listCellWidth={''}
                         todayColor={'gray'}
                         TooltipContent={()=>{}}
+                        
                     />
                 :
                     <h3 style={{textAlign:'center'}}>No existen trabajos para el area seleccionada</h3>

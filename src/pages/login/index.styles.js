@@ -6,12 +6,13 @@ import { theme } from '../../theme/theme.js';
 export const useStyles = makeStyles({
     logoArea:{
         background: theme.palette.neutro1.main,
+        paddingLeft:'50px',
         display:'flex',
         flexDirection:'column',
         placeItems:'center',
         placeContent:'center',
         '& img':{
-            width:'50%'
+            width:'100%'
         }
     },
     formArea:{

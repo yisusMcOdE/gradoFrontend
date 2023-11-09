@@ -5,16 +5,9 @@ import { getOrdersDelayed } from "../../utilities/allGetFetch";
 const myStyles = {
     container:{
         
-        '& div':{
-            overflow:'auto !important'
-        },
+        
         '& svg':{
             ///height: (props) =>`${60 + (38*props.tasks)}px !important`
-        },
-        '& .gantt-container':{
-            background:'gray',
-            padding:'0.5rem',
-            borderRadius:'10px'
         },
         ///---cabezera
         '& .grid-header':{

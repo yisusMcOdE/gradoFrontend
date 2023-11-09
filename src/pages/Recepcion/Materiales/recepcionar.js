@@ -1,6 +1,7 @@
-import { Box, Card, Grid, TextField, Button, RadioGroup, Radio,FormControlLabel, Backdrop, CircularProgress, Snackbar, Alert, Dialog, Collapse } from "@mui/material"
+import { Box, Card, Grid, TextField, Button, RadioGroup, Radio,FormControlLabel, Backdrop, CircularProgress, Snackbar, Dialog, Collapse } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid";
 import moment from "moment";
+import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Main } from "../../../components/main";
@@ -11,10 +12,10 @@ import { useStyles } from "./materials.style";
 
 export const Recepcionar = () => {
 
-    const navigator = useNavigate('');
+    const { enqueueSnackbar } = useSnackbar();
+
 
     const [loading, setLoading] = useState(false);
-    const [alert,setAlert] = useState({open:false, severity:'', message:''});
     const [dialog, setDialog] = useState({open:false, message:''});
 
     const [modal, setModal] = useState(false);
@@ -37,18 +38,18 @@ export const Recepcionar = () => {
 
     const handleResponse = async(response) => {
         if(response.status === 202){
-            setAlert({open:true, severity:'success', message:'202: Operacion exitosa'});
+            enqueueSnackbar('Registro realizado correctamente',{variant:'success'});            
             setModal(false);
             loadData();
         }
         if(response.status === 404){
-            setAlert({open:true, severity:'error', message:'404: No encontrado'});
+            enqueueSnackbar('Elemento no encontrado',{variant:'error'});            
         }
         if(response.status === 409){
-            setAlert({open:true, severity:'warning', message:'409: Conflicto'});
+            enqueueSnackbar('Error - Conflicto',{variant:'error'});            
         }
         if(response.status === 304){
-            setAlert({open:true, severity:'warning', message:'304: No Modificado'})
+            enqueueSnackbar('Error - No modificado',{variant:'error'});
         }
     }
 
@@ -71,17 +72,21 @@ export const Recepcionar = () => {
     const confirmOrder = async() => {
         ///Validation
         let error = false;
+        let errorDetails = false;
         const details = order.details.map(item=>{
-            console.log('validation');
-            console.log(item);
             if(!complete){
                 if(item.deliveredQuantity.value<=0 || item.deliveredQuantity.value > item.requiredQuantity){
                     item.deliveredQuantity.error = true;
-                    error = true;
+                    errorDetails = true;
                 }
             }
             return item
         })
+        if(errorDetails){
+            error = true;
+            enqueueSnackbar('Revisar los valores de los detalles',{variant:'error'});            
+
+        }
         setOrder({...order, details:details});
         if(!error){
             const body = {
@@ -97,11 +102,7 @@ export const Recepcionar = () => {
             const response = await confirmOrderMaterial(order._id,body);
             setLoading(false);
             handleResponse(response);
-        }else{
-            setAlert({open:true, severity:'error', message:'Formulario Invalido * '});
         }
-
-        
     }
 
     const cancelOrder = async() => {
@@ -110,8 +111,6 @@ export const Recepcionar = () => {
         setLoading(false);
         handleResponse(response);
     }
-
-    console.log(order);
 
     useEffect(()=>{
         loadData();
@@ -126,33 +125,24 @@ export const Recepcionar = () => {
             >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                open={alert.open}
-                onClose={()=>{setAlert({...alert, open:false})}}
-                autoHideDuration={alert.time || 3000}
-            >
-                <Alert variant='filled' severity={alert.severity}>
-                    {alert.message}
-                </Alert>
-            </Snackbar>
-
             <Grid container direction='column' rowSpacing={3} alignItems='center'>
                 <Grid item style={{width:'80%'}}>
                     <Card>
                         <Grid container direction='column' rowSpacing={3}>
                             <h1 style={{textAlign:'center'}}>Recepcionar / Cancelar</h1>
-                            
                             <Grid item>
-                                <DataGrid
-                                    style={{width:'99%'}}
-                                    onRowClick={(e)=>{loadOrder(e.row._id)}}
-                                    rows={data} 
-                                    columns={columns}
-                                    getRowClassName={(params) =>
-                                        params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                                    }
-                                />
+                                {(data!==204)?
+                                    <DataGrid
+                                        onRowClick={(e)=>{loadOrder(e.row._id)}}
+                                        rows={data} 
+                                        columns={columns}
+                                        getRowClassName={(params) =>
+                                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                                        }
+                                    />
+                                    :
+                                    <h3 style={{textAlign:'center'}}>No existen ordenes por recepcionar</h3>
+                                }
                             </Grid>
                             
                         </Grid>

@@ -75,13 +75,17 @@ export const DetailsMaterialArea = () => {
                     <Grid item xs={9}>
                         <Card>
                             <h2 style={{textAlign:'center'}}>Historial de uso</h2>
-                            {<DataGrid
-                                rows={dataStract} 
-                                columns={columns}
-                                getRowClassName={(params) =>
-                                    params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                                }
-                            />}
+                            {(data!==204)?
+                                <DataGrid
+                                    rows={dataStract} 
+                                    columns={columns}
+                                    getRowClassName={(params) =>
+                                        params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                                    }
+                                />
+                                :
+                                <h3 style={{textAlign:'center'}}>No existen registros de historial</h3>
+                            }
                         </Card>
                     </Grid>
                     <Grid item xs={3}>
