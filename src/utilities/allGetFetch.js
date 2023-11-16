@@ -270,20 +270,10 @@ export const getEquipmentById = async (id) => {
     return (response);
 }
 
-export const getReportArea = async (area, start, end) => {
-    const url = `http://localhost:5000/api/reports/area/${area}?start=${start}&end=${end}`;
-    const response = await fetch(url,{
-        method: 'GET',
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token},
-    }
-    )
-    let data = await response.json();
-    data = getIndex(data);
-    data = getId(data);
-    return data
+export const getReportArea = async (area, start, end, equipment) => {
+    const url = `http://localhost:5000/api/reports/area/${area}?start=${start}&end=${end}&equipment=${equipment}`;
+    const response = await myFetch(url);
+    return response
 }
 
 export const getAllOrdersFinished = async () => {
@@ -422,6 +412,18 @@ export const getQRCodeAuto = async() => {
 
 export const getStatusEmail = async() => {
     const url = 'http://localhost:5000/api/email/status';
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getCharges = async() => {
+    const url = 'http://localhost:5000/api/charges';
+    let response = await myFetch(url);
+    return (response);
+}
+
+export const getBinnacleConfig = async () => {
+    const url = 'http://localhost:5000/api/binnacle/config';
     let response = await myFetch(url);
     return (response);
 }

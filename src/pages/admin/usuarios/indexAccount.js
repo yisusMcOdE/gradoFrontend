@@ -75,7 +75,7 @@ export const Cuentas = () => {
                     <Card raised>
                         <h1 className={classes.titlePage}>Cuentas de Usuarios del Sistema</h1>
                         <Box>
-                            <Button onClick={()=>{navigator('crear')}} startIcon={<AddIcon/>} variant='contained'>Crear Usuario</Button>
+                            <Button onClick={()=>{navigator('/admin/usuarios/crear')}} startIcon={<AddIcon/>} variant='contained'>Crear Usuario</Button>
                         </Box>
                         <Box display='flex' justifyContent= 'flex-end' alignItems={'center'}>
                             <SearchIcon sx={{ mr: 1, my: 0.5 }} />

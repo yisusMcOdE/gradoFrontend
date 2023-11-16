@@ -182,17 +182,16 @@ export const Crear = () => {
                 body.ci=ci.value;
                 setLoading(true);
                 const response = await createOrderExternal(body);
-                let {data} = await response.json();
-                console.log(data);
-                handleResponse(response);
                 setLoading(false);
-                generateTicketPay(data, detailsFormated);
+                handleResponse(response, detailsFormated);
             }
         }
     }
     
-    const handleResponse = async(response) => {
+    const handleResponse = async(response, detailsFormated=[]) => {
         const data = await response.json();
+        console.log(data);
+
         if(response.status === 201){
             if(Object.keys(data.alert).length!==0){
                 const mess = <>
@@ -212,7 +211,9 @@ export const Crear = () => {
                 setDialog({open:true, message:mess});
             }else
                 enqueueSnackbar('Pedido creado correctamente',{variant:'success'});
-
+            if(data.data.numberTicketPay){
+                generateTicketPay(data.data, detailsFormated);
+            }
             clearInputs();
         }
         if(response.status === 501){
@@ -349,12 +350,16 @@ export const Crear = () => {
                                     <label>CI:</label>
                                     <Autocomplete
                                         size='small'
-                                        options={externals.map(item=>item.ci)}
+                                        options={externals.map(item=>item.ci).concat([''])}
                                         value={ci.value}
                                         onChange={(e)=>{
+
+                                            setCi({error:false, value:e.target.textContent})
                                             const value = externals.find(item=>item.ci===e.target.textContent)
-                                            setCi({error:false, value:value.ci})
-                                            setClient({error:false, value:value.name})
+                                            if(value!==undefined){
+                                                setClient({error:false, value:value.name})
+                                            }else
+                                                setClient({error:false, value:''})
                                         }}
                                         sx={{ width: 300 }}
                                         renderInput={(params) => <TextField

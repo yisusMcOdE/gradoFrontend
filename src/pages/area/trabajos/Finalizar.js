@@ -40,6 +40,7 @@ export const Finalizar = ({id, close, load}) => {
         setEquipment(response);
     }
 
+    console.log(data);
 
     useEffect(()=>{
         loadData();
@@ -87,7 +88,7 @@ export const Finalizar = ({id, close, load}) => {
                 error=true;
             }
         }
-        if(data.jobDetails.area==='Impresion'){
+        if(data.jobDetails.area==='Impresion Digital'){
             if(equipmentForm.value === ''){
                 enqueueSnackbar('Equipo utilizado invalido',{variant:'error'});
                 setEquipmentForm({error:true, value:''});          
@@ -119,7 +120,7 @@ export const Finalizar = ({id, close, load}) => {
 
         if(!error){
             let response
-            if(data.jobDetails.area==='Impresion'){
+            if(data.jobDetails.area==='Impresion Digital'){
 
                 response = await finishOrderById(
                     data._id,
@@ -220,7 +221,7 @@ export const Finalizar = ({id, close, load}) => {
                     </Grid>
                     
                     {
-                        data.jobDetails.area === 'Impresion'&&
+                        data.jobDetails.area === 'Impresion Digital'&&
                         <Grid item container alignItems='center'>
                             <Grid item xs={4}>
                                 <label>Equipo Utilizado:</label>

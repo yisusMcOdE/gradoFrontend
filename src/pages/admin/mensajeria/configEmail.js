@@ -122,6 +122,9 @@ export const ConfigEmail = () => {
                             </Grid>
                             <Grid xs>
                                 <TextField 
+                                    required
+                                    label='Requerido'
+                                    error= {dataEdition.email.error}
                                     type='email'
                                     size="small" 
                                     value={editionMode? dataEdition.email.value : data.email}
@@ -143,6 +146,9 @@ export const ConfigEmail = () => {
                             </Grid>
                             <Grid xs>
                                 <TextField
+                                    required
+                                    label='Requerido'
+                                    error= {dataEdition.password.error}
                                     type='password'
                                     size="small" 
                                     value={dataEdition.password.value}

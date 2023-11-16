@@ -85,7 +85,7 @@ export const Entregar = () => {
                                         }
                                     />
                                     :
-                                    <h3 style={{textAlign:'center'}}>No existen backups generados</h3>
+                                    <h3 style={{textAlign:'center'}}>No existen pedidos completados por entregar</h3>
                                 }
                             </Grid>}
                             <Grid item display='flex' justifyContent='center'>

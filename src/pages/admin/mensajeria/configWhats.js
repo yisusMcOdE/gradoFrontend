@@ -5,8 +5,12 @@ import { getAuthenticated, getIsReady, getQRCode, getQRCodeAuto } from "../../..
 import { useEffect, useState } from "react";
 import { Replay, RestartAlt } from "@mui/icons-material";
 import { logoutWWeb, updateNotificationsWWeb } from "../../../utilities/allPutFetch";
+import { useSnackbar } from "notistack";
 
 export const ConfigWhatsapp = () => {
+
+    const { enqueueSnackbar } = useSnackbar();
+
 
     const [loading, setLoading] = useState(false);
     const [qr, setQr] = useState();
@@ -49,12 +53,22 @@ export const ConfigWhatsapp = () => {
         setNotifications(response.notifications);
     }
 
+    const handleResponse = (response) => {
+        if(response.status === 200)
+        enqueueSnackbar('200: Actualizado Correctamente',{variant:'success'});
+    else
+        enqueueSnackbar('409: Conflicto',{variant:'error'});            
+    }
+
     const editConfig = async() => {
         if(service === false && data.whatsapp===true){
             setModal(true);
         }
         if(notifications!==data.notifications){
-            await updateNotificationsWWeb(notifications);
+            setLoading(true);
+            const response = await updateNotificationsWWeb(notifications);
+            handleResponse(response);
+            setLoading(false);
             await verifyAutenticated();
         }
         setEditionMode(false);

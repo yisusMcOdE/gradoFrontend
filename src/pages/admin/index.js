@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { BackgroundPage } from "../../components/background";
 import { SuperUserBar } from "../../components/superUserBar";
 import { redirectRole, verifyToken, verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
+import BadgeIcon from '@mui/icons-material/Badge';
 
 
 export const Admin = () => {
@@ -21,7 +22,7 @@ export const Admin = () => {
 
     const [isSuperUser, setIsSuperUser] = useState(false);
 
-    const menu= ['Usuarios', 'Materiales', 'Trabajos','Mensajeria', 'Backups', 'Bitacora', 'Reportes'];
+    const menu= ['Usuarios', 'Materiales', 'Trabajos','Cargos','Mensajeria', 'Backups', 'Bitacora', 'Reportes'];
     const subMenu= {
         Usuarios: [
             {name: 'Informacion de Usuario', to:'usuarios'},
@@ -36,6 +37,9 @@ export const Admin = () => {
             {name: 'Ver', to: 'trabajos'},
             {name: 'Crear', to: 'trabajos/crear'}, 
         ],
+        Cargos: [
+            {name: 'Editar cargos', to: 'cargos'} 
+        ],
         Mensajeria:[
             {name: 'Configuracion Whatsapp', to: 'configWhatsapp'},
             {name: 'Configuracion Email', to: 'configEmail'},
@@ -45,7 +49,8 @@ export const Admin = () => {
             {name: 'Configurar', to: 'backup/configurar'}, 
         ],
         Bitacora: [
-            {name: 'Ver', to: 'bitacora'}
+            {name: 'Ver', to: 'bitacora'},
+            {name: 'Configurar', to:'bitacora/configBinnacle'}
         ],
         Reportes:[
             {name:'Reporte de Bitacora', to: 'reporteBitacora'}
@@ -56,6 +61,7 @@ export const Admin = () => {
         <SupervisedUserCircleIcon/>,
         <WidgetsIcon/>,
         <AutoAwesomeMotionIcon/>,
+        <BadgeIcon/>,
         <MarkUnreadChatAltIcon/>,
         <StorageIcon/>,
         <VisibilityIcon/>,

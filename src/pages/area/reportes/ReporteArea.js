@@ -1,11 +1,11 @@
 import { Autocomplete, Button, Card, Grid, TextField } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Main } from "../../../components/main"
 import { useStyles } from "../area.styles";
 import { esES } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
-import { getReportArea } from "../../../utilities/allGetFetch";
+import { getAllEquipment, getReportArea } from "../../../utilities/allGetFetch";
 import { generateReportTrabajoArea } from "../../../utilities/pdfMake/reportTrabajoArea";
 
 
@@ -15,27 +15,33 @@ export const ReporteArea = () => {
     const classes= useStyles();
 
     const [data, setData] = useState();
+    const [dataEquipment, setDataEquipment] = useState(['']);
+    const [area, setArea] = useState('Todos');
+    const [initial, setInitial] = useState('');
+    const [end, setEnd] = useState('');
+    const [equipment, setEquipment] = useState('Todos');
 
     const columns = [
         
-        { field: 'fecha', headerName: 'Fecha', flex: 1},
-        { field: 'trabajo', headerName: 'Trabajo', flex: 1 },
-        { field: 'cliente', headerName: 'Cliente', flex: 1 },
-        { field: 'detalle', headerName: 'Detalle', flex: 1 },
-        { field: 'recurso', headerName: 'Recurso Utilizado', flex: 1 },
-        { field: 'cantidad', headerName: 'Cantidad', flex: 1 },
+        { field: 'index', headerName: 'N°', flex: 1},
+        { field: 'fecha', headerName: 'Fecha', flex: 2},
+        { field: 'trabajo', headerName: 'Trabajo', flex: 2 },
+        { field: 'cliente', headerName: 'Cliente', flex: 3 },
+        { field: 'detalle', headerName: 'Detalle', flex: 3 },
+        { field: 'recurso', headerName: 'Recurso Utilizado', flex: 2 },
+        { field: 'cantidad', headerName: 'Cantidad', flex: 1.5 },
         { field: 'precio', headerName: 'Costo', flex: 1 },
 
       ];
 
     const generate = async() => {
-        const start = (document.getElementById('FormStart').value)
-        const end = (document.getElementById('FormEnd').value)
-        const area = document.getElementById('FormArea').value
-        let response = await getReportArea(area, start, end);
-        response = response.map(item=>{
-            return {...item, fecha:(item.fecha)}
-        })
+
+        let response = await getReportArea(area, initial, end, equipment.slice(0,(equipment.indexOf('"')-1)));
+        console.log(response);
+        if(response!==204)
+            response = response.map(item=>{
+                return {...item, fecha:(item.fecha)}
+            })
         setData(response);
     }
 
@@ -44,12 +50,23 @@ export const ReporteArea = () => {
         let datos = apiref.current.getDataAsCsv();
         datos = datos.split('\r\n');
         datos = datos.map(item=>item.split(','));
+        datos = datos.map(item=>{
+            item.shift()
+            return item;
+        });
         console.log(datos);
-        const start = (document.getElementById('FormStart').value)
-        const end = (document.getElementById('FormEnd').value)
-        const area = document.getElementById('FormArea').value
-        generateReportTrabajoArea(datos, start, end, area);
+        generateReportTrabajoArea(datos, initial, end, area, equipment);
     }
+
+    const loadData = async() => {
+        const response = await getAllEquipment();
+        if(response !== 204)
+            setDataEquipment(response.map(item=>{return `${item.name} "${item.brand}"`}))
+    }
+
+    useEffect(()=>{
+        loadData();
+    },[])
 
     return (
         <Main>
@@ -63,19 +80,47 @@ export const ReporteArea = () => {
                         </Grid>
                         <Grid container direction='column' rowSpacing={2}>
                             <Grid item container alignItems='center' columnSpacing={1}>
-                                <Grid item xs={1}>
-                                    <label>Area:</label>
+                                <Grid item container xs={6} alignItems='center'>
+                                    <Grid item xs={2}>
+                                        <label>Area:</label>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Autocomplete
+                                            onChange={(e)=>{
+                                                setData(null)
+                                                if(e.target.textContent!=='')
+                                                    setArea(e.target.textContent)
+                                            }}
+                                            value = {area}
+                                            size='small'
+                                            options={['Todos', 'Impresion Digital', 'Offset', 'Empastado']}
+                                            fullWidth
+                                            renderInput={(params) => <TextField {...params}/>}
+                                        />
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={3}>
-                                    <Autocomplete
-                                        id='FormArea'
-                                        size='small'
-                                        defaultValue='Todos'
-                                        options={['Todos', 'Impresion', 'Offset', 'Empastado']}
-                                        fullWidth
-                                        renderInput={(params) => <TextField {...params}/>}
-                                    />
-                                </Grid>
+                                {
+                                area === 'Impresion Digital'&&
+                                    <Grid item container xs={6} alignItems='center'>
+                                        <Grid item xs={2}>
+                                            <label>Equipo:</label>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Autocomplete
+                                                onChange={(e)=>{
+                                                    setData(null)
+                                                    if(e.target.textContent!=='')
+                                                        setEquipment(e.target.textContent)
+                                                }}
+                                                value={equipment}
+                                                size='small'
+                                                options={['Todos'].concat(dataEquipment)}
+                                                fullWidth
+                                                renderInput={(params) => <TextField {...params}/>}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                }
                             </Grid>
                             <Grid item container alignItems='center' columnSpacing={1}>
                                 <Grid item container xs={6} alignItems='center'>
@@ -83,7 +128,7 @@ export const ReporteArea = () => {
                                         <label>Desde:</label>
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <TextField id='FormStart' type='date'  size='small' fullWidth/>
+                                        <TextField id='FormStart' type='date'  size='small' fullWidth onChange={()=>{setData(null)}}/>
                                     </Grid>
                                 </Grid>
                                 <Grid item container xs={6} alignItems='center'>
@@ -91,7 +136,7 @@ export const ReporteArea = () => {
                                         <label>Hasta:</label>
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <TextField id='FormEnd' type='date'  size='small' fullWidth/>
+                                        <TextField id='FormEnd' type='date'  size='small' fullWidth onChange={()=>{setData(null)}}/>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -107,6 +152,8 @@ export const ReporteArea = () => {
                     <Grid item xs style={{width:'90%'}}>
                         <Card raised>
                             <Grid container direction='column' rowGap={2}>
+
+                            {(data!==204)?<>
                                 <Grid item container columnGap={2}>
                                     <Grid item>
                                         <Button variant="contained" onClick={()=>{getData()}}>Imprimir</Button>
@@ -118,20 +165,30 @@ export const ReporteArea = () => {
                                     </Grid>
                                 </Grid>
                                 <Grid item>
-                                    {(data!==204)?
                                         <DataGrid
+                                            style={{width:'100%'}}
                                             localeText={esES.components.MuiDataGrid.defaultProps.localeText}
                                             apiRef={apiref}
                                             rows= {data}
-                                            columns={columns}
+                                            columns={
+                                                area==='Impresion Digital'?
+                                                    columns.slice(0,5).concat(
+                                                        [{ field: 'equipment', headerName: 'Equipo Utilizado', flex: 2 }
+                                                        ].concat(
+                                                            columns.slice(5,8)
+                                                        ))
+                                                :
+                                                    columns
+                                            }
                                             getRowClassName={(params) =>
                                                 params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
                                             }
                                         />
-                                        :
-                                        <h3 style={{textAlign:'center'}}>No existen registros obtenidos</h3>
-                                    }
                                 </Grid>
+                                </>
+                                :
+                                        <h3 style={{textAlign:'center'}}>No existen registros obtenidos</h3>
+                            }
                             </Grid>
                         </Card>
                     </Grid>

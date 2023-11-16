@@ -105,6 +105,9 @@ export const theme = createTheme({
           '&.activo':{
             background:'green',
             transition:'all .5s ease',
+            '&:disabled':{
+              color:'#004F00'
+            },
             '&:hover':{
               opacity:'.8',
               transition:'all .5s ease',
@@ -113,6 +116,9 @@ export const theme = createTheme({
           '&.inactivo':{
             background:'red',
             transition:'all .5s ease',
+            '&:disabled':{
+              color:'#4F0000'
+            },
             '&:hover':{
               opacity:'.8',
               transition:'all .5s ease',

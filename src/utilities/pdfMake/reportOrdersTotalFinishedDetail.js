@@ -296,10 +296,45 @@ export const generateReportTotalTotal = async(data, start, end, area) => {
 
     const printDate = new Date();
 
-    const title = `REPORTE GENERAL DE ${(start && end)? '': 'TODOS LOS '} TRABAJOS REALIZADOS POR ${area === 'Todos' ? 'TODAS LAS AREAS DE LA IMPRENTA' : `EL AREA "${area.toUpperCase()}"`} ${(start && end)? `CORRESPONDIENTES A LAS FECHAS " ${start} - ${end} "` : ''}`
+    const fechas = `${(start && end)?`${start}  /  ${end}`:'Sin Intervalo'}`
+    const title = `Sistema de Gestion de Trabajos de la Imprenta`
     const imageDataUrl = await loadImageAsDataUrl(image);
 
     var dd = {
+        header: [
+            {
+                absolutePosition: { x: 0, y: 0 },
+                canvas: [
+                    {
+                        type: 'rect', // Tipo de forma: rectángulo
+                        x: 0, y: 6,   // Coordenadas de inicio (esquina superior izquierda)
+                        w: 792, h: 3, // Ancho y alto del rectángulo
+                        color: '#0A2E61' // Color de fondo del rectángulo
+                    },
+                    {
+                        type: 'rect', // Tipo de forma: rectángulo
+                        x: 0, y: 12,   // Coordenadas de inicio (esquina superior izquierda)
+                        w: 792, h: 35, // Ancho y alto del rectángulo
+                        color: '#FC0808' // Color de fondo del rectángulo
+                    },
+                    {
+                        type: 'rect', // Tipo de forma: rectángulo
+                        x: 0, y: 50,   // Coordenadas de inicio (esquina superior izquierda)
+                        w: 792, h: 3, // Ancho y alto del rectángulo
+                        color: '#0A2E61' // Color de fondo del rectángulo
+                    }
+                ]
+            },
+            {
+                text: title,
+                absolutePosition: { x: 30, y: 20 },// Posición del texto en relación al rectángulo
+                color: 'white',
+                fontSize:15,
+                style: 'header',
+                bold: true,
+                alignment: 'center'
+            },
+        ],
           footer: function(currentPage, pageCount) { 
             return [
                 {
@@ -317,12 +352,31 @@ export const generateReportTotalTotal = async(data, start, end, area) => {
                             w: 792, h: 3, // Ancho y alto del rectángulo
                             color: '#0A2E61' // Color de fondo del rectángulo
                         },
+                        
                         {
-              type: 'ellipse',
-              x: 396, y: 16,
-              color: 'white',
-              r1: 30, r2: 30
-                },
+                          type: 'rect', // Tipo de forma: rectángulo
+                          x: 360, y: 14,   // Coordenadas de inicio (esquina superior izquierda)
+                          w: 72, h: 13, // Ancho y alto del rectángulo
+                          color: 'white' // Color de fondo del rectángulo
+                        },
+                        {
+                          type: 'rect', // Tipo de forma: rectángulo
+                          x: 365, y: 27,   // Coordenadas de inicio (esquina superior izquierda)
+                          w: 62, h: 5, // Ancho y alto del rectángulo
+                          color: 'white' // Color de fondo del rectángulo
+                        },
+                        {
+                          type: 'ellipse',
+                          x: 365, y: 27,
+                          color: 'white',
+                          r1: 5, r2: 5
+                        },
+                        {
+                          type: 'ellipse',
+                          x: 427, y: 27,
+                          color: 'white',
+                          r1: 5, r2: 5
+                        },
                     ]
                 },
                 {
@@ -330,7 +384,7 @@ export const generateReportTotalTotal = async(data, start, end, area) => {
                     text:currentPage + ' / ' + pageCount,
                     color:'black',
                     bold: true,
-                    fontSize: 18,
+                    fontSize: 11,
                     alignment: 'center'
                 },
                 {
@@ -348,17 +402,17 @@ export const generateReportTotalTotal = async(data, start, end, area) => {
                     fontSize: 15,
                 },
                 {
-                  absolutePosition: { x: 600, y: 0 },
+                  absolutePosition: { x: 625, y: 0 },
                   text: `Fecha de Impresion : ${printDate.toLocaleString()}`,
                   color:'black',
-                  fontSize: 10,
+                  fontSize: 8,
                 },
             ]; 
             
         },
         pageSize: 'letter',
         pageOrientation: 'landscape',
-        pageMargins: [ 20, 40, 20, 60 ],
+        pageMargins: [ 20, 70, 20, 60 ],
         background: [
           {
             image: imageDataUrl, // Ruta a tu imagen de marca de agua
@@ -369,37 +423,44 @@ export const generateReportTotalTotal = async(data, start, end, area) => {
           }
         ],
         content: [
-          {
-            canvas: [
-              {
-                type: 'rect', // Tipo de forma: rectángulo
-                x: -20, y: 0,   // Coordenadas de inicio (esquina superior izquierda)
-                w: 792, h: 50, // Ancho y alto del rectángulo
-                color: '#FC0808' // Color de fondo del rectángulo
-              },
-              {
-                type: 'rect', // Tipo de forma: rectángulo
-                x: -20, y: -5,   // Coordenadas de inicio (esquina superior izquierda)
-                w: 792, h: 3, // Ancho y alto del rectángulo
-                color: '#0A2E61' // Color de fondo del rectángulo
-              },
-              {
-                type: 'rect', // Tipo de forma: rectángulo
-                x: -20, y: 51.5,   // Coordenadas de inicio (esquina superior izquierda)
-                w: 792, h: 3, // Ancho y alto del rectángulo
-                color: '#0A2E61' // Color de fondo del rectángulo
-              }
-            ]
-          },
-              {
-                text: title,
-                absolutePosition: { x: 30, y: 45 },// Posición del texto en relación al rectángulo
-                color: 'white',
-                fontSize:15,
-                style: 'header',
-                bold: true,
-                alignment: 'center'
-              },
+            {
+                absolutePosition: { x: 20, y: 68 },
+                canvas: [
+                    
+                    {
+                        type: 'line', // Tipo de forma: rectángulo
+                        x1: 10, y1: 70, // Coordenadas de inicio
+                        x2: 732, y2: 70, // Coordenadas finales
+                        lineWidth: 4, // Grosor de la línea
+                        lineColor: '#C1C1C1' // Color de fondo del rectángulo
+                    },
+                    {
+                        type: 'rect', // Tipo de forma: rectángulo
+                        x: 10, y: 0,   // Coordenadas de inicio (esquina superior izquierda)
+                        w: 722, h: 70, // Ancho y alto del rectángulo
+                        color: '#E8E8E8' // Color de fondo del rectángulo
+                    }
+                ]
+            },
+            {
+                margin:[25,10,25,10],
+                columns: [
+                    {
+                        width: '27%',
+                        text: 'Titulo de Reporte:\n\nIntervalo de Fechas :\n\n',
+                        color: 'black',
+                        fontSize:12,
+                        style: 'header',
+                        bold: true    
+                    },
+                    {
+                        text: `Registros detallado de trabajos realizados por la imprenta\n\n${fechas}`,
+                        color: 'black',
+                        fontSize:12,
+                        style: 'header',
+                    }
+                ]
+            },
             {
                 marginTop:10,
                 table: {

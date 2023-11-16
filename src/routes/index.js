@@ -51,6 +51,8 @@ import { ConfigWhatsapp } from '../pages/admin/mensajeria/configWhats';
 import { Direccion } from '../pages/direccion';
 import { ConfigEmail } from '../pages/admin/mensajeria/configEmail';
 import { decodeToken } from 'react-jwt';
+import { Cargos } from '../pages/admin/cargos';
+import { ConfigBinnacle } from '../pages/admin/bitacora/config';
 
 
 
@@ -97,6 +99,7 @@ export const routes = createBrowserRouter(createRoutesFromElements(
             <Route path='reportePedidos' element={<ReportePedidos/>}/>
         </Route>
         <Route path='/admin' element={<Admin/>}>
+            <Route path='cargos' element={<Cargos/>}/>
             <Route path='configWhatsapp' element={<ConfigWhatsapp/>}/>
             <Route path='configEmail' element={<ConfigEmail/>}/>
             <Route path='cuentaUsuarios' element={<Cuentas/>}/>
@@ -113,6 +116,7 @@ export const routes = createBrowserRouter(createRoutesFromElements(
             <Route path='backup' element={<Backup/>}/>
             <Route path='backup/configurar' element={<Configuracion/>}/>
             <Route path='bitacora' element={<Binnacle/>}/>
+            <Route path='bitacora/configBinnacle' element={<ConfigBinnacle/>}/>
             <Route path='bitacora/detail/:id' element={<BinnacleDetail/>}/>
             <Route path='reporteBitacora' element={<ReporteBitacora/>}/>
         </Route>

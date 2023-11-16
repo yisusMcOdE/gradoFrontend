@@ -4,32 +4,32 @@ import image from '../../assets/images/uatf.png'; // Ruta de la imagen relativa
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const headersTableWidth = {
-  "USUARIO" : 80,
-  "METODO" : 50,
-  "ENDPOINT" : 90,
-  "FECHA" : 50,
-  "HORA" : 50,
-  "RESULTADO" : 70
+    "USUARIO" : 80,
+    "METODO" : 50,
+    "ENDPOINT" : 90,
+    "FECHA" : 50,
+    "HORA" : 50,
+    "RESULTADO" : 70
 }
 
 const calculateWidths = (data) => {
-  const widths = ['*',30];
-  data.map(item => {
-    widths.push(
-      headersTableWidth[item.toUpperCase()]
-    )
-  })
-  widths.push('*')
-  return widths
+    const widths = ['*',30];
+    data.map(item => {
+        widths.push(
+        headersTableWidth[item.toUpperCase()]
+        )
+    })
+    widths.push('*')
+    return widths
 }
 
 const setMarginHeader = (text) => {
-  const margin = 6;
-  const abailables = [];
-  if (abailables.findIndex(item => text.toUpperCase()===item) === -1)
-      return 0
-  else
-      return margin
+    const margin = 6;
+    const abailables = [];
+    if (abailables.findIndex(item => text.toUpperCase()===item) === -1)
+        return 0
+    else
+        return margin
 };
 
 function preprocessTableData(data) {
@@ -37,79 +37,79 @@ function preprocessTableData(data) {
   const processedData = [];
 
   data.forEach((row, indexRow)=> {
-      const newRow = [];
+        const newRow = [];
 
-      ///Agregando Indice
-      if(indexRow === 0)
-        newRow.push(
-          {border: [false, false, false, false],text:''},
-          {
-            text: 'N°',
-            fontSize:11,
-            bold:true,
-            alignment:'center',
-            decoration: 'underline'
-          }
-        )
-      else
-        newRow.push(
-          {border: [false, false, false, false],text:''},
-          {
-            text: indexRow,
-            fontSize:9,
-            alignment:'center',
-          }
-        )
-
-        ///Completando Fila por Fila
-      row.forEach((cell, indexCell) => {
-          let newCell;
-          if(indexRow===0){
-            newCell = {
-                text: cell.toUpperCase(),
+        ///Agregando Indice
+        if(indexRow === 0)
+            newRow.push(
+            {border: [false, false, false, false],text:''},
+            {
+                text: 'N°',
                 fontSize:11,
                 bold:true,
                 alignment:'center',
-                decoration: 'underline',
-                marginTop: setMarginHeader(cell)
+                decoration: 'underline'
             }
-          }
-          else{
-            newCell = {
-                text: cell,
+            )
+        else
+            newRow.push(
+            {border: [false, false, false, false],text:''},
+            {
+                text: indexRow,
                 fontSize:9,
-                alignment: (cell.search(/^\d+$/)!==-1 || cell.replaceAll(' ','').search(/^[0-9\-.:+]+$/)!==-1)?'center':'left',
+                alignment:'center',
             }
-          }
-        newRow.push(newCell);
-      })
-      newRow.push({border: [false, false, false, false],text:''})
+            )
 
-      processedData.push(newRow)
+            ///Completando Fila por Fila
+        row.forEach((cell, indexCell) => {
+            let newCell;
+            if(indexRow===0){
+                newCell = {
+                    text: cell.toUpperCase(),
+                    fontSize:11,
+                    bold:true,
+                    alignment:'center',
+                    decoration: 'underline',
+                    marginTop: setMarginHeader(cell)
+                }
+            }
+            else{
+                newCell = {
+                    text: cell,
+                    fontSize:9,
+                    alignment: (cell.search(/^\d+$/)!==-1 || cell.replaceAll(' ','').search(/^[0-9\-.:+]+$/)!==-1)?'center':'left',
+                }
+            }
+            newRow.push(newCell);
+        })
+        newRow.push({border: [false, false, false, false],text:''})
+
+        processedData.push(newRow)
 });
 return processedData;
 }
 
 const loadImageAsDataUrl = (imageUrl) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'Anonymous'; 
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'Anonymous'; 
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
 
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
 
-      const dataURL = canvas.toDataURL('image/png');
-      resolve(dataURL);
-    };
-    img.onerror = (error) => {
-      reject(error);
-    };
-    img.src = imageUrl;
-  });
+            const dataURL = canvas.toDataURL('image/png');
+            resolve(dataURL);
+        };
+        img.onerror = (error) => {
+            reject(error);
+        };
+        img.src = imageUrl;
+    });
 };
 
 export const generateReportBinnacle = async(data, start, end) => {
@@ -118,10 +118,45 @@ export const generateReportBinnacle = async(data, start, end) => {
 
     const printDate = new Date();
 
-    const title = `REPORTE GENERAL DE BITACORA ${(start && end)? `CORRESPONDIENTES A LAS FECHAS " ${start} - ${end} "` : ''}`
+    const fechas = `${(start && end)?`${start}  /  ${end}`:'Sin Intervalo'}`
+    const title = `Sistema de Gestion de Trabajos de la Imprenta`
     const imageDataUrl = await loadImageAsDataUrl(image);
 
     var dd = {
+        header: [
+            {
+              absolutePosition: { x: 0, y: 0 },
+              canvas: [
+                    {
+                        type: 'rect', // Tipo de forma: rectángulo
+                        x: -20, y: 6,   // Coordenadas de inicio (esquina superior izquierda)
+                        w: 792, h: 3, // Ancho y alto del rectángulo
+                        color: '#0A2E61' // Color de fondo del rectángulo
+                    },
+                    {
+                        type: 'rect', // Tipo de forma: rectángulo
+                        x: -20, y: 12,   // Coordenadas de inicio (esquina superior izquierda)
+                        w: 792, h: 35, // Ancho y alto del rectángulo
+                        color: '#FC0808' // Color de fondo del rectángulo
+                    },
+                    {
+                        type: 'rect', // Tipo de forma: rectángulo
+                        x: -20, y: 50,   // Coordenadas de inicio (esquina superior izquierda)
+                        w: 792, h: 3, // Ancho y alto del rectángulo
+                        color: '#0A2E61' // Color de fondo del rectángulo
+                    }
+                ]
+            },
+            {
+                text: title,
+                absolutePosition: { x: 30, y: 20 },// Posición del texto en relación al rectángulo
+                color: 'white',
+                fontSize:15,
+                style: 'header',
+                bold: true,
+                alignment: 'center'
+            },
+        ],
           footer: function(currentPage, pageCount) { 
             return [
                 {
@@ -140,10 +175,28 @@ export const generateReportBinnacle = async(data, start, end) => {
                             color: '#0A2E61' // Color de fondo del rectángulo
                         },
                         {
-                            type: 'ellipse',
-                            x: 306, y: 16,
-                            color: 'white',
-                            r1: 20, r2: 20
+                          type: 'rect', // Tipo de forma: rectángulo
+                          x: 270, y: 14,   // Coordenadas de inicio (esquina superior izquierda)
+                          w: 72, h: 13, // Ancho y alto del rectángulo
+                          color: 'white' // Color de fondo del rectángulo
+                        },
+                        {
+                          type: 'rect', // Tipo de forma: rectángulo
+                          x: 275, y: 27,   // Coordenadas de inicio (esquina superior izquierda)
+                          w: 62, h: 5, // Ancho y alto del rectángulo
+                          color: 'white' // Color de fondo del rectángulo
+                        },
+                        {
+                          type: 'ellipse',
+                          x: 275, y: 27,
+                          color: 'white',
+                          r1: 5, r2: 5
+                        },
+                        {
+                          type: 'ellipse',
+                          x: 337, y: 27,
+                          color: 'white',
+                          r1: 5, r2: 5
                         },
                     ]
                 },
@@ -170,16 +223,16 @@ export const generateReportBinnacle = async(data, start, end) => {
                     fontSize: 13,
                 },
                 {
-                  absolutePosition: { x: 420, y: 0 },
+                  absolutePosition: { x: 450, y: 0 },
                   text: `Fecha de Impresion : ${printDate.toLocaleString()}`,
                   color:'black',
-                  fontSize: 10,
+                  fontSize: 8,
                 },
             ]; 
             
         },
         pageSize: 'letter',
-        pageMargins: [ 20, 40, 20, 60 ],
+        pageMargins: [ 20, 70, 20, 60 ],
         background: [
           {
             image: imageDataUrl, // Ruta a tu imagen de marca de agua
@@ -190,37 +243,44 @@ export const generateReportBinnacle = async(data, start, end) => {
           }
         ],
         content: [
-          {
-            canvas: [
-              {
-                type: 'rect', // Tipo de forma: rectángulo
-                x: -20, y: 0,   // Coordenadas de inicio (esquina superior izquierda)
-                w: 792, h: 50, // Ancho y alto del rectángulo
-                color: '#FC0808' // Color de fondo del rectángulo
-              },
-              {
-                type: 'rect', // Tipo de forma: rectángulo
-                x: -20, y: -5,   // Coordenadas de inicio (esquina superior izquierda)
-                w: 792, h: 3, // Ancho y alto del rectángulo
-                color: '#0A2E61' // Color de fondo del rectángulo
-              },
-              {
-                type: 'rect', // Tipo de forma: rectángulo
-                x: -20, y: 51.5,   // Coordenadas de inicio (esquina superior izquierda)
-                w: 792, h: 3, // Ancho y alto del rectángulo
-                color: '#0A2E61' // Color de fondo del rectángulo
-              }
-            ]
-          },
-              {
-                text: title,
-                absolutePosition: { x: 30, y: 45 },// Posición del texto en relación al rectángulo
-                color: 'white',
-                fontSize:15,
-                style: 'header',
-                bold: true,
-                alignment: 'center'
-              },
+            {
+                absolutePosition: { x: 20, y: 68 },
+                canvas: [
+                    
+                    {
+                        type: 'line', // Tipo de forma: rectángulo
+                        x1: 10, y1: 70, // Coordenadas de inicio
+                        x2: 562, y2: 70, // Coordenadas finales
+                        lineWidth: 4, // Grosor de la línea
+                        lineColor: '#C1C1C1' // Color de fondo del rectángulo
+                    },
+                    {
+                    type: 'rect', // Tipo de forma: rectángulo
+                    x: 10, y: 0,   // Coordenadas de inicio (esquina superior izquierda)
+                    w: 552, h: 70, // Ancho y alto del rectángulo
+                    color: '#E8E8E8' // Color de fondo del rectángulo
+                    },
+                ]
+            },
+            {
+                margin:[25,10,25,10],
+                columns: [
+                {
+                    width: '27%',
+                    text: 'Titulo de Reporte:\n\nIntervalo de Fechas :\n\n',
+                    color: 'black',
+                    fontSize:12,
+                    style: 'header',
+                    bold: true    
+                },
+                {
+                    text: `Registros de bitacora del sistema\n\n${fechas}`,
+                    color: 'black',
+                    fontSize:12,
+                    style: 'header',
+                }
+                ]
+            },
             {
                 marginTop:10,
                 table: {

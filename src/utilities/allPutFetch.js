@@ -125,3 +125,15 @@ export const updateConfigEmail = async(body) => {
     let response = await myPut(url,body);
     return (response);
 }
+
+export const updateCharges = async(body) => {
+    const url = 'http://localhost:5000/api/charges';
+    let response = await myPut(url,body);
+    return (response);
+}
+
+export const updateConfigBinnacle = async(body) => {
+    const url = 'http://localhost:5000/api/binnacle';
+    let response = await myPut(url,body);
+    return (response);
+}

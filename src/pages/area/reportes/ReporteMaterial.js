@@ -47,8 +47,9 @@ export const ReporteMaterial = () => {
         console.log(datos);
         const start = (document.getElementById('FormStart').value)
         const end = (document.getElementById('FormEnd').value)
-        const area = document.getElementById('FormMaterial').value
-        generateReportMaterialUse(datos, start, end, area);
+        const material = document.getElementById('FormMaterial').value
+        const unit = materials.find(item=>{ return item.name===material}).unit;
+        generateReportMaterialUse(datos, start, end, material, unit);
     }
 
     useEffect(()=>{
