@@ -22,6 +22,7 @@ export const Entregar = () => {
         await finishTotalOrderById(order._id);
         await loadData();
         generateDeliveryCertificate(order);
+        setModal(false);
     }
 
     const columns= [

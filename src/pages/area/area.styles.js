@@ -34,7 +34,8 @@ export const useStyles = makeStyles({
             border:'1px solid gray'
         },
         '& h3':{
-            textAlign:'center'
+            textAlign:'center',
+            margin:'0.4rem'
         }
     },
     addRemoveBox:{

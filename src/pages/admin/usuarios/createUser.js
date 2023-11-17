@@ -36,10 +36,12 @@ export const CreateUser = () => {
                 enqueueSnackbar('Ingresa el nombre del cliente',{variant:'error'});            
 
             }
-            if((!(/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(emailForm.value)))){
-                setEmailForm({error:true, value:emailForm.value});
-                error=true;
-                enqueueSnackbar('Ingresa un email valido',{variant:'error'});            
+            if(emailForm.value.length!==0){
+                if((!(/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(emailForm.value)))){
+                    setEmailForm({error:true, value:emailForm.value});
+                    error=true;
+                    enqueueSnackbar('Ingresa un email valido',{variant:'error'});            
+                }
             }
         }else{
             if((roleForm.value==='')){

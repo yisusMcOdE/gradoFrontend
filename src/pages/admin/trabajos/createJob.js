@@ -14,7 +14,7 @@ export const CreateJob = () => {
     const initialInput = {error:false, value:''}
     const costInitial = {
         lot : {...initialInput},
-        price : {...initialInput}
+        price : {error:false, value:'0.00'}
     }
     const materialInitial = {
         name : {...initialInput},
@@ -104,7 +104,7 @@ export const CreateJob = () => {
                     itemAux.lot.error=true
                     errorCost=true
                 }
-                if(item.price.value===''){
+                if(item.price.value==='' ){
                     itemAux.price.error=true
                     errorCost=true
                 }
@@ -179,10 +179,32 @@ export const CreateJob = () => {
     const handleChange = (e, typeDetail, field, index) => {
 
         if(typeDetail==='cost'){
-            if(Number(e.target.value)>=1){
-                const values = [...costDetails];
-                values[index][field].value = e.target.value;
-                setCostDetails([...values]);
+            if(field==='lot'){
+                let expresionRegularLot = /^\d+$/;                
+                if (expresionRegularLot.test(e.target.value)) {
+                    const values = [...costDetails];
+                    var incidence = costDetails.find(item=>item.lot.value===e.target.value);
+                    if(incidence){
+                        values[index][field].error = true;
+                        enqueueSnackbar(`${incidence.lot.value} ya fue seleccionado`,{variant:'error'});
+                    }else{
+                        values[index][field].error = false;
+                    }
+                    values[index][field].value = e.target.value;
+                    values[index][field].error = false;
+                    setCostDetails([...values]);
+                }
+            }else if(field==='price'){
+                let expresionRegularMoney = /^\d*\.?\d{0,2}$/;                
+                if (expresionRegularMoney.test(e.target.value)) {
+                    const values = [...costDetails];
+                    values[index][field].value = e.target.value;
+                    values[index][field].error = false;
+
+                    setCostDetails([...values]);
+
+                }
+
             }
         }else{
             const values = [...materialDetails];
@@ -196,8 +218,7 @@ export const CreateJob = () => {
                     enqueueSnackbar(`${name} ya fue seleccionado`,{variant:'error'});
                 }
             }else{
-                if(Number(e.target.value)>=1)
-                    values[index][field].value = e.target.value;
+                values[index][field].value = e.target.value;
             }
             setMaterialDetails([...values]);
         }
@@ -349,6 +370,9 @@ export const CreateJob = () => {
                                                         fullWidth
                                                         variant="standard"
                                                         size='small'
+                                                        InputProps={{
+                                                            startAdornment: <InputAdornment position="start">Bs.</InputAdornment>,
+                                                          }}
                                                     />
                                                 </Grid>
                                                 <div style={{position:'relative', display:'flex', alignItems:'center'}}  >
@@ -374,7 +398,7 @@ export const CreateJob = () => {
                                             <AddIcon fontSize="inherit"/>
                                         </IconButton>
                                     </Grid>
-                                    <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'10px 10px 0 0'}}>
+                                    <Grid item xs={12} className={classes.tableHeader} style={{borderRadius:'5px 5px 0 0'}}>
                                         <h3 style={{textAlign:'center'}}>DETALLE DE USO DE MATERIALES</h3>
                                     </Grid>
                                     <Grid item xs={12} className={classes.tableHeader} container>

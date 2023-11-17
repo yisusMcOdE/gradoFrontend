@@ -46,17 +46,16 @@ export const Finalizar = ({id, close, load}) => {
         loadData();
     },[])
 
-
     const addDetail = () => {
         setDataSobrante([...dataSobrante, materialInicial])
-    };
+    }
 
-    const removeDetail = () => {
+    const removeDetailByIndex = (index) => {
         const details = [...dataSobrante];
         if(details.length>1){
-            details.pop();
+            details.splice(index,1);
+            setDataSobrante([...details]);
         }
-        setDataSobrante([...details]);
     }
 
     const handleChange = (e, field, index) => {
@@ -268,28 +267,29 @@ export const Finalizar = ({id, close, load}) => {
                     {sobrantes&&
                     <Grid item>
                         <Grid container direction='column'>
-                            <Grid item  className={classes.tableHeader} style={{borderRadius:'10px 10px 0 0'}}>
-                                <p style={{textAlign:'center'}}>REGISTRO DE MATERIAL SOBRANTE</p>
-                            </Grid>
-
-                            <Box display='flex' className={classes.addRemoveBox} columnGap={2}>
-                                <IconButton size="small" onClick={addDetail}>
+                            <Grid item position='relative' display='flex' alignItems='center'>
+                                <IconButton 
+                                    size="small" 
+                                    onClick={addDetail} 
+                                    style={{background:'#006E0A', position:'absolute', left:'10px'}}
+                                >
                                     <AddIcon fontSize="inherit"/>
                                 </IconButton>
-                                <IconButton size="small" onClick={removeDetail}>
-                                    <RemoveIcon fontSize="inherit"/>
-                                </IconButton>
-                            </Box>
+                            </Grid>
+
+                            <Grid item  className={classes.tableHeader} style={{borderRadius:'5px 5px 0 0'}}>
+                                <h3 style={{textAlign:'center'}}>REGISTRO DE MATERIAL SOBRANTE</h3>
+                            </Grid>
 
                             <Grid item  className={classes.tableHeader} container>
                                 <Grid item xs={2}>
-                                    <p style={{textAlign:'center'}}>N°</p>
+                                    <h3 style={{textAlign:'center'}}>N°</h3>
                                 </Grid>
                                 <Grid item xs={7}>
-                                    <p style={{textAlign:'center'}}>Material</p>
+                                    <h3 style={{textAlign:'center'}}>Material</h3>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <p style={{textAlign:'center'}}>Cantidad</p>
+                                    <h3 style={{textAlign:'center'}}>Cantidad</h3>
                                 </Grid>
                             </Grid>
 
@@ -329,6 +329,11 @@ export const Finalizar = ({id, close, load}) => {
                                             value={dataSobrante[index].cantidad.value}
                                         />
                                     </Grid>
+                                    <div style={{position:'relative', display:'flex', alignItems:'center'}}  >
+                                        <IconButton style={{position:'absolute', right:'-15px', background:'#4B0000'}} size="small" onClick={()=>{removeDetailByIndex(index)}}>
+                                            <RemoveIcon fontSize="inherit" color="neutro1"/>
+                                        </IconButton>
+                                    </div>
                                 </Grid>
                                 )
                             })}

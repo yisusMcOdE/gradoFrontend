@@ -314,7 +314,6 @@ export const Confirmar = () => {
                                             </Grid>
                                             <Grid item xs={5}>
                                                 <TextField
-                                                    type='number'
                                                     value={order.numberCheck.value} 
                                                     onChange={(e)=>{
                                                         setOrder({...order, numberCheck:{error:false, value:e.target.value}})

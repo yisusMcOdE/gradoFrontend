@@ -1,11 +1,38 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import { getCharges } from "../allGetFetch";
+import image from '../../assets/images/uatf.png'; // Ruta de la imagen relativa
+
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
+const loadImageAsDataUrl = (imageUrl) => {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'Anonymous'; 
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
 
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
 
-export const generateDeliveryCertificate = (data) => {
+            const dataURL = canvas.toDataURL('image/png');
+            resolve(dataURL);
+        };
+        img.onerror = (error) => {
+            reject(error);
+        };
+        img.src = imageUrl;
+    });
+};
+
+export const generateDeliveryCertificate = async (data) => {
+
+    const charges = await getCharges();
+    console.log(charges);
+    const imageDataUrl = await loadImageAsDataUrl(image);
 
     const opciones = {
         year: 'numeric',
@@ -19,6 +46,15 @@ export const generateDeliveryCertificate = (data) => {
     var dd = {
         pageMargins: [ 20, 40, 20, 180 ],
         pageSize:'letter',
+        background: [
+            {
+              image: imageDataUrl, // Ruta a tu imagen de marca de agua
+              width: 250,
+              height:300,// Ancho de la imagen
+              opacity: 0.1,
+              absolutePosition: { x: 186, y: 271 },
+            }
+          ],
         footer: function(currentPage, pageCount) { 
             return [
                 {
@@ -40,7 +76,7 @@ export const generateDeliveryCertificate = (data) => {
                                                 border:[false,false,false,false]
                                             },
                                             {
-                                                text:'Jesus Morales Perez',
+                                                text:`${charges.chargeReception}\nRecepcionista`,
                                                 alignment:'center',
                                                 border:[false,true,false,false]
                                             },
@@ -70,7 +106,11 @@ export const generateDeliveryCertificate = (data) => {
                                                 border:[false,false,false,false]
                                             },
                                             {
-                                                text: data.client,
+                                                text: `${data.courier?
+                                                    `${data.courier}\nMensajero ${data.client}`
+                                                :
+                                                    `${data.client}\n CI:${data.ci}`
+                                                }`,
                                                 alignment:'center',
                                                 border:[false,true,false,false]
                                             },
