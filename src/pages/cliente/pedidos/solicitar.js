@@ -12,6 +12,7 @@ import { generateTicketPay } from "../../../utilities/pdfMake/checkPay";
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 import { useSnackbar } from "notistack";
+import { decodeToken } from "react-jwt";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -134,18 +135,26 @@ export const SolicitarCliente = () => {
         }
 
         if(!error){
+
+            const token = localStorage.token;
+            const decode = decodeToken(token);
+
             const detailsFormated = details.map(item=>{
+
+                
+
                 return {
                     job: item.job.value,
                     detail: item.detail.value,
                     requiredQuantity: item.requiredQuantity.value,
-                    cost: item.cost.value
+                    cost: item.cost.value,
                 }
             });
             let body={
                 details:detailsFormated,
                 fundsOrigin:funds.value,
-                cost: details.reduce((accumulator, item)=>{return (accumulator+item.cost.value)},0)
+                cost: details.reduce((accumulator, item)=>{return (accumulator+item.cost.value)},0),
+                idUser: decode.data._id
             }
             setLoading(true);
             const response = await createOrderInternal(body);

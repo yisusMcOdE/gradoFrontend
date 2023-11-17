@@ -38,7 +38,6 @@ export const Usuarios = () => {
         {field: 'index', headerName: 'N°', flex: 0.5},
         {field: 'name', headerName: 'Empleado', flex: 1},
         {field: 'phone', headerName: 'Telefono', flex: 0.5},
-        {field: 'role', headerName: 'Rol', flex: 0.5},
         {field: 'status', headerName: 'Estado', flex: 0.5},
     ];
 
