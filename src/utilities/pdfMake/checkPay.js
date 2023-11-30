@@ -13,7 +13,6 @@ export const generateTicketPay = async(data,details) => {
     numbers().Config._setCentsSingular('CENTAVO');
     numbers().Config._setCentsPlural('CENTAVOS');
 
-    console.log(data);
     let numberTicket = String(data.numberTicketPay);
     numberTicket = ''.concat('0'.repeat(6 - numberTicket.length),numberTicket);
     let costTotalLiteral = numbers(data.cost).toString();

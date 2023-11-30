@@ -16,13 +16,20 @@ export const Entregar = () => {
     const [order, setOrder] = useState();
     const [modal, setModal] = useState(false);
 
-    console.log(order);
+    const handleResponse = async(response) => {
+        if(response.status === 202){
+            const jsonResponse = await response.json();
+            console.log(jsonResponse);
+            await loadData();
+            generateDeliveryCertificate({...order, numberMinute:jsonResponse.numberMinute});
+            setModal(false);
+        }
+    }
 
     const finishOrder = async () => {
-        await finishTotalOrderById(order._id);
-        await loadData();
-        generateDeliveryCertificate(order);
-        setModal(false);
+        const response = await finishTotalOrderById(order._id);
+        handleResponse(response);
+        
     }
 
     const columns= [

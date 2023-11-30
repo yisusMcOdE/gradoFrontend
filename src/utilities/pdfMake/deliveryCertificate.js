@@ -30,6 +30,11 @@ const loadImageAsDataUrl = (imageUrl) => {
 
 export const generateDeliveryCertificate = async (data) => {
 
+    console.log(data);
+
+    let numberMinute = String(data.numberMinute);
+    numberMinute = ''.concat('0'.repeat(6 - numberMinute.length),numberMinute);
+
     const charges = await getCharges();
     console.log(charges);
     const imageDataUrl = await loadImageAsDataUrl(image);
@@ -132,6 +137,10 @@ export const generateDeliveryCertificate = async (data) => {
             ]
         },
         content: [
+            {
+                text:`N° ${numberMinute}`,
+                alignment:'right'
+            },
             {
                 text:'ACTA DE ENTREGA',
                 bold:true,
