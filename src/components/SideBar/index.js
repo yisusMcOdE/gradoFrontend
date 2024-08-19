@@ -1,9 +1,7 @@
-import { Drawer, Grid, SvgIcon } from '@mui/material';
-import { SwipeableDrawer, Slide, Button } from '@mui/material';
+import { Drawer, Grid } from '@mui/material';
+import { Button } from '@mui/material';
 import { useState } from 'react';
 import { useStyles } from './sidebar.styles';
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';

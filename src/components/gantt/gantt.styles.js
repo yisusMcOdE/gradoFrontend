@@ -1,6 +1,5 @@
 import { makeStyles } from "@mui/styles";
 import { theme } from "../../theme/theme";
-import { getOrdersDelayed } from "../../utilities/allGetFetch";
 
 const myStyles = {
     container:{

@@ -2,13 +2,11 @@ import { useState } from "react";
 import { ListItemButton, ListItemIcon, ListItemText, Collapse, List } from "@mui/material";
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { useStyles } from "./itemSideBar.styles";
 import { useNavigate } from "react-router-dom";
 
 export const ItemSideBar = ({icons, indexIcon, label , subItems}) => {
 
     const [open, setOpen] = useState(false);
-    const classes = useStyles();
     const navigator = useNavigate();
 
     return (

@@ -1,8 +1,6 @@
 import { theme } from './theme/theme';
-import { ThemeProvider, Button, CssBaseline } from '@mui/material';
-import { BrowserRouter, Routes, Route, RouterProvider } from 'react-router-dom';
-import { Login } from './pages/login';
-import { Recepcion } from './pages/Recepcion';
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import { RouterProvider } from 'react-router-dom';
 import { routes } from './routes';
 import { SnackbarProvider } from 'notistack';
 

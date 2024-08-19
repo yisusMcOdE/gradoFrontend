@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FrappeGantt } from "frappe-gantt-react";
 import { useStyles } from "./gantt.styles";
 import { Button, Dialog, Card, TextField, Collapse, Grid } from "@mui/material";
 import { getSchedule } from "../../utilities/allGetFetch";
@@ -8,12 +7,10 @@ import { updateSchedule } from "../../utilities/allPutFetch";
 import { StatusTree } from "../statusTree";
 import MoreTimeIcon from '@mui/icons-material/MoreTime';
 import { addDelayById } from "../../utilities/allPostFetch";
-import { useNavigate } from "react-router-dom";
-import { makeStyles } from "@mui/styles";
 import { useSnackbar } from 'notistack';
 
 
-import { Gantt, Task, EventOption, StylingOption, ViewMode, DisplayOption } from 'gantt-task-react';
+import { Gantt } from 'gantt-task-react';
 import "gantt-task-react/dist/index.css";
 import { Finalizar } from "../../pages/area/trabajos/Finalizar";
 
@@ -21,7 +18,6 @@ export const MyGantt =  ({type, direction}) => {
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const navigator = useNavigate();
     const ganttRef = useRef(null);
 
     const [loading, setLoading] = useState(false);
