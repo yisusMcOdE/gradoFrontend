@@ -1,8 +1,8 @@
-import { Button, Card, Dialog, FormLabel, Grid, InputAdornment, TextField } from "@mui/material";
+import { Button, Card, Dialog, Grid, InputAdornment, TextField } from "@mui/material";
 import { useStyles } from "./index.styles";
 import logoUatf from '../../assets/images/uatf.png';
 import { useNavigate } from "react-router-dom";
-import { redirectRole, verifyToken, verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
+import { redirectRole, verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
 import { decodeToken } from "react-jwt";
 import { useEffect, useState } from "react";
 import { getAllUsers } from "../../utilities/allGetFetch";
@@ -81,7 +81,7 @@ export const Login = () => {
                 user:user.value,
                 password:password.value
             }
-            const response = await createUser(body);
+            await createUser(body);
             setNoUsers(false);
         }
     }
@@ -146,7 +146,7 @@ export const Login = () => {
             <Grid container>
                 <Grid item container xs={6} columnSpacing={3} className={classes.logoArea}>
                     <Grid item xs={5}>
-                        <img src={logoUatf}/>
+                        <img src={logoUatf} alt='logoUATF'/>
                     </Grid>
                     <Grid item xs>
                         <h1>Universidad Autonoma Tomas Frias</h1>

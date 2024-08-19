@@ -50,7 +50,6 @@ import { ConfirmOrder } from '../pages/Recepcion/Materiales/confirmOrder';
 import { ConfigWhatsapp } from '../pages/admin/mensajeria/configWhats';
 import { Direccion } from '../pages/direccion';
 import { ConfigEmail } from '../pages/admin/mensajeria/configEmail';
-import { decodeToken } from 'react-jwt';
 import { Cargos } from '../pages/admin/cargos';
 import { ConfigBinnacle } from '../pages/admin/bitacora/config';
 

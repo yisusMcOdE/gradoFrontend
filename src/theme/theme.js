@@ -1,4 +1,4 @@
-import { createTheme, merge } from '@mui/material';
+import { createTheme } from '@mui/material';
 import kanit_Regular from '../assets/fonts/Kanit/Kanit-Regular.ttf';
 
 

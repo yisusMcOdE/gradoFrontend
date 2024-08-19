@@ -1,5 +1,4 @@
 import { isArray } from "lodash";
-import { json } from "react-router-dom";
 
 const token = localStorage.token;
 
@@ -24,7 +23,6 @@ const myFetch = async(url) => {
     const response = await fetch(url,{
         method: 'GET',
         headers: {
-        'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
     },   
@@ -42,102 +40,102 @@ const myFetch = async(url) => {
 }
 
 export const allClientsInternal = async() => {
-    const url = 'http://localhost:5000/api/clientInternal';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/clientInternal`;
     const data = await myFetch(url)
     return (data);
 }
 
 export const allClientsInternalActive = async() => {
-    const url = 'http://localhost:5000/api/clientInternal/active';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/clientInternal/active`;
     const data = await myFetch(url)
     return (data);
 }
 
 export const allClientsExternal = async() => {
-    const url = 'http://localhost:5000/api/clientExternal';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/clientExternal`;
     const data = await myFetch(url)
     return (data);
 }
 
 export const allClientsExternalActive = async() => {
-    const url = 'http://localhost:5000/api/clientExternal/active';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/clientExternal/active`;
     const data = await myFetch(url)
     return (data);
 }
 
 export const allEmployees = async () => {
-    const url = 'http://localhost:5000/api/employee';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/employee`;
     const data = await myFetch(url)
     return (data);
 }
 
 export const clientById = async (id) => {
-    const url = `http://localhost:5000/api/clients/${id}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/clients/${id}`;
     return (myFetch(url));
 }
 
 export const getEmpInstById = async (id) => {
-    const url = `http://localhost:5000/api/clients/empInst/${id}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/clients/empInst/${id}`;
     return (myFetch(url));
 }
 
 export const clientInternalById = async (id) => {
-    const url = `http://localhost:5000/api/clientInternal/${id}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/clientInternal/${id}`;
     return (myFetch(url));
 }
 export const clientExternalById = async (id) => {
-    const url = `http://localhost:5000/api/clientExternal/${id}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/clientExternal/${id}`;
     return (myFetch(url));    
 }
 export const employeeById = async (id) => {
-    const url = `http://localhost:5000/api/employee/${id}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/employee/${id}`;
     return (myFetch(url));
 }
 export const allMaterials = async (id) => {
-    const url = 'http://localhost:5000/api/material';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/material`;
     return (myFetch(url));
 
 }
 export const materialsById = async (id) => {
-    const url = `http://localhost:5000/api/material/${id}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/material/${id}`;
     return (myFetch(url));
 }
 
 export const allJobs = async (id) => {
-    const url = 'http://localhost:5000/api/job';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/job`;
     return (myFetch(url));
 }
 
 export const allJobsActive = async (id) => {
-    const url = 'http://localhost:5000/api/job/active';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/job/active`;
     return (myFetch(url));
 }
 
 export const JobById = async (id) => {
-    const url = `http://localhost:5000/api/job/${id}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/job/${id}`;
     return (myFetch(url));
 }
 
 export const orderInternalList = async (id) => {
-    const url = `http://localhost:5000/api/orderInternal/list`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/orderInternal/list`;
     return (myFetch(url));
 }
 export const orderExternalList = async (id) => {
-    const url = `http://localhost:5000/api/orderExternal/list`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/orderExternal/list`;
     return (myFetch(url));
 }
 
 export const allOrderMaterial = async() => {
-    const url = 'http://localhost:5000/api/material/order';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/material/order`;
     return (myFetch(url));
 }
 export const getOrderMaterialById = async(id) => {
-    const url = `http://localhost:5000/api/material/order/${id}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/material/order/${id}`;
     return (myFetch(url));
 }
 
 export const orderInternalById = async(id) => {
-    const url = `http://localhost:5000/api/orderInternal/detail/${id}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/orderInternal/detail/${id}`;
     let response = await myFetch(url);
     if(response.length!==0){
         response = [{...response[0], details:getIndex([...response[0].details])}]
@@ -146,7 +144,7 @@ export const orderInternalById = async(id) => {
 }
 
 export const orderExternalById = async(id) => {
-    const url = `http://localhost:5000/api/orderExternal/detail/${id}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/orderExternal/detail/${id}`;
     let response = await myFetch(url);
     if(response.length!==0){
         response = [{...response[0], details:getIndex([...response[0].details])}]
@@ -155,13 +153,13 @@ export const orderExternalById = async(id) => {
 }
 
 export const getConfigBackup = async() => {
-    const url = 'http://localhost:5000/api/configBackup';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/configBackup`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getBackupFiles = async () => {
-    const url = 'http://localhost:5000/api/configBackup/list';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/configBackup/list`;
     const response = await fetch(url,{
         method: 'GET',
         headers: {
@@ -184,25 +182,25 @@ export const getBackupFiles = async () => {
 }
 
 export const getOrderNoConfirmed = async () => {
-    const url = 'http://localhost:5000/api/orders/noConfirm';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/orders/noConfirm`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getOrderDetailsConfirmed = async () => {
-    const url = 'http://localhost:5000/api/orderDetails';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/orderDetails`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getSchedule = async () => {
-    const url = 'http://localhost:5000/api/schedule/generate';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/schedule/generate`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getOrderById = async (id) => {
-    const url = `http://localhost:5000/api/orders/internalExternal/${id}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/orders/internalExternal/${id}`;
     const response = await fetch(url,{
         method: 'GET',
         headers: {
@@ -220,17 +218,16 @@ export const getOrderById = async (id) => {
     }else{
         return 204
     }
-    return (response);
 } 
 
 export const getOrderFinishedById = async (id) => {
-    const url = `http://localhost:5000/api/orders/finish/${id}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/orders/finish/${id}`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getMaterialStractByid = async (id,start,end) => {
-    const url = `http://localhost:5000/api/material/extract/${id}${(start&&end)?`?start=${start}&end=${end}`:''}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/material/extract/${id}${(start&&end)?`?start=${start}&end=${end}`:''}`;
     const response = await fetch(url,{
         method: 'GET',
         headers: {
@@ -246,7 +243,7 @@ export const getMaterialStractByid = async (id,start,end) => {
 }
 
 export const getOrdersDelayed = async () => {
-    const url = 'http://localhost:5000/api/orderDetails/delayed';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/orderDetails/delayed`;
     const response = await fetch(url,{
         method: 'GET',
         headers: {
@@ -259,31 +256,31 @@ export const getOrdersDelayed = async () => {
 }
 
 export const getAllEquipment = async () => {
-    const url = 'http://localhost:5000/api/equipment';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/equipment`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getEquipmentById = async (id) => {
-    const url = `http://localhost:5000/api/equipment/detail/${id}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/equipment/detail/${id}`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getReportArea = async (area, start, end, equipment) => {
-    const url = `http://localhost:5000/api/reports/area/${area}?start=${start}&end=${end}&equipment=${equipment}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/reports/area/${area}?start=${start}&end=${end}&equipment=${equipment}`;
     const response = await myFetch(url);
     return response
 }
 
 export const getAllOrdersFinished = async () => {
-    const url = 'http://localhost:5000/api/orders/allFinished';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/orders/allFinished`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getOrdersFinishedReport = async (start, end) => {
-    const url = `http://localhost:5000/api/reports/orders/total?start=${start}&end=${end}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/reports/orders/total?start=${start}&end=${end}`;
     let response = await myFetch(url);
     return (response);
 }
@@ -291,22 +288,22 @@ export const getOrdersFinishedReport = async (start, end) => {
 export const getAllBinnacle = async (user,start='',end='') => {
     let url=''
     if(user==='Todos'){
-        url = `http://localhost:5000/api/binnacle?start=${start}&end=${end}`;
+        url = `${process.env.REACT_APP_SERVER_HOST}/api/binnacle?start=${start}&end=${end}`;
     }
     else
-        url = `http://localhost:5000/api/binnacle?user=${user}&start=${start}&end=${end}`;
+        url = `${process.env.REACT_APP_SERVER_HOST}/api/binnacle?user=${user}&start=${start}&end=${end}`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getBinnacleById = async (id) => {
-    const url = `http://localhost:5000/api/binnacle/${id}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/binnacle/${id}`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getAllUsers = async () => {
-    const url = 'http://localhost:5000/api/users';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/users`;
     const response = await fetch(url,{
         method: 'GET',
         headers: {
@@ -323,7 +320,7 @@ export const getAllUsers = async () => {
 }
 
 export const getAllUsersComplete = async() => {
-    const url = 'http://localhost:5000/api/users/complete';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/users/complete`;
     const response = await fetch(url,{
         method: 'GET',
         headers: {
@@ -345,7 +342,7 @@ export const getAllUsersComplete = async() => {
 }
 
 export const getUserById = async (id) => {
-    const url = `http://localhost:5000/api/users/${id}`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/users/${id}`;
     let response = await myFetch(url);
     return (response);
 }
@@ -358,7 +355,7 @@ export const getAllOrdersList = async () => {
         return data
     }
 
-    const url = 'http://localhost:5000/api/orders/allList';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/orders/allList`;
     const response = await fetch(url,{
         method: 'GET',
         headers: {
@@ -381,49 +378,49 @@ export const getAllOrdersList = async () => {
 
 export const getAllOrdersListById = async () => {
 
-    const url = 'http://localhost:5000/api/orders/allListById';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/orders/allListById`;
     const response = await myFetch(url);
     return (response);
 }
 
 export const getQRCode = async() => {
-    const url = 'http://localhost:5000/api/whatsapp/qr';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/whatsapp/qr`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getAuthenticated = async () => {
-    const url = 'http://localhost:5000/api/whatsapp/status';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/whatsapp/status`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getIsReady = async () => {
-    const url = 'http://localhost:5000/api/whatsapp/ready';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/whatsapp/ready`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getQRCodeAuto = async() => {
-    const url = 'http://localhost:5000/api/whatsapp/qrAuto';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/whatsapp/qrAuto`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getStatusEmail = async() => {
-    const url = 'http://localhost:5000/api/email/status';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/email/status`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getCharges = async() => {
-    const url = 'http://localhost:5000/api/charges';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/charges`;
     let response = await myFetch(url);
     return (response);
 }
 
 export const getBinnacleConfig = async () => {
-    const url = 'http://localhost:5000/api/binnacle/config';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/binnacle/config`;
     let response = await myFetch(url);
     return (response);
 }

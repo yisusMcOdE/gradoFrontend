@@ -14,7 +14,7 @@ const headersTableWidth = {
 
 const calculateWidths = (data) => {
     const widths = ['*',30];
-    data.map(item => {
+    data.forEach(item => {
         widths.push(
         headersTableWidth[item.toUpperCase()]
         )

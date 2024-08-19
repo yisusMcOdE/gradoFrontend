@@ -1,8 +1,5 @@
-import { Grid } from "@mui/material";
-import { useEffect, useState } from "react";
-import { json, Outlet, useNavigate } from "react-router-dom";
-import { isExpired, decodeToken } from 'react-jwt';
-
+import { useEffect } from "react";
+import {  Outlet, useNavigate } from "react-router-dom";
 
 export const Root = () => {
 
@@ -38,7 +35,7 @@ export const Root = () => {
                 }
             }
         }*/
-    },[])
+    },[navigator])
 
     return (
         <Outlet/>

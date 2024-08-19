@@ -35,7 +35,7 @@ function preprocessTableData(data) {
         decoration: 'underline',
         }
     ];
-    headers.map(item => {
+    headers.forEach(item => {
         rowHeaders.push(
             {
                 text: item.toUpperCase(),

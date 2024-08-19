@@ -1,5 +1,4 @@
 import { makeStyles } from '@mui/styles';
-import { mq } from '../../config/mq.js';
 import { theme } from '../../theme/theme.js';
 
 

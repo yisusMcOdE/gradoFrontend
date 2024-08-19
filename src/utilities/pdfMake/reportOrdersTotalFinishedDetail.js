@@ -5,19 +5,9 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const headers = ['fecha registro', 'fecha entrega', 'cliente', 'trabajo', 'detalle', 'cantidad', 'costo']
 
-const headersTableWidth = {
-  "FECHA REGISTRO" : 55,
-  "FECHA ENTREGA" : 80,
-  CLIENTE : 150,
-  TRABAJO : 200,
-  DETALLE: 70,
-  CANTIDAD : 55,
-  COSTO : 40
-}
-
 const calculateWidths = () => {
   const widths = ['*',15,55,55,100,100,220,55,55,'*'];
-  /*data.map(item => {
+  /*data.forEach(item => {
     widths.push(
       headersTableWidth[item.toUpperCase()]
     )
@@ -42,7 +32,7 @@ const dashLines = (data) => {
         if(order.details.length === 1){
             position += 2
         }else{
-            order.details.map((item,index) => {
+            order.details.forEach((item,index) => {
                 if(index+1 !== order.details.length){
                     position++;
                     dash.push(position);
@@ -53,6 +43,7 @@ const dashLines = (data) => {
     }
     return dash
 }
+
 
 const secondLines = (data) => {
     const second=[];
@@ -91,7 +82,6 @@ const thirdLines = (data) => {
 
 function preprocessTableData(data) {
 
-  let totalCostValueByOrder = 0;
   let totalCostValue = 0;
 
   const processedData = [];
@@ -109,7 +99,7 @@ function preprocessTableData(data) {
         marginTop: 6
         }
     ];
-    headers.map(item => {
+    headers.forEach(item => {
         rowHeaders.push(
             {
                 text: item.toUpperCase(),

@@ -1,5 +1,4 @@
 import { decodeToken } from "react-jwt";
-import { useNavigate } from "react-router-dom";
 
 export const redirectRole = (role, navigator) => {
     switch (role) {

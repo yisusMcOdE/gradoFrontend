@@ -1,6 +1,3 @@
-import { Chart } from "chart.js/auto";
-
-
 
 export const formatCharBar = (data=[]) => {
 

@@ -33,7 +33,6 @@ export const generateTicketPay = async(data,details) => {
                       color: 'black', // Color de contorno del rectángulo
                       lineWidth: 0.6, // Grosor de línea del contorno,
                       lineColor:'black',
-                      color:''
                     },
                     {
                       type: 'rect', // Tipo de forma: rectángulo
@@ -43,7 +42,6 @@ export const generateTicketPay = async(data,details) => {
                       color: 'black', // Color de contorno del rectángulo
                       lineWidth: 0.5, // Grosor de línea del contorno,
                       lineColor:'black',
-                      color:''
                     }
                 ]
             },

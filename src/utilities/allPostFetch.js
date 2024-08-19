@@ -19,71 +19,71 @@ const myPost = async(url, body) => {
 }
 
 export const createUser = async (data) => {
-    const url = 'http://localhost:5000/api/users';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/users`;
     return (myPost(url,data));
 }
 
 export const createClientExternal = async(data) => {
-    const url = `http://localhost:5000/api/clientExternal`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/clientExternal`;
     return (myPost(url,data));
 }
 
 export const createClient = async(data) => {
-    const url = `http://localhost:5000/api/clientInternal`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/clientInternal`;
     return (myPost(url,data));
 }
 
 export const createEmployee = async(data) => {
-    const url = `http://localhost:5000/api/employee`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/employee`;
     return (myPost(url,data));
 }
 
 export const createMaterial = async(data) => {
-    const url = `http://localhost:5000/api/material`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/material`;
     return (myPost(url,data));
 }
 
 export const createJob = async(data) => {
-    const url = `http://localhost:5000/api/job`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/job`;
     return (myPost(url,data));
 }
 
 export const createOrderExternal = async (data) => {
-    const url = `http://localhost:5000/api/orderExternal`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/orderExternal`;
     return (myPost(url,data));
 }
 
 export const createOrderInternal = async (data) => {
-    const url = `http://localhost:5000/api/orderInternal`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/orderInternal`;
     return (myPost(url,data));
 }
 
 export const createOrderMaterial = async (data) => {
-    const url = `http://localhost:5000/api/material/order`;
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/material/order`;
     return (myPost(url,data));
 }
 
 export const updateConfigBackup = async (data) => {
-    const url = 'http://localhost:5000/api/configBackup';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/configBackup`;
     return (myPost(url,data));
 }
 
 export const restoreBackup = async (data) => {
-    const url = 'http://localhost:5000/api/configBackup/restore';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/configBackup/restore`;
     return (myPost(url, data));
 }
 
 export const addDelayById = async (data) => {
-    const url = 'http://localhost:5000/api/step/delay';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/step/delay`;
     return (myPost(url, data));
 }
 
 export const AddEquipment = async (data) => {
-    const url = 'http://localhost:5000/api/equipment';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/equipment`;
     return (myPost(url, data));
 }
 
 export const addBackUp = async () => {
-    const url = 'http://localhost:5000/api/configBackup/generate';
+    const url = `${process.env.REACT_APP_SERVER_HOST}/api/configBackup/generate`;
     return (myPost(url, {}));
 }
