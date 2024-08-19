@@ -1,0 +1,5 @@
+version: 2
+services:
+  institutoSM:
+    builder: npm@latest
+    buildCommand: npm install --force && npm run build
