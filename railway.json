@@ -5,7 +5,7 @@
       "nixpacksPlan": {
         "phases": {
           "install": {
-            "cmds": ["npm ci --force --omit=dev"]
+            "cmds": ["yarn ci --force --omit=dev"]
           }
         }
       }
