@@ -9,9 +9,6 @@
           },
           "build": {
             "cmds": ["npm run build"]
-          },
-          "start": {
-            "cmds": ["npm run start"]
           }
         }
       }
