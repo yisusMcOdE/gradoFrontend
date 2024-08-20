@@ -6,6 +6,12 @@
         "phases": {
           "install": {
             "cmds": ["npm ci --force --omit=dev"]
+          },
+          "build": {
+            "cmds": ["npm run build"]
+          },
+          "start": {
+            "cmds": ["npm start"]
           }
         }
       }
