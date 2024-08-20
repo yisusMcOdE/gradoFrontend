@@ -1,14 +1,11 @@
-import { Autocomplete, Button, Card, Grid, TextField } from "@mui/material"
+import { Button, Card, Grid, TextField } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { Main } from "../../../components/main"
 import { useStyles } from "../admin.styles";
 import { esES } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
-import { allMaterials, getAllBinnacle, getMaterialStractByid, getOrdersFinishedReport, getReportArea } from "../../../utilities/allGetFetch";
-import { generateReportMaterialUse } from "../../../utilities/pdfMake/reportMaterialUse";
-import { generateReportOrdersTotalFinished } from "../../../utilities/pdfMake/reportOrdersTotalFinished";
-import { generateReportTotalTotal } from "../../../utilities/pdfMake/reportOrdersTotalFinishedDetail";
+import { getAllBinnacle,} from "../../../utilities/allGetFetch";
 import { generateReportBinnacle } from "../../../utilities/pdfMake/reportBinnacle";
 import { generateReportBinnacleDetail } from "../../../utilities/pdfMake/reportBinnacleDetail";
 
@@ -63,8 +60,8 @@ export const ReporteBitacora = () => {
         ///Obteniendo indices seleccionados
         datos.shift();
         const indexes = [] ;
-        datos.map((item) => {
-            item.map((value,index) => {
+        datos.forEach((item) => {
+            item.forEach((value,index) => {
                 if(index===0)
                     indexes.push(value)
             })

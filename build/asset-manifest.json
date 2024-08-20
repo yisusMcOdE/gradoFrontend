@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/static/css/main.504099b9.css",
-    "main.js": "/static/js/main.c2e3324e.js",
+    "main.css": "/static/css/main.397c3cd5.css",
+    "main.js": "/static/js/main.e68065da.js",
     "static/js/787.cda612ba.chunk.js": "/static/js/787.cda612ba.chunk.js",
     "static/media/Kanit-Regular.ttf": "/static/media/Kanit-Regular.f3bae13d78ced30b6ea3.ttf",
     "static/media/uatf.png": "/static/media/uatf.2b675d2134d4c5c7bf35.png",
     "index.html": "/index.html",
-    "main.504099b9.css.map": "/static/css/main.504099b9.css.map",
-    "main.c2e3324e.js.map": "/static/js/main.c2e3324e.js.map",
+    "main.397c3cd5.css.map": "/static/css/main.397c3cd5.css.map",
+    "main.e68065da.js.map": "/static/js/main.e68065da.js.map",
     "787.cda612ba.chunk.js.map": "/static/js/787.cda612ba.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.504099b9.css",
-    "static/js/main.c2e3324e.js"
+    "static/css/main.397c3cd5.css",
+    "static/js/main.e68065da.js"
   ]
 }

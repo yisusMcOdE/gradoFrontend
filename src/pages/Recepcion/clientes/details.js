@@ -1,10 +1,10 @@
-import { Button, Card, Dialog, Grid, Switch, TextField, Autocomplete, Backdrop, CircularProgress, Snackbar } from "@mui/material";
+import { Button, Card, Dialog, Grid, Switch, TextField, Autocomplete, Backdrop, CircularProgress } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Main } from "../../../components/main";
-import { clientById, clientExternalById, clientInternalById, employeeById } from "../../../utilities/allGetFetch";
-import { updateClient, updateClientExternal, updateClientInternal, updateEmployee } from "../../../utilities/allPutFetch";
+import { clientById } from "../../../utilities/allGetFetch";
+import { updateClientExternal, updateClientInternal} from "../../../utilities/allPutFetch";
 import { useStyles } from "../recepcion.styles";
 export const DetailsClientRecepcion = () => {
 

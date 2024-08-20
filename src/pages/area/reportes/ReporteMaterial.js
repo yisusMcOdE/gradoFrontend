@@ -5,7 +5,7 @@ import { Main } from "../../../components/main"
 import { useStyles } from "../area.styles";
 import { esES } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
-import { allMaterials, getMaterialStractByid, getReportArea } from "../../../utilities/allGetFetch";
+import { allMaterials, getMaterialStractByid } from "../../../utilities/allGetFetch";
 import { generateReportMaterialUse } from "../../../utilities/pdfMake/reportMaterialUse";
 
 

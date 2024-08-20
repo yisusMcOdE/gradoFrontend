@@ -27,7 +27,6 @@ export const redirectRole = (role, navigator) => {
 }
 
 export const verifyTokenWithPath = (path,navigator) => {
-    console.log('entra')
     const token = localStorage.token;
     if(token!==undefined){
         let decode;

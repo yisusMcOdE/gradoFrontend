@@ -1,10 +1,10 @@
 
-import { Button, Card, Dialog, Grid, Switch, TextField, Autocomplete } from "@mui/material";
+import { Button, Card, Dialog, Grid, Switch, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Main } from "../../../components/main";
-import { clientById, employeeById, getEquipmentById, materialsById } from "../../../utilities/allGetFetch";
-import { updateClient, updateEmployee, updateEquipment, updateMaterial } from "../../../utilities/allPutFetch";
+import { getEquipmentById} from "../../../utilities/allGetFetch";
+import { updateEquipment} from "../../../utilities/allPutFetch";
 import { useStyles } from "./equipment.styles";
 export const DetailsEquipment = () => {
 
@@ -34,7 +34,7 @@ export const DetailsEquipment = () => {
 
     useEffect(()=>{
         loadData();
-    },[]);
+    });
 
     const classes = useStyles();
 

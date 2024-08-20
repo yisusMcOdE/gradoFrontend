@@ -6,7 +6,7 @@ import { SideBar } from "../../components/SideBar";
 import { Outlet, useNavigate } from "react-router-dom";
 import { SuperUserBar } from "../../components/superUserBar";
 import { useEffect, useState } from "react";
-import { redirectRole, verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
+import { verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
 import { BackgroundPage } from "../../components/background";
 
 export const Direccion = () => {
@@ -32,7 +32,7 @@ export const Direccion = () => {
 
     useEffect(()=>{
         setIsSuperUser(verifyTokenWithPath('Direccion',navigator));
-    },[])
+    },[navigator])
 
     return (
         <Grid container>

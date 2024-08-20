@@ -82,7 +82,7 @@ export const ConfigWhatsapp = () => {
 
     useEffect(()=>{
         verifyAutenticated();
-    },[])
+    })
 
     return(
         data&&

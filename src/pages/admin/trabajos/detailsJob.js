@@ -1,8 +1,6 @@
-import { IconButton, Autocomplete, Box, Button, Card, FormControlLabel, Grid, Radio, RadioGroup, TextField, FilledInput, InputAdornment, Switch, Backdrop, CircularProgress, Snackbar, Dialog, DialogTitle, DialogContent, DialogContentText, Slide, DialogActions, Typography } from "@mui/material"
+import { IconButton, Autocomplete, Button, Card, Grid, TextField, FilledInput, InputAdornment, Switch, Backdrop, CircularProgress } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
 import { Main } from "../../../components/main"
-import { createClient, createEmployee, createJob, createMaterial } from "../../../utilities/allPostFetch"
 import { useStyles } from "../admin.styles"
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -10,6 +8,7 @@ import { allMaterials, JobById } from "../../../utilities/allGetFetch";
 import { cloneDeep } from "lodash"
 import { updateJob } from "../../../utilities/allPutFetch"
 import { useSnackbar } from "notistack"
+import { useParams } from "react-router-dom";
 
 
 export const DetailsJobAdmin = () => {
@@ -40,9 +39,6 @@ export const DetailsJobAdmin = () => {
 
     const [data, setData] = useState();
     const [dataEdition, setDataEdition] = useState();
-
-
-    const navigator = useNavigate();
 
     const classes = useStyles();
 
@@ -146,7 +142,6 @@ export const DetailsJobAdmin = () => {
             for (const key in dataEdition) {
                 if(key==='cost'){
                     for (let index = 0; index < dataEdition.cost.length; index++) {
-                        const item = dataEdition.cost[index];
                         const newCost = {}
                             for (const keyCost in dataEdition.cost[index]) {
                                 if(keyCost!=='_id')
@@ -160,7 +155,6 @@ export const DetailsJobAdmin = () => {
                 }else{
                     if(key==='materials'){
                         for (let index = 0; index < dataEdition.materials.length; index++) {
-                            const item = dataEdition.materials[index];
                             const newMaterial = {}
                                 for (const keyMaterial in dataEdition.materials[index]) {
                                     if(keyMaterial!=='_id')
@@ -276,7 +270,9 @@ export const DetailsJobAdmin = () => {
         setDataEdition({...dataJob});
     }
 
-    useEffect(()=>{loadData()},[]);
+    useEffect(()=>{
+        loadData()
+    });
 
 
     return(

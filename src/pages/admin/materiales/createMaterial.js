@@ -1,9 +1,8 @@
-import { Autocomplete, Backdrop, Box, Button, Card, CircularProgress, FormControlLabel, Grid, Radio, RadioGroup, Snackbar, TextField } from "@mui/material"
+import { Backdrop, Button, Card, CircularProgress, Grid, TextField } from "@mui/material"
 import { useSnackbar } from "notistack"
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
 import { Main } from "../../../components/main"
-import { createClient, createEmployee, createMaterial } from "../../../utilities/allPostFetch"
+import { createMaterial } from "../../../utilities/allPostFetch"
 import { useStyles } from "../admin.styles"
 
 export const CreateMaterial = () => {

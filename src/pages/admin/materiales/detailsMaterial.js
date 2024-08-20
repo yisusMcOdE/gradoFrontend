@@ -1,10 +1,10 @@
-import { Button, Card, Dialog, Grid, Switch, TextField, Autocomplete, Backdrop, CircularProgress, Snackbar} from "@mui/material";
+import { Button, Card, Dialog, Grid, Switch, TextField, Backdrop, CircularProgress} from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Main } from "../../../components/main";
-import { clientById, employeeById, materialsById } from "../../../utilities/allGetFetch";
-import { updateClient, updateEmployee, updateMaterial } from "../../../utilities/allPutFetch";
+import { materialsById } from "../../../utilities/allGetFetch";
+import { updateMaterial } from "../../../utilities/allPutFetch";
 import { useStyles } from "../admin.styles";
 export const DetailsMaterialAdmin = () => {
 
@@ -67,7 +67,7 @@ export const DetailsMaterialAdmin = () => {
 
     useEffect(()=>{
         loadData();
-    },[]);
+    });
 
     const classes = useStyles();
 

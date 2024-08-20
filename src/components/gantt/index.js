@@ -20,7 +20,7 @@ export const MyGantt =  ({type, direction}) => {
 
     const ganttRef = useRef(null);
 
-    const [loading, setLoading] = useState(false);
+    const [, setLoading] = useState(false);
     const [daysDelayForm, setDaysDelayForm] = useState({error:false, value:1});
     const [justifyForm, setJustifyForm] = useState({error:false, value:''});
     const [tasks, setTask] = useState(null);
@@ -104,7 +104,7 @@ export const MyGantt =  ({type, direction}) => {
 
     console.log(tasks);
 
-    const changeDate = async(id, start, end, steps) => {
+    const changeDate = async(id, start, end, steps=[]) => {
 
         setChanges(true)
 
@@ -115,7 +115,7 @@ export const MyGantt =  ({type, direction}) => {
         let segundos = (diferenciaMs / (1000));
 
         let segundosRetraso = 0;
-        steps.map(item => {
+        steps.forEach(item => {
             if(item.type === 'delayed'){
                 segundosRetraso += (item.dayDelay * 86400)
             }

@@ -1,11 +1,8 @@
-import { Autocomplete, Box, Button, Card, Grid, TextField, Dialog, Collapse, Backdrop, CircularProgress, Snackbar } from "@mui/material";
+import { Autocomplete, Box, Button, Card, Grid, TextField, Dialog, Collapse, Backdrop, CircularProgress } from "@mui/material";
 import { Main } from "../../../components/main";
-import { useNavigate } from "react-router-dom";
 import {useStyles} from '../area.styles';
-import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import { DataGrid } from "@mui/x-data-grid";
-import { GridToolbar } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 import { esES } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
@@ -22,8 +19,6 @@ import { Finalizar } from "./Finalizar";
 export const Trabajos = () => {
 
     const { enqueueSnackbar } = useSnackbar();
-
-    const navigator = useNavigate();
 
     const [loading, setLoading] = useState(false);
 
@@ -80,6 +75,7 @@ export const Trabajos = () => {
                 if(-1 !== item.steps.findIndex(item => item.type === 'finished')){
                     return {...item, state:'Finalizado'}
                 }
+                return item
             })
             setData(response);
         }else{
@@ -254,22 +250,14 @@ export const Trabajos = () => {
                                                 switch (stateType) {
                                                     case 'Todos':
                                                         return true
-                                                        break;
-                                                    
                                                     case 'En Espera':
                                                         return item.steps.length === 3
-                                                        break;
-
                                                     case 'En Desarrollo':
                                                         return ((-1 === item.steps.findIndex(item => item.type === 'finished'))&&(item.steps.length !== 3))
-                                                        break;
-
                                                     case 'Finalizados':
                                                         return -1 !== item.steps.findIndex(item => item.type === 'finished')
-                                                        break;
-                                            
                                                     default:
-                                                        break;
+                                                        return false
                                                 }
                                             }).filter(item => {
                                                 ///Filtrado por nombre ciente

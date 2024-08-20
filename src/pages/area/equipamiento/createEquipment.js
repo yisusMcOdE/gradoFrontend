@@ -1,8 +1,7 @@
-import { Autocomplete, Box, Button, Card, FormControlLabel, Grid, Radio, RadioGroup, TextField } from "@mui/material"
-import { useState } from "react"
+import { Button, Card, Grid, TextField } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 import { Main } from "../../../components/main"
-import { AddEquipment, createClient, createEmployee, createMaterial } from "../../../utilities/allPostFetch"
+import { AddEquipment} from "../../../utilities/allPostFetch"
 import { useStyles } from "./equipment.styles"
 
 export const CreateEquipment = () => {

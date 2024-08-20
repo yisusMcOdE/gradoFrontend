@@ -1,18 +1,14 @@
-import { Box, RadioGroup, FormControlLabel, Radio, IconButton, Button } from "@mui/material";
-import { Card, Grid, TextField, Autocomplete } from "@mui/material";
+import { Box, RadioGroup, FormControlLabel, Radio, Button } from "@mui/material";
+import { Card, Grid, TextField } from "@mui/material";
 import { Main } from "../../../components/main";
 import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
 import { useEffect, useState } from "react";
 import SearchIcon from '@mui/icons-material/Search';
 import { DataGrid, esES } from "@mui/x-data-grid";
-import { GridToolbar } from "@mui/x-data-grid";
-import { Chart } from 'react-chartjs-2'
 import 'chart.js/auto';
-import { formatCharBar } from "../../../utilities/formatCharBar";
 import { useNavigate } from "react-router-dom";
 import { useStyles } from "../admin.styles";
-import { allClientsInternal, allEmployees, getAllUsersComplete } from "../../../utilities/allGetFetch";
+import { getAllUsersComplete } from "../../../utilities/allGetFetch";
 
 export const Cuentas = () => {
 

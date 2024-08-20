@@ -17,8 +17,8 @@ export const ReporteArea = () => {
     const [data, setData] = useState();
     const [dataEquipment, setDataEquipment] = useState(['']);
     const [area, setArea] = useState('Todos');
-    const [initial, setInitial] = useState('');
-    const [end, setEnd] = useState('');
+    const [initial, ] = useState('');
+    const [end, ] = useState('');
     const [equipment, setEquipment] = useState('Todos');
 
     const columns = [

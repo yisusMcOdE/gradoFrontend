@@ -1,10 +1,10 @@
-import { Button, Card, Dialog, Grid, Switch, TextField, Autocomplete, Backdrop, CircularProgress, Snackbar } from "@mui/material";
+import { Button, Card, Dialog, Grid, Switch, TextField, Autocomplete, Backdrop, CircularProgress} from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Main } from "../../../components/main";
-import { clientInternalById, employeeById, getUserById } from "../../../utilities/allGetFetch";
-import { updateClientInternal, updateEmployee, updateUser } from "../../../utilities/allPutFetch";
+import { getUserById } from "../../../utilities/allGetFetch";
+import { updateUser } from "../../../utilities/allPutFetch";
 import { useStyles } from "../admin.styles";
 
 
@@ -18,7 +18,7 @@ export const AccountDetails = () => {
 
     const [data, setData] = useState();
     const [dataEdit, setDataEdit] = useState();
-    const [status, setStatus] = useState();
+    const [, setStatus] = useState();
     const [editionMode, setEditionMode] = useState(false);
     const [dialog, setDialog] = useState(false);
 
@@ -93,7 +93,7 @@ export const AccountDetails = () => {
 
     useEffect(()=>{
         loadData();
-    },[]);
+    });
 
     const classes = useStyles();
 

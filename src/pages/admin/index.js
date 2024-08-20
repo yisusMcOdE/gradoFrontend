@@ -1,4 +1,4 @@
-import { Drawer, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { SideBar } from "../../components/SideBar"
 import { Outlet, useNavigate } from "react-router-dom";
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
@@ -12,7 +12,7 @@ import { useStyles } from "./admin.styles";
 import { useEffect, useState } from "react";
 import { BackgroundPage } from "../../components/background";
 import { SuperUserBar } from "../../components/superUserBar";
-import { redirectRole, verifyToken, verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
+import { verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
 import BadgeIcon from '@mui/icons-material/Badge';
 
 

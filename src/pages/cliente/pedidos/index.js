@@ -1,14 +1,10 @@
 import { Button, Grid, TextField, Card, Box, Autocomplete } from "@mui/material";
-import { InputAdornment} from "@mui/material";
 import { useStyles } from "../cliente.styles";
 import AddIcon from '@mui/icons-material/Add';
-import SearchIcon from '@mui/icons-material/Search';
-import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
-import { GridToolbar } from "@mui/x-data-grid";
+import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getAllOrdersList, getAllOrdersListById, orderExternalList, orderInternalList } from "../../../utilities/allGetFetch";
-import { width } from "@mui/system";
+import { getAllOrdersListById } from "../../../utilities/allGetFetch";
 import { Main } from "../../../components/main";
 
 
@@ -16,10 +12,10 @@ export const PedidosCliente = () => {
 
     const navigator = useNavigate();
 
-    const [dataInternal, setDataInternal] = useState([]);
+    const [,setDataInternal] = useState([]);
     const [dataView, setDataView] = useState();
 
-    const [tipeView, setTipeView] = useState('Todos');
+    const [tipeView] = useState('Todos');
 
     const classes = useStyles();
 
@@ -109,7 +105,7 @@ export const PedidosCliente = () => {
 
     useEffect(()=>{
         loadData();
-    },[])
+    })
 
     return(
         dataView&&

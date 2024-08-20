@@ -6,7 +6,6 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Chart } from 'react-chartjs-2'
 import 'chart.js/auto';
 import { formatCharPie } from '../../../utilities/formatCharPie';
-import { padding } from '@mui/system';
 import { getMaterialStractByid, materialsById } from '../../../utilities/allGetFetch';
 import { useEffect, useState } from 'react';
 
@@ -29,7 +28,7 @@ export const DetailsMaterialArea = () => {
 
     useEffect(()=>{
         loadData();
-    },[])
+    })
 
     const columns = [
         {field: 'detail', headerName: 'Detalle', flex: 0.5},

@@ -1,9 +1,9 @@
-import { Button, Card, Dialog, Grid, Switch, TextField, Autocomplete, Backdrop, CircularProgress, Snackbar} from "@mui/material";
+import { Button, Card, Dialog, Grid, Switch, TextField, Backdrop, CircularProgress} from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Main } from "../../../components/main";
-import { clientById, clientInternalById, employeeById, getEmpInstById } from "../../../utilities/allGetFetch";
+import { getEmpInstById } from "../../../utilities/allGetFetch";
 import { updateClientInternal, updateEmployee } from "../../../utilities/allPutFetch";
 import { useStyles } from "../admin.styles";
 export const DetailsClient = () => {
@@ -17,7 +17,7 @@ export const DetailsClient = () => {
     const [data, setData] = useState();
     const [dataEdition, setDataEdition] = useState();
     const [institution, setInstitution] = useState(false);
-    const [status, setStatus] = useState();
+    const [, setStatus] = useState();
     const [editionMode, setEditionMode] = useState(false);
     const [dialog, setDialog] = useState(false);
     console.log(data);
@@ -125,7 +125,7 @@ export const DetailsClient = () => {
 
     useEffect(()=>{
         loadData();
-    },[]);
+    });
 
     const classes = useStyles();
 

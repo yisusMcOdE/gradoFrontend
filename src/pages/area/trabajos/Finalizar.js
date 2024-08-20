@@ -1,11 +1,9 @@
-import { Button, Card, Grid, TextField, Box, IconButton, Autocomplete, RadioGroup, FormControlLabel, Radio } from "@mui/material"
+import { Button, Card, Grid, TextField, IconButton, Autocomplete, RadioGroup, FormControlLabel, Radio } from "@mui/material"
 import { useEffect, useState } from "react"
-import { Main } from "../../../components/main"
 import { useStyles } from "../area.styles"
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { getAllEquipment, getOrderFinishedById, addStepById } from "../../../utilities/allGetFetch";
-import { useParams } from "react-router-dom";
+import { getAllEquipment, getOrderFinishedById } from "../../../utilities/allGetFetch";
 import { finishOrderById, updateOver } from "../../../utilities/allPutFetch";
 import { useSnackbar } from "notistack";
 
@@ -44,7 +42,7 @@ export const Finalizar = ({id, close, load}) => {
 
     useEffect(()=>{
         loadData();
-    },[])
+    })
 
     const addDetail = () => {
         setDataSobrante([...dataSobrante, materialInicial])
