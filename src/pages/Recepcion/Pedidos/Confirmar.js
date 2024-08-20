@@ -1,5 +1,5 @@
-import { Button, Card, Grid, TextField, Autocomplete, Dialog, IconButton, Collapse, Snackbar, Backdrop, CircularProgress, Typography, DialogTitle, DialogContent, DialogActions } from "@mui/material"
-import { DataGrid, GridRemoveIcon } from "@mui/x-data-grid";
+import { Button, Card, Grid, TextField, Dialog, IconButton, Collapse, Backdrop, CircularProgress, Typography, DialogTitle, DialogContent, DialogActions } from "@mui/material"
+import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { Main } from "../../../components/main";
 import { allClientsExternal, allClientsInternal, getOrderNoConfirmed } from "../../../utilities/allGetFetch";
@@ -27,9 +27,6 @@ export const Confirmar = () => {
 
     const { enqueueSnackbar } = useSnackbar();
 
-
-    const initialInput = {error:false, value:''}
-
     const classes = useStyles();
     const columns= [
         { field: 'index', headerName: 'N°', flex: 0.3 },
@@ -43,12 +40,10 @@ export const Confirmar = () => {
 
     const [modal, setModal] = useState(false);
     const [data, setData] = useState();
-    const [clients, setClients] = useState();
+    const [, setClients] = useState();
     const [order, setOrder] = useState();
     const [confirm, setConfirm] = useState(false);
     const [cancel, setCancel] = useState(false);
-    const [openSnack, setOpenSnack] = useState(false);
-    const [numberCheck, setNumberCheck] = useState(initialInput);
 
     const loadData = async() => {
         setData(await getOrderNoConfirmed());
@@ -56,10 +51,10 @@ export const Confirmar = () => {
         const external = await allClientsExternal();
         const internal = await allClientsInternal();
         const names = [];
-        internal.map(item=>{
+        internal.forEach(item=>{
             names.push(item.institution);
         })
-        external.map(item=>{
+        external.forEach(item=>{
             names.push(item.name)
         })
         setClients(names);
@@ -71,7 +66,7 @@ export const Confirmar = () => {
             item.seconds = {error:false, value:1};
             return item
         })
-        orderFinded = {... orderFinded, details:details}
+        orderFinded = {...orderFinded, details:details}
         if(orderFinded.fundsOrigin===undefined){
             orderFinded = {...orderFinded, numberCheck:{error:false, value:orderFinded.numberCheck}}
         }

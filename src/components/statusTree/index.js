@@ -1,7 +1,6 @@
 import { Grid, Popover, TextField } from "@mui/material";
 import { useState } from "react";
 import Tree from "react-d3-tree"
-import { formatStatus } from "../../utilities/formatStatusTree";
 import { useStyles } from "./statusTree.styles";
 
 export const StatusTree = ({steps}) => {

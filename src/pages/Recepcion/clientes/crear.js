@@ -1,9 +1,8 @@
-import {Autocomplete, Backdrop, Box, Button, Card, CircularProgress, FormControlLabel, Grid, Radio, RadioGroup, Snackbar, TextField } from "@mui/material"
+import {Autocomplete, Backdrop, Button, Card, CircularProgress, Grid, TextField } from "@mui/material"
 import { useSnackbar } from "notistack"
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
 import { Main } from "../../../components/main"
-import { createClient, createClientExternal, createEmployee } from "../../../utilities/allPostFetch"
+import { createClientExternal } from "../../../utilities/allPostFetch"
 import { useStyles } from "../recepcion.styles"
 
 export const CreateClientRecepcion = () => {

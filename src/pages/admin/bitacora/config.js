@@ -1,9 +1,9 @@
-import { Backdrop, Button, Card, CircularProgress, Grid, Switch, TextField } from "@mui/material"
+import { Backdrop, Button, Card, CircularProgress, Grid, Switch } from "@mui/material"
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react"
 import { Main } from "../../../components/main"
-import { getBinnacleConfig, getStatusEmail } from "../../../utilities/allGetFetch";
-import { updateConfigBinnacle, updateConfigEmail } from "../../../utilities/allPutFetch";
+import { getBinnacleConfig } from "../../../utilities/allGetFetch";
+import { updateConfigBinnacle } from "../../../utilities/allPutFetch";
 
 export const ConfigBinnacle = () => {
 

@@ -9,7 +9,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { BackgroundPage } from "../../components/background";
 import { SuperUserBar } from "../../components/superUserBar";
 import { useEffect, useState } from "react";
-import { redirectRole, verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
+import { verifyTokenWithPath } from "../../utilities/pdfMake/redirectRole";
 
 export const Recepcion = () => {
     
@@ -42,7 +42,7 @@ export const Recepcion = () => {
 
     useEffect(()=>{
         setIsSuperUser(verifyTokenWithPath('Recepcion',navigator));
-    },[])
+    },[navigator])
 
     return (
         <Grid container >

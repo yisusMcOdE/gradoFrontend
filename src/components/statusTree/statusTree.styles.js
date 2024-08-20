@@ -1,6 +1,4 @@
 import { makeStyles } from "@mui/styles";
-import { height, padding } from "@mui/system";
-import {theme} from '../../theme/theme';
 
 export const useStyles = makeStyles({
     titlePage:{

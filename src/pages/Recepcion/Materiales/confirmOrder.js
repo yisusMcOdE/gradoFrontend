@@ -28,7 +28,7 @@ export const ConfirmOrder = () => {
 
     useEffect(()=>{
         loadData()
-    },[])
+    })
 
     const classes = useStyles();
     return (data&&

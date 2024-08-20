@@ -128,7 +128,7 @@ export const DetailsClientRecepcion = () => {
 
     useEffect(()=>{
         loadData();
-    },[]);
+    });
 
     const classes = useStyles();
 

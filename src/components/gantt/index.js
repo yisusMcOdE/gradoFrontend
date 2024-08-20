@@ -227,13 +227,13 @@ export const MyGantt =  ({type, direction}) => {
 
     useEffect(()=>{
         loadData();
-    },[])
+    })
 
     useEffect(()=>{
         if(ganttRef.current){
             ganttRef.current._svg.current.height.baseVal.value = 60 + (38*tasks[type].length)
         }
-    },[type])
+    },[type, tasks])
 
 
     var classes = useStyles();

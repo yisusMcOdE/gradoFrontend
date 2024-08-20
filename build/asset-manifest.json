@@ -1,17 +1,16 @@
 {
   "files": {
     "main.css": "/static/css/main.397c3cd5.css",
-    "main.js": "/static/js/main.e68065da.js",
+    "main.js": "/static/js/main.fe752ff3.js",
     "static/js/787.cda612ba.chunk.js": "/static/js/787.cda612ba.chunk.js",
-    "static/media/Kanit-Regular.ttf": "/static/media/Kanit-Regular.f3bae13d78ced30b6ea3.ttf",
     "static/media/uatf.png": "/static/media/uatf.2b675d2134d4c5c7bf35.png",
     "index.html": "/index.html",
     "main.397c3cd5.css.map": "/static/css/main.397c3cd5.css.map",
-    "main.e68065da.js.map": "/static/js/main.e68065da.js.map",
+    "main.fe752ff3.js.map": "/static/js/main.fe752ff3.js.map",
     "787.cda612ba.chunk.js.map": "/static/js/787.cda612ba.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.397c3cd5.css",
-    "static/js/main.e68065da.js"
+    "static/js/main.fe752ff3.js"
   ]
 }

@@ -1,4 +1,4 @@
-import { Box, RadioGroup, FormControlLabel, Radio, IconButton, Button, Backdrop, CircularProgress, Snackbar} from "@mui/material";
+import { Box, IconButton, Button, Backdrop, CircularProgress} from "@mui/material";
 import { Card, Grid, TextField, Autocomplete } from "@mui/material";
 import { Main } from "../../../components/main";
 import { useStyles } from "./materials.style";
@@ -22,7 +22,7 @@ export const Solicitar = () => {
         codigoMaterial: '000'
     }
 
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
 
     const [dataMaterial, setDataMaterial] = useState();
     const [form, setForm] = useState({

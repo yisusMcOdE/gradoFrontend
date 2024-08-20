@@ -1,18 +1,12 @@
-import { Box, RadioGroup, FormControlLabel, Radio, IconButton, Button, Dialog, Backdrop, CircularProgress, Snackbar } from "@mui/material";
-import { Card, Grid, TextField, Autocomplete } from "@mui/material";
+import { Box, Button, Dialog, Backdrop, CircularProgress } from "@mui/material";
+import { Card, Grid, TextField } from "@mui/material";
 import { Main } from "../../../components/main";
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
 import { useEffect, useState } from "react";
 import SearchIcon from '@mui/icons-material/Search';
 import { DataGrid } from "@mui/x-data-grid";
-import { GridToolbar } from "@mui/x-data-grid";
-import { Chart } from 'react-chartjs-2'
 import 'chart.js/auto';
-import { formatCharBar } from "../../../utilities/formatCharBar";
-import { useNavigate } from "react-router-dom";
 import { useStyles } from "../admin.styles";
-import { allClients, allEmployees, allMaterials, getBackupFiles } from "../../../utilities/allGetFetch";
+import { getBackupFiles } from "../../../utilities/allGetFetch";
 import { addBackUp, restoreBackup } from "../../../utilities/allPostFetch";
 import { useSnackbar } from "notistack";
 
@@ -20,7 +14,7 @@ export const Backup = () => {
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
 
     const [search, setSearch] = useState('');
     const [modal, setModal] = useState(false);

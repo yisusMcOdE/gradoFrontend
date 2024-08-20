@@ -1,6 +1,4 @@
 import { createTheme } from '@mui/material';
-import kanit_Regular from '../assets/fonts/Kanit/Kanit-Regular.ttf';
-
 
 const paleta={
   primary:    '#FFFFFF',
@@ -38,10 +36,7 @@ const LatoRegular = {
   src: `url(${Lato})`
 }
 */
-const kanitRegular = {
-  fontFamily : 'Kanit',
-  src: `url(${kanit_Regular})`
-}
+
 
 export const theme = createTheme({
   typography: {
@@ -78,9 +73,7 @@ export const theme = createTheme({
   },
   overrides: {
     MuiCssBaseline: {
-      '@global': {
-        '@font-face': [kanitRegular],
-      },
+      
       body: {
         fontFamily: ['Kanit','Roboto-Regular'],
       },

@@ -1,12 +1,11 @@
-import { Card, Grid, Autocomplete, TextField, Box, RadioGroup, FormControlLabel, Radio, IconButton, Button, Snackbar, Backdrop, CircularProgress, DialogTitle, DialogContent, Typography, DialogActions, Dialog } from "@mui/material";
+import { Card, Grid, Autocomplete, TextField, Box, RadioGroup, FormControlLabel, Radio, IconButton, Button, Backdrop, CircularProgress, DialogTitle, DialogContent, Typography, DialogActions, Dialog } from "@mui/material";
 import { useStyles } from "./pedidos.styles";
-import { useDebugValue, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import WarningIcon from '@mui/icons-material/Warning';
-import { allClientsExternal, allClientsExternalActive, allClientsInternal, allClientsInternalActive, allJobs, allJobsActive } from "../../../utilities/allGetFetch";
+import { allClientsExternalActive, allClientsInternalActive, allJobsActive } from "../../../utilities/allGetFetch";
 import { createOrderExternal, createOrderInternal } from "../../../utilities/allPostFetch";
-import { useNavigate } from "react-router-dom";
 import { Main } from "../../../components/main";
 import { generateTicketPay } from "../../../utilities/pdfMake/checkPay";
 import CloseIcon from '@mui/icons-material/Close';

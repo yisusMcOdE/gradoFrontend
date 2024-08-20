@@ -71,7 +71,7 @@ export const Admin = () => {
 
     useEffect(()=>{
         setIsSuperUser(verifyTokenWithPath('Administracion',navigator));
-    },[])
+    },[navigator])
 
     return (
     <Grid container>

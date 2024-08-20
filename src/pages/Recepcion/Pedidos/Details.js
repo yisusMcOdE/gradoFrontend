@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Main } from "../../../components/main";
 import { StatusTree } from "../../../components/statusTree";
-import { getOrderById, orderExternalById, orderInternalById } from "../../../utilities/allGetFetch";
+import { getOrderById} from "../../../utilities/allGetFetch";
 
 import { useStyles } from "./pedidos.styles";
 
@@ -57,7 +57,7 @@ export const Details = () => {
 
     useEffect(()=>{
         loadData();
-    },[])
+    })
     
     return(data&&
         <Main>

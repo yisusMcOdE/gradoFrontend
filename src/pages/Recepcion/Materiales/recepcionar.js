@@ -1,13 +1,10 @@
-import { Box, Card, Grid, TextField, Button, RadioGroup, Radio,FormControlLabel, Backdrop, CircularProgress, Snackbar, Dialog, Collapse } from "@mui/material"
+import { Box, Card, Grid, TextField, Button, RadioGroup, Radio,FormControlLabel, Backdrop, CircularProgress, Dialog, Collapse } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid";
-import moment from "moment";
-import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Main } from "../../../components/main";
 import { allOrderMaterial, getOrderMaterialById } from "../../../utilities/allGetFetch";
 import { cancelOrderMaterialById, confirmOrderMaterial } from "../../../utilities/allPutFetch";
-import { useStyles } from "./materials.style";
+import { useSnackbar } from "notistack";
 
 
 export const Recepcionar = () => {
@@ -16,7 +13,6 @@ export const Recepcionar = () => {
 
 
     const [loading, setLoading] = useState(false);
-    const [dialog, setDialog] = useState({open:false, message:''});
 
     const [modal, setModal] = useState(false);
     const [confirm, setConfirm] = useState(false);
@@ -27,8 +23,6 @@ export const Recepcionar = () => {
 
 
     const [complete, setComplete] = useState(true);
-
-    const classes = useStyles();
 
     const columns = [
         {field: 'index', headerName: 'N°', flex: 0.5},
